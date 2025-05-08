@@ -40,3 +40,60 @@ export const fixImageUrls = (container: HTMLElement): void => {
     }
   });
 };
+
+// Add header to all pages in the PDF
+export const addHeaderToAllPages = (contractContainer: HTMLElement, company: Company): void => {
+  // Clone the header from the document
+  const originalHeader = contractContainer.querySelector('.contract-header');
+  if (!originalHeader) return;
+  
+  const header = originalHeader.cloneNode(true) as HTMLElement;
+  
+  // Adjust the header style for PDF pages
+  header.style.marginBottom = '0.5rem';
+  header.style.width = '100%';
+  header.style.pageBreakAfter = 'avoid';
+  
+  // Get company logo and header text for repeated headers
+  const headerContent = header.querySelector('.header-content') as HTMLElement;
+  if (headerContent) {
+    headerContent.style.padding = '0.3rem';
+    
+    const logoElement = headerContent.querySelector('.company-logo') as HTMLElement;
+    if (logoElement) {
+      logoElement.style.height = '30px';
+      
+      const logoImg = logoElement.querySelector('img') as HTMLImageElement;
+      if (logoImg) {
+        logoImg.style.height = '25px';
+      }
+    }
+    
+    const headerText = headerContent.querySelector('.header-text') as HTMLElement;
+    if (headerText) {
+      headerText.style.fontSize = '10pt';
+    }
+  }
+  
+  // Add header to all contract sections that should start on a new page
+  const sections = contractContainer.querySelectorAll('.contract-section') as NodeListOf<HTMLElement>;
+  
+  // Add after section 3 and 5 as they have page breaks
+  if (sections.length >= 9) {
+    const section4 = sections[3] as HTMLElement; // 4th section
+    const section6 = sections[5] as HTMLElement; // 6th section
+    
+    if (section4 && section4.parentNode) {
+      const header4 = header.cloneNode(true) as HTMLElement;
+      section4.parentNode.insertBefore(header4, section4);
+    }
+    
+    if (section6 && section6.parentNode) {
+      const header6 = header.cloneNode(true) as HTMLElement;
+      section6.parentNode.insertBefore(header6, section6);
+    }
+  }
+  
+  // Add class to enable @page header styles
+  contractContainer.classList.add('with-headers');
+};
