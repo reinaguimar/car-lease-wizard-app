@@ -59,11 +59,17 @@ export function PrintButton({ data, company }: PrintButtonProps) {
       try {
         // Buscar a empresa pelo código
         const companyData = await getCompanyById(company);
-        if (!companyData || !companyData.id) {
+        if (!companyData) {
           throw new Error("Empresa não encontrada");
         }
         companyId = companyData.id;
         console.log("ID da empresa encontrado:", companyId);
+        
+        // Se for um ID simulado (começando com "mock"), usamos o código da empresa
+        if (companyId.startsWith('mock')) {
+          console.log("Usando código de empresa como ID para contrato:", company);
+          companyId = company; // Usar o código da empresa como fallback
+        }
       } catch (error) {
         console.error("Erro ao buscar empresa:", error);
         toast.error("Erro ao identificar a empresa");
@@ -103,7 +109,7 @@ export function PrintButton({ data, company }: PrintButtonProps) {
         license_plate: data.licensePlate as string | null || null,
         year: data.year as string | null || null,
         color: data.color as string | null || null,
-        company_id: companyId // Usar o ID real da empresa
+        company_id: companyId // Usar o ID real da empresa ou fallback
       };
       
       let vehicleId = '';
@@ -125,7 +131,7 @@ export function PrintButton({ data, company }: PrintButtonProps) {
           contract_number: contractNumber,
           client_id: clientId,
           vehicle_id: vehicleId,
-          company_id: companyId, // Usar o ID real da empresa
+          company_id: companyId, // Usar o ID real da empresa ou fallback
           start_date: data.startDate ? data.startDate.toISOString().split('T')[0] : '',
           start_time: data.startTime || '',
           end_date: data.endDate ? data.endDate.toISOString().split('T')[0] : '',
