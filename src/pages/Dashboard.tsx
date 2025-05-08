@@ -17,15 +17,38 @@ import {
   FileCheck, 
   FileX, 
   BarChart2, 
-  PieChart as PieChartIcon 
+  PieChart as PieChartIcon,
+  Filter,
+  Calendar
 } from "lucide-react";
+import { LoadingState } from "@/components/LoadingState";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
+// Dashboard filter types
+type DateRange = "all" | "thisMonth" | "lastMonth" | "last3Months" | "last6Months" | "custom";
+type StatusFilter = "all" | "active" | "completed" | "canceled";
+
 export default function Dashboard() {
   const [contracts, setContracts] = useState<Contract[]>([]);
+  const [filteredContracts, setFilteredContracts] = useState<Contract[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
+  
+  // Filter states
+  const [dateRange, setDateRange] = useState<DateRange>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [customDateRange, setCustomDateRange] = useState<{
+    from: Date | undefined;
+    to: Date | undefined;
+  }>({
+    from: undefined,
+    to: undefined,
+  });
 
   useEffect(() => {
     const fetchContracts = async () => {
@@ -33,6 +56,7 @@ export default function Dashboard() {
       try {
         const contractsData = await getContracts();
         setContracts(contractsData);
+        setFilteredContracts(contractsData);
       } catch (error) {
         console.error("Error fetching contracts:", error);
       } finally {
@@ -43,15 +67,64 @@ export default function Dashboard() {
     fetchContracts();
   }, []);
 
-  // Calculate statistics
-  const totalContracts = contracts.length;
-  const activeContracts = contracts.filter(c => c.status === 'active').length;
-  const completedContracts = contracts.filter(c => c.status === 'completed').length;
-  const canceledContracts = contracts.filter(c => c.status === 'canceled').length;
+  // Apply filters when filter states change
+  useEffect(() => {
+    if (!contracts.length) return;
+    
+    let result = [...contracts];
+    
+    // Apply status filter
+    if (statusFilter !== "all") {
+      result = result.filter(contract => contract.status === statusFilter);
+    }
+    
+    // Apply date range filter
+    const currentDate = new Date();
+    let fromDate: Date | undefined;
+    let toDate: Date | undefined = currentDate;
+    
+    switch (dateRange) {
+      case "thisMonth":
+        fromDate = startOfMonth(currentDate);
+        break;
+      case "lastMonth":
+        fromDate = startOfMonth(subMonths(currentDate, 1));
+        toDate = endOfMonth(subMonths(currentDate, 1));
+        break;
+      case "last3Months":
+        fromDate = startOfMonth(subMonths(currentDate, 3));
+        break;
+      case "last6Months":
+        fromDate = startOfMonth(subMonths(currentDate, 6));
+        break;
+      case "custom":
+        fromDate = customDateRange.from;
+        toDate = customDateRange.to;
+        break;
+      default:
+        // "all" - no date filtering
+        break;
+    }
+    
+    if (fromDate && toDate) {
+      result = result.filter(contract => {
+        const contractDate = parseISO(contract.sign_date);
+        return isWithinInterval(contractDate, { start: fromDate as Date, end: toDate as Date });
+      });
+    }
+    
+    setFilteredContracts(result);
+  }, [contracts, statusFilter, dateRange, customDateRange]);
+
+  // Calculate statistics based on filtered contracts
+  const totalContracts = filteredContracts.length;
+  const activeContracts = filteredContracts.filter(c => c.status === 'active').length;
+  const completedContracts = filteredContracts.filter(c => c.status === 'completed').length;
+  const canceledContracts = filteredContracts.filter(c => c.status === 'canceled').length;
   
   // Calculate unique clients and vehicles
-  const uniqueClients = new Set(contracts.map(c => c.client_id)).size;
-  const uniqueVehicles = new Set(contracts.map(c => c.vehicle_id)).size;
+  const uniqueClients = new Set(filteredContracts.map(c => c.client_id)).size;
+  const uniqueVehicles = new Set(filteredContracts.map(c => c.vehicle_id)).size;
 
   // Prepare chart data
   const statusData = [
@@ -70,7 +143,7 @@ export default function Dashboard() {
     contratos: 0
   }));
 
-  contracts.forEach(contract => {
+  filteredContracts.forEach(contract => {
     const contractDate = new Date(contract.sign_date);
     if (contractDate.getFullYear() === currentYear) {
       const month = contractDate.getMonth();
@@ -90,10 +163,88 @@ export default function Dashboard() {
         </Link>
       </div>
 
+      {/* Filters Section */}
+      <Card className="mb-6">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Filter className="h-4 w-4" />
+            Filtros
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Status do Contrato</label>
+              <Select
+                value={statusFilter}
+                onValueChange={(value) => setStatusFilter(value as StatusFilter)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Todos os status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os status</SelectItem>
+                  <SelectItem value="active">Ativos</SelectItem>
+                  <SelectItem value="completed">Concluídos</SelectItem>
+                  <SelectItem value="canceled">Cancelados</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <label className="text-sm font-medium mb-2 block">Período</label>
+              <div className="flex gap-2">
+                <Select
+                  value={dateRange}
+                  onValueChange={(value) => setDateRange(value as DateRange)}
+                  className="flex-1"
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Todos os períodos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todo o período</SelectItem>
+                    <SelectItem value="thisMonth">Este mês</SelectItem>
+                    <SelectItem value="lastMonth">Mês passado</SelectItem>
+                    <SelectItem value="last3Months">Últimos 3 meses</SelectItem>
+                    <SelectItem value="last6Months">Últimos 6 meses</SelectItem>
+                    <SelectItem value="custom">Período personalizado</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                {dateRange === "custom" && (
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className="flex gap-2">
+                        <Calendar className="h-4 w-4" />
+                        {customDateRange.from && customDateRange.to ? (
+                          <span>
+                            {format(customDateRange.from, "dd/MM/yy")} - {format(customDateRange.to, "dd/MM/yy")}
+                          </span>
+                        ) : (
+                          "Selecionar datas"
+                        )}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="end">
+                      <CalendarComponent
+                        initialFocus
+                        mode="range"
+                        defaultMonth={customDateRange.from}
+                        selected={customDateRange}
+                        onSelect={setCustomDateRange}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                )}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {loading ? (
-        <div className="w-full h-64 flex items-center justify-center">
-          <p>Carregando dados...</p>
-        </div>
+        <LoadingState message="Carregando dados..." />
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -144,7 +295,7 @@ export default function Dashboard() {
               <CardContent>
                 <div className="text-2xl font-bold">{canceledContracts}</div>
                 <p className="text-xs text-muted-foreground">
-                  {((canceledContracts / totalContracts) * 100 || 0).toFixed(1)}% do total
+                  {totalContracts > 0 ? ((canceledContracts / totalContracts) * 100).toFixed(1) : "0"}% do total
                 </p>
               </CardContent>
             </Card>
