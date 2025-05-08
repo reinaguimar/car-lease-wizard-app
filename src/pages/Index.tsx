@@ -11,8 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Archive, File, BarChart2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { InfoIcon } from "lucide-react";
 
 const Index = () => {
   const [formData, setFormData] = useState<Partial<FormData>>({});
@@ -40,15 +38,6 @@ const Index = () => {
           Preencha os dados do contrato e visualize em tempo real
         </p>
       </div>
-
-      <Alert className="mb-4">
-        <InfoIcon className="h-4 w-4" />
-        <AlertTitle>Como usar</AlertTitle>
-        <AlertDescription>
-          Preencha todos os campos do formulário, visualize o contrato e depois clique em "Salvar Contrato" para gerar o PDF e salvar os dados.
-          Os contratos salvos estarão disponíveis na página "Ver Contratos".
-        </AlertDescription>
-      </Alert>
 
       <div className="mb-4">
         <CompanySelector 
