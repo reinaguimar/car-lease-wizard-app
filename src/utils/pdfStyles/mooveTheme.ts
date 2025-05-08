@@ -3,61 +3,83 @@ export const getMoovePDFStyles = (): string => {
   return `
     /* Moove Theme Styles */
     .moove-theme .contract-container {
-      font-family: 'Montserrat', 'Arial', sans-serif;
+      font-family: 'Arial', sans-serif;
       color: #222222;
-      border-top: 4px solid #4B80C3;
+      border-top: 0;
     }
     
     .moove-theme .contract-header {
       background-color: #4B80C3;
       color: white;
-      border-radius: 4px;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 5px rgba(75, 128, 195, 0.2);
+      border-radius: 0;
+      margin-bottom: 1.5rem;
+      box-shadow: none;
+      width: 100%;
+      padding: 15px 0;
+      text-align: center;
     }
     
     .moove-theme .header-content {
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
     }
     
     .moove-theme .company-logo {
-      padding: 0.3rem;
+      padding: 0;
       display: flex;
       align-items: center;
-      justify-content: center;
-      height: 40px;
+      justify-content: flex-start;
+      height: auto;
+      width: 100px;
+      text-align: left;
     }
     
     .moove-theme .company-logo img {
-      height: 30px;
+      height: 24px;
+      max-width: 100%;
     }
     
     .moove-theme .header-text {
-      padding: 0 1rem;
+      padding: 0;
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
     }
     
     .moove-theme .contract-section {
       border-left: 3px solid #4B80C3;
       padding: 0.5rem 0.75rem;
-      margin-bottom: 0.75rem;
-      background-color: #f9fdff;
+      margin-bottom: 1rem;
+      background-color: #fff;
     }
     
     .moove-theme .contract-clause {
       color: #333333;
+      margin-bottom: 0.5rem;
     }
     
     .moove-theme .translation {
-      color: #555555;
+      color: #8b8b8b;
+      font-style: italic;
     }
     
     .moove-theme .font-semibold {
       color: #4B80C3;
+      font-weight: bold;
     }
     
     .moove-theme .contract-signature-line {
       border-top: 1px solid #4B80C3;
+    }
+
+    .moove-theme .section-title {
+      font-weight: bold;
+      color: #4B80C3;
+      margin-bottom: 0.5rem;
     }
   `;
 };

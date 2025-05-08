@@ -16,14 +16,51 @@ export const prepareContentForPDF = (container: HTMLElement, company: Company): 
   // Apply CSS class for PDF-optimized styling
   container.classList.add('pdf-optimized');
   
+  // Handle the header for repeating on each page
+  configurePdfHeader(container);
+  
   // Add page break rules to ensure proper flow
   addPageBreakRules(container);
   
-  // Add header for repeating on each page using CSS @page rules
-  addHeaderForPages(container, company);
-  
   // Ensure proper spacing for page layout
   adjustSpacingForPDF(container);
+};
+
+// Configure the header to repeat on each page
+const configurePdfHeader = (container: HTMLElement): void => {
+  // Find the existing contract header
+  const existingHeader = container.querySelector('.contract-header');
+  
+  if (existingHeader) {
+    // Create a copy of the header for use as the running header
+    const headerCopy = existingHeader.cloneNode(true) as HTMLElement;
+    headerCopy.classList.add('pdf-header');
+    
+    // Add the copied header to the container
+    container.insertBefore(headerCopy, container.firstChild);
+    
+    // Add custom style for the header to be positioned properly on each page
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+      @media print {
+        .pdf-header {
+          position: running(header);
+          width: 100%;
+          margin: 0;
+          padding: 0;
+        }
+        
+        @page {
+          @top-center {
+            content: element(header);
+            margin-bottom: 20px;
+          }
+        }
+      }
+    `;
+    
+    container.insertBefore(styleElement, container.firstChild);
+  }
 };
 
 // Add page break rules to prevent awkward breaks
@@ -45,52 +82,12 @@ const addPageBreakRules = (container: HTMLElement): void => {
   }
 };
 
-// Add header to be shown on each page using CSS @page
-const addHeaderForPages = (container: HTMLElement, company: Company): void => {
-  // Find any existing contract header in the content
-  const existingHeader = container.querySelector('.contract-header');
-  
-  // If there's an existing header in the content, modify it to be used as the repeated header
-  if (existingHeader) {
-    // We don't want to display the header twice on the first page, so hide the one in the content
-    // But preserve it to be used as the running header for pages
-    existingHeader.classList.add('pdf-header');
-    
-    // Add the CSS to make this header appear at the top of each page
-    const styleElement = document.createElement('style');
-    styleElement.textContent = `
-      @media print {
-        /* Hide the original header in the content flow to avoid duplication */
-        .pdf-header {
-          display: none !important;
-        }
-        
-        /* But use it as the repeated header on each page */
-        @page {
-          @top-center {
-            content: element(header);
-            margin-bottom: 20px;
-          }
-          margin: 2cm 1.5cm;
-        }
-        
-        /* Create a running element for the header */
-        .pdf-header {
-          position: running(header);
-        }
-      }
-    `;
-    
-    container.insertBefore(styleElement, container.firstChild);
-  }
-};
-
 // Adjust spacing for better PDF layout
 const adjustSpacingForPDF = (container: HTMLElement): void => {
   // Adjust section spacing
   const sections = container.querySelectorAll('.contract-section') as NodeListOf<HTMLElement>;
   sections.forEach((section) => {
-    section.style.marginBottom = '10px';
+    section.style.marginBottom = '12px';
     section.style.padding = '8px 12px';
   });
   
@@ -104,7 +101,7 @@ const adjustSpacingForPDF = (container: HTMLElement): void => {
   // Adjust signature spacing
   const signatureSection = container.querySelector('.contract-signature') as HTMLElement;
   if (signatureSection) {
-    signatureSection.style.marginTop = '20px';
+    signatureSection.style.marginTop = '25px';
     signatureSection.style.pageBreakInside = 'avoid';
     signatureSection.style.breakInside = 'avoid';
   }
