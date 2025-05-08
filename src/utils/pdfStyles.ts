@@ -1,24 +1,26 @@
+
 import { type Company } from "@/components/CompanySelector";
 
 export const getPDFStyles = (company: Company): string => {
   return `
     @page {
       size: A4;
-      margin: 0.3cm;
+      margin: 1.5cm 1cm;
     }
     
     body {
       margin: 0;
-      padding: 5px;
+      padding: 0;
       background-color: white;
       font-family: 'Arial', sans-serif;
-      font-size: 8pt;
-      line-height: 1.1;
+      font-size: 9pt;
+      line-height: 1.3;
     }
     
     .print-container {
       width: 100%;
       margin: 0 auto;
+      background-color: white;
     }
     
     /* Base contract styles */
@@ -32,15 +34,15 @@ export const getPDFStyles = (company: Company): string => {
     
     .contract-header {
       font-weight: bold;
-      margin-bottom: 0.5rem;
-      border-radius: 2px;
+      margin-bottom: 0.75rem;
+      border-radius: 4px;
       width: 100%;
     }
     
     .header-content {
       display: flex;
       align-items: center;
-      padding: 0.2rem;
+      padding: 0.4rem;
     }
     
     .company-logo {
@@ -48,46 +50,46 @@ export const getPDFStyles = (company: Company): string => {
     }
     
     .company-logo img {
-      height: 25px;
-      max-width: 90px;
+      height: 30px;
+      max-width: 120px;
       object-fit: contain;
     }
     
     .header-text {
-      font-size: 9pt;
+      font-size: 10pt;
       font-weight: bold;
       flex: 1;
       text-align: center;
     }
     
     .contract-section {
-      margin-bottom: 0.4rem;
-      padding: 0.3rem;
+      margin-bottom: 0.75rem;
+      padding: 0.5rem 0.75rem;
       background-color: rgba(255, 255, 255, 0.8);
-      border-radius: 2px;
+      border-radius: 4px;
     }
     
     .contract-clause {
-      margin-bottom: 0.2rem;
-      padding: 0.1rem 0;
+      margin-bottom: 0.4rem;
+      padding: 0.2rem 0;
     }
     
     .contract-signature {
-      margin-top: 0.7rem;
+      margin-top: 1.5rem;
       display: flex;
       justify-content: space-between;
     }
     
     .contract-signature-line {
-      width: 130px;
-      margin-top: 0.5rem;
+      width: 160px;
+      margin-top: 0.75rem;
       text-align: center;
-      padding-top: 0.1rem;
+      padding-top: 0.2rem;
     }
     
     .translation {
       font-style: italic;
-      font-size: 7pt;
+      font-size: 8pt;
     }
     
     .font-semibold {
@@ -95,7 +97,11 @@ export const getPDFStyles = (company: Company): string => {
     }
     
     .text-sm {
-      font-size: 7pt;
+      font-size: 8pt;
+    }
+    
+    .text-xs {
+      font-size: 7.5pt;
     }
     
     /* Moove Theme Styles */
@@ -123,11 +129,11 @@ export const getPDFStyles = (company: Company): string => {
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 50px;
+      height: 40px;
     }
     
     .moove-theme .company-logo img {
-      height: 40px;
+      height: 30px;
     }
     
     .moove-theme .header-text {
@@ -136,8 +142,8 @@ export const getPDFStyles = (company: Company): string => {
     
     .moove-theme .contract-section {
       border-left: 3px solid #4B80C3;
-      padding: 0.5rem 0.8rem;
-      margin-bottom: 0.8rem;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 0.75rem;
       background-color: #f9fdff;
     }
     
@@ -182,11 +188,11 @@ export const getPDFStyles = (company: Company): string => {
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 50px;
+      height: 40px;
     }
     
     .yoou-theme .company-logo img {
-      height: 40px;
+      height: 30px;
       max-width: 120px;
     }
     
@@ -196,8 +202,8 @@ export const getPDFStyles = (company: Company): string => {
     
     .yoou-theme .contract-section {
       border-left: 3px solid #EF65CF;
-      padding: 0.5rem 0.8rem;
-      margin-bottom: 0.8rem;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 0.75rem;
       background-color: #fef6fc;
     }
     
@@ -217,42 +223,11 @@ export const getPDFStyles = (company: Company): string => {
       border-top: 1px solid #EF65CF;
     }
     
-    /* Two-column layout for smaller sections */
-    .two-columns {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.3rem;
-    }
-    
-    .column {
-      flex: 1;
-      min-width: 45%;
-    }
-    
-    /* Extra compact layout */
-    .extra-compact .contract-section {
-      margin-bottom: 0.25rem;
-      padding: 0.25rem;
-    }
-    
-    .extra-compact .contract-clause {
-      margin-bottom: 0.1rem;
-      padding: 0.1rem 0;
-    }
-    
-    .extra-compact .contract-signature {
-      margin-top: 0.4rem;
-    }
-    
-    .extra-compact .contract-signature-line {
-      margin-top: 0.3rem;
-    }
-    
     /* Print styles */
     @media print {
       body {
-        font-size: 8pt;
-        line-height: 1.1;
+        font-size: 9pt;
+        line-height: 1.3;
         background: #fff;
         color: #000;
         margin: 0;
@@ -260,47 +235,91 @@ export const getPDFStyles = (company: Company): string => {
         width: 100%;
       }
       
+      .pdf-header {
+        display: block;
+        position: running(header);
+      }
+      
+      @page {
+        @top-center {
+          content: element(header);
+        }
+      }
+      
       .contract-container {
         width: 100%;
         max-width: 100%;
-        padding: 3px 5px;
+        padding: 0.5rem;
         margin: 0;
         box-shadow: none;
         border-radius: 0;
       }
       
       .contract-section {
-        page-break-inside: auto; /* Allow breaking inside sections if needed to save space */
+        page-break-inside: auto;
+        break-inside: auto;
         width: 100%;
       }
       
+      /* Ensure header looks good on each page */
       .contract-header {
-        width: 100%;
-      }
-
-      .contract-clause {
-        margin-bottom: 0.1rem;
-        padding: 0.05rem 0;
+        margin-bottom: 0.75rem;
       }
       
-      /* Force two pages maximum */
-      .print-container {
-        max-height: 277mm; /* Slightly more than 2 A4 pages */
+      .contract-clause {
+        margin-bottom: 0.3rem;
+        padding: 0.15rem 0;
+      }
+      
+      /* Signature section should not be split */
+      .contract-signature {
+        page-break-inside: avoid;
+        break-inside: avoid;
+        page-break-before: auto;
+        break-before: auto;
+        margin-top: 1rem;
+      }
+      
+      /* Hide elements with no-print class */
+      .no-print {
+        display: none !important;
       }
     }
     
-    /* Compact layout for PDF */
-    .compact-layout .contract-section {
-      margin-bottom: 0.25rem;
-      padding: 0.25rem;
+    /* PDF-specific optimizations */
+    .pdf-optimized {
+      font-size: 9pt;
+      line-height: 1.3;
     }
     
-    .compact-layout .contract-clause {
-      margin-bottom: 0.1rem;
+    .pdf-optimized .contract-section {
+      margin-bottom: 0.75rem;
+      padding: 0.5rem 0.75rem;
     }
     
-    .compact-layout .contract-signature {
-      margin-top: 0.5rem;
+    .pdf-optimized .contract-clause {
+      margin-bottom: 0.3rem;
+      padding: 0.15rem 0;
+    }
+    
+    .pdf-optimized .text-sm {
+      font-size: 8pt;
+    }
+    
+    .pdf-optimized .text-xs {
+      font-size: 7.5pt;
+    }
+    
+    /* Preserve layout class - keeps original formatting */
+    .preserve-layout .contract-section {
+      page-break-inside: auto;
+      break-inside: auto;
+    }
+    
+    .preserve-layout .contract-signature {
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
   `;
 };
+

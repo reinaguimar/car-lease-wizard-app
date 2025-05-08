@@ -3,7 +3,7 @@ import React from "react";
 import { FormData } from "../RentalForm";
 import { type Company } from "../CompanySelector";
 import { getPDFStyles } from "@/utils/pdfStyles";
-import { optimizePDFContent, fixImageUrls, addHeaderToAllPages } from "@/utils/pdfContentOptimizer";
+import { fixImageUrls, prepareContentForPDF } from "@/utils/pdfContentOptimizer";
 import { toast } from "sonner";
 
 interface PDFWindowCreatorProps {
@@ -39,7 +39,7 @@ export const createPDFWindow = ({ company }: PDFWindowCreatorProps): Window | nu
       </head>
       <body>
         <div class="print-container ${themeClass}">
-          <div id="contract-container" class="compact-layout extra-compact"></div>
+          <div id="contract-container" class="preserve-layout"></div>
         </div>
         <script>
           // Auto print when content is loaded
@@ -67,40 +67,17 @@ export const populatePDFContent = (pdfWindow: Window, company: Company): void =>
     // Clone the contract element from the main window
     const contractElement = document.querySelector('.contract-container');
     if (contractElement) {
-      contractContainer.innerHTML = contractElement.outerHTML;
+      // Clone the content and insert it into the PDF window
+      const clonedContent = contractElement.cloneNode(true) as HTMLElement;
       
       // Fix absolute URLs for images
-      fixImageUrls(contractContainer);
+      fixImageUrls(clonedContent);
       
-      // Make all sections more compact
-      const sections = contractContainer.querySelectorAll('.contract-section') as NodeListOf<HTMLElement>;
+      // Prepare the content specifically for PDF output
+      prepareContentForPDF(clonedContent, company);
       
-      sections.forEach((section) => {
-        section.style.marginBottom = '0.3rem';
-        section.style.padding = '0.3rem 0.4rem';
-        
-        // Make all clauses more compact
-        const clauses = section.querySelectorAll('.contract-clause');
-        clauses.forEach(clause => {
-          (clause as HTMLElement).style.marginBottom = '0.1rem';
-          (clause as HTMLElement).style.padding = '0.1rem 0';
-        });
-      });
-      
-      // Compact signature section
-      const signatureSection = contractContainer.querySelector('.contract-signature') as HTMLElement;
-      if (signatureSection) {
-        signatureSection.style.marginTop = '0.5rem';
-      }
-      
-      // DO NOT add any manual page breaks - let the content flow naturally
-      // NO PAGE BREAKS to fit into 2 pages maximum
-      
-      // Add single header at the top only
-      addHeaderToAllPages(contractContainer, company);
-      
-      // Apply layout optimizations to get two columns for short sections
-      optimizePDFContent(contractContainer);
+      // Add the content to the container
+      contractContainer.appendChild(clonedContent);
     }
   }
 };
