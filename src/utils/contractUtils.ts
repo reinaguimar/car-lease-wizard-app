@@ -1,3 +1,4 @@
+
 export const generateContractNumber = (): string => {
   // Format: YYYY-MM-NNNN (Year-Month-Random)
   const now = new Date();
@@ -19,4 +20,34 @@ export const getContractStatusColor = (status: string): string => {
     default:
       return 'bg-gray-100 text-gray-800';
   }
+};
+
+export const formatCurrency = (value: number | string): string => {
+  const numValue = typeof value === 'string' ? parseFloat(value) : value;
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  }).format(numValue);
+};
+
+export const formatDate = (dateString: string): string => {
+  if (!dateString) return '';
+  
+  try {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('pt-BR').format(date);
+  } catch (error) {
+    console.error('Erro ao formatar data:', error);
+    return dateString;
+  }
+};
+
+export const openPDFViewer = (pdfUrl: string | null | undefined): void => {
+  if (!pdfUrl) {
+    console.error('URL do PDF não disponível');
+    return;
+  }
+  
+  // Abre o PDF em uma nova janela
+  window.open(pdfUrl, '_blank');
 };

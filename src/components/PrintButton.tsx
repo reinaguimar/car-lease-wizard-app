@@ -7,6 +7,7 @@ import { type Company } from "./CompanySelector";
 import { createPDFWindow, populatePDFContent } from "./pdf/PDFWindowCreator";
 import { useState } from "react";
 import { generateContractNumber } from "@/utils/contractUtils";
+import { createContract } from "@/services/supabase";
 
 interface PrintButtonProps {
   data: Partial<FormData>;
@@ -42,22 +43,51 @@ export function PrintButton({ data, company }: PrintButtonProps) {
         return;
       }
       
-      toast.info("Preparando PDF...");
+      toast.info("Preparando contrato...");
       
-      // Gerar número de contrato para exibição
+      // Gerar número de contrato
       const contractNumber = generateContractNumber();
+      
+      // Salvar contrato no banco de dados
+      try {
+        // Criando objetos temporários para o cliente e veículo
+        const tempClientId = `temp-client-${Date.now()}`;
+        const tempVehicleId = `temp-vehicle-${Date.now()}`;
+        const companyId = `company-${company}`;
+        
+        // Preparar dados do contrato para salvar
+        await createContract({
+          contract_number: contractNumber,
+          client_id: tempClientId,
+          vehicle_id: tempVehicleId, 
+          company_id: companyId,
+          start_date: data.startDate ? data.startDate.toISOString().split('T')[0] : '',
+          start_time: data.startTime || '',
+          end_date: data.endDate ? data.endDate.toISOString().split('T')[0] : '',
+          end_time: data.endTime || '',
+          delivery_location: data.deliveryLocation || '',
+          return_location: data.returnLocation || '',
+          rental_rate: parseFloat(data.rentalRate || '0'),
+          deposit: parseFloat(data.deposit || '0'),
+          sign_date: data.signDate ? data.signDate.toISOString().split('T')[0] : '',
+          pdf_url: '' // Será atualizado depois que o PDF for gerado
+        });
+        
+        toast.success("Contrato salvo com sucesso!", {
+          description: `Nº ${contractNumber}`,
+          duration: 5000
+        });
+      } catch (error) {
+        console.error("Erro ao salvar contrato:", error);
+        toast.error("Erro ao salvar contrato no banco de dados");
+        // Continue mesmo se o salvamento falhar, para permitir que o PDF seja gerado
+      }
       
       // Criar a janela do PDF
       const pdfWindow = createPDFWindow({ data, company });
       
       if (pdfWindow) {
         populatePDFContent(pdfWindow, company);
-        
-        // Informação ao usuário
-        toast.success("Contrato gerado com sucesso!", {
-          description: `Nº ${contractNumber}`,
-          duration: 5000
-        });
         
         // Instruções para salvar o PDF
         setTimeout(() => {

@@ -48,4 +48,5 @@ export interface Contract {
   clients?: Client;
   vehicles?: Vehicle;
   companies?: Company;
+  created_at?: string;
 }
