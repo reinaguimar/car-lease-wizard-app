@@ -7,6 +7,9 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toaster } from "@/components/ui/toaster";
 import { CompanySelector, type Company } from "@/components/CompanySelector";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { Archive, File } from "lucide-react";
 
 const Index = () => {
   const [formData, setFormData] = useState<Partial<FormData>>({});
@@ -29,11 +32,27 @@ const Index = () => {
         </p>
       </div>
 
-      <div className="no-print">
+      <div className="mb-4 flex justify-between items-center">
         <CompanySelector 
           selectedCompany={selectedCompany}
           onCompanyChange={handleCompanyChange}
+          className="no-print"
         />
+        
+        <div className="no-print flex gap-2">
+          <Link to="/contracts">
+            <Button variant="outline" className="gap-2">
+              <File className="h-4 w-4" />
+              Ver Contratos
+            </Button>
+          </Link>
+          <Link to="/archived">
+            <Button variant="outline" className="gap-2">
+              <Archive className="h-4 w-4" />
+              Ver Arquivados
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <Tabs defaultValue="form" className="w-full no-print">
