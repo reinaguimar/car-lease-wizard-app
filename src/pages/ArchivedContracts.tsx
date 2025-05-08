@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getContracts } from "@/services/supabaseService";
+import { getContracts, Contract } from "@/services/supabaseService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
@@ -98,7 +98,7 @@ const ArchivedContracts = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {paginatedContracts.map((contract) => (
+                  {paginatedContracts.map((contract: Contract) => (
                     <TableRow key={contract.id}>
                       <TableCell className="font-medium">{contract.contract_number}</TableCell>
                       <TableCell>

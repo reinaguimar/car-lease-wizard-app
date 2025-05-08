@@ -6,14 +6,15 @@ import { Label } from "@/components/ui/label";
 
 export type Company = "moove" | "yoou";
 
-interface CompanySelectorProps {
+export interface CompanySelectorProps {
   selectedCompany: Company;
   onCompanyChange: (company: Company) => void;
+  className?: string;
 }
 
-export function CompanySelector({ selectedCompany, onCompanyChange }: CompanySelectorProps) {
+export function CompanySelector({ selectedCompany, onCompanyChange, className }: CompanySelectorProps) {
   return (
-    <Card className="w-full p-6 mb-6">
+    <Card className={`w-full p-6 mb-6 ${className || ''}`}>
       <h2 className="text-xl font-semibold mb-4">Selecione a Empresa Locadora</h2>
       <RadioGroup
         value={selectedCompany}
