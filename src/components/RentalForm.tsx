@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,12 +21,17 @@ const formSchema = z.object({
   surname: z.string().min(1, "Sobrenome é obrigatório"),
   idNumber: z.string().min(1, "Documento é obrigatório"),
   address: z.string().min(1, "Endereço é obrigatório"),
+  email: z.string().email("Email inválido").optional().or(z.literal('')),
+  phone: z.string().optional().or(z.literal('')),
   
   // Vehicle Information
   vehicleType: z.string().min(1, "Tipo de veículo é obrigatório"),
   make: z.string().min(1, "Marca é obrigatória"),
   model: z.string().min(1, "Modelo é obrigatório"),
   fuel: z.string().min(1, "Combustível é obrigatório"),
+  licensePlate: z.string().optional().or(z.literal('')),
+  year: z.string().optional().or(z.literal('')),
+  color: z.string().optional().or(z.literal('')),
   
   // Rental Period
   startDate: z.date({
@@ -63,10 +67,15 @@ export function RentalForm({ onFormChange }: RentalFormProps) {
       surname: "",
       idNumber: "",
       address: "",
+      email: "",
+      phone: "",
       vehicleType: "",
       make: "",
       model: "",
       fuel: "",
+      licensePlate: "",
+      year: "",
+      color: "",
       startTime: "",
       deliveryLocation: "",
       endTime: "",

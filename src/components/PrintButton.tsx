@@ -10,7 +10,6 @@ import { createContract } from "@/services/supabase/contractService";
 import { createClient } from "@/services/supabase/clientService";
 import { createVehicle } from "@/services/supabase/vehicleService";
 import html2pdf from 'html2pdf.js';
-import { supabase } from "@/services/supabase";
 import { useNavigate } from "react-router-dom";
 
 interface PrintButtonProps {
@@ -59,8 +58,9 @@ export function PrintButton({ data, company }: PrintButtonProps) {
         surname: data.surname || '',
         id_number: data.idNumber || '',
         address: data.address || '',
-        email: data.email || null,
-        phone: data.phone || null
+        // Verificar se os campos opcionais estão disponíveis no tipo FormData antes de usá-los
+        email: data.email as string | null || null,
+        phone: data.phone as string | null || null
       };
       
       let clientId = '';
@@ -82,9 +82,9 @@ export function PrintButton({ data, company }: PrintButtonProps) {
         make: data.make || '',
         model: data.model || '',
         fuel: data.fuel || '',
-        license_plate: data.licensePlate || null,
-        year: data.year || null,
-        color: data.color || null,
+        license_plate: data.licensePlate as string | null || null,
+        year: data.year as string | null || null,
+        color: data.color as string | null || null,
         company_id: `company-${company}`
       };
       

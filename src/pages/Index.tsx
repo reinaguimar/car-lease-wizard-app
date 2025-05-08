@@ -73,7 +73,6 @@ const Index = () => {
         <ContractPreview data={formData} company={selectedCompany} />
       </div>
       
-      {/* Botões de navegação no final da página */}
       <div className="mt-6 sm:mt-8 pt-4 border-t no-print flex flex-wrap gap-2 justify-center">
         <Link to="/" className="w-full sm:w-auto">
           <Button variant="outline" className="w-full sm:w-auto gap-2 text-sm">
