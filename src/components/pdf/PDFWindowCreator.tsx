@@ -3,7 +3,7 @@ import React from "react";
 import { FormData } from "../RentalForm";
 import { type Company } from "../CompanySelector";
 import { getPDFStyles } from "@/utils/pdfStyles";
-import { optimizePDFContent, fixImageUrls } from "@/utils/pdfContentOptimizer";
+import { optimizePDFContent, fixImageUrls, addHeaderToAllPages } from "@/utils/pdfContentOptimizer";
 import { toast } from "sonner";
 
 interface PDFWindowCreatorProps {
@@ -60,7 +60,7 @@ export const createPDFWindow = ({ company }: PDFWindowCreatorProps): Window | nu
   return pdfWindow;
 };
 
-export const populatePDFContent = (pdfWindow: Window): void => {
+export const populatePDFContent = (pdfWindow: Window, company: Company): void => {
   // Mount the contract content in the new window
   const contractContainer = pdfWindow.document.getElementById('contract-container');
   if (contractContainer && document.querySelector('.contract-container')) {
@@ -72,15 +72,34 @@ export const populatePDFContent = (pdfWindow: Window): void => {
       // Fix absolute URLs for images
       fixImageUrls(contractContainer);
       
-      // Ensure vehicle info and condition sections are not merged
-      const vehicleInfoSection = contractContainer.querySelector('.contract-section:nth-of-type(2)') as HTMLElement;
-      const conditionSection = contractContainer.querySelector('.contract-section:nth-of-type(3)') as HTMLElement;
+      // Ensure proper page breaks between important sections
+      const sections = contractContainer.querySelectorAll('.contract-section') as NodeListOf<HTMLElement>;
       
-      if (vehicleInfoSection && conditionSection) {
-        vehicleInfoSection.style.pageBreakAfter = 'auto';
-        vehicleInfoSection.style.clear = 'both';
-        conditionSection.style.clear = 'both';
+      // Apply page breaks after specific sections
+      if (sections.length >= 9) {
+        // Force page break after vehicle condition (section 3)
+        const vehicleConditionSection = sections[2] as HTMLElement;
+        if (vehicleConditionSection) {
+          vehicleConditionSection.style.pageBreakAfter = 'always';
+        }
+        
+        // Force page break after rental period (section 5)
+        const rentalPeriodSection = sections[4] as HTMLElement;
+        if (rentalPeriodSection) {
+          rentalPeriodSection.style.pageBreakAfter = 'always';
+        }
+        
+        // Make sure sections don't split across pages (except for longer ones)
+        sections.forEach((section, index) => {
+          // Don't apply page-break-inside: avoid to longer sections that may need to span pages
+          if (index !== 2 && index !== 6 && index !== 7) { // Skip vehicle info, obligations and insurance
+            section.style.pageBreakInside = 'avoid';
+          }
+        });
       }
+      
+      // Add headers to all pages
+      addHeaderToAllPages(contractContainer, company);
       
       // Apply layout optimizations for PDF
       optimizePDFContent(contractContainer);

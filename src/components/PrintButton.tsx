@@ -18,7 +18,7 @@ export function PrintButton({ data, company }: PrintButtonProps) {
     const pdfWindow = createPDFWindow({ data, company });
     
     if (pdfWindow) {
-      populatePDFContent(pdfWindow);
+      populatePDFContent(pdfWindow, company);
     }
   };
 
