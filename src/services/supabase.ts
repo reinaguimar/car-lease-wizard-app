@@ -4,24 +4,18 @@
 export * from './supabase/types';
 export * from './supabase/supabaseClient';
 
-// Renomeando funções exportadas dos helpers para evitar conflitos
-export { 
-  createClient as createClientHelper,
-  createVehicle as createVehicleHelper, 
-  createContract as createContractHelper 
-} from './supabase/helpers';
+// Re-export rental service functions
+export {
+  createRental,
+  getRentals,
+  getRentalById,
+  updateRentalStatus,
+  searchRentals,
+  formDataToRental
+} from './supabase/rentalService';
 
-// Exportando serviços específicos
-export * from './supabase/clientService';
-export * from './supabase/vehicleService';
-export * from './supabase/contractService';
-export * from './supabase/searchService';
-// Export audit service explicitly to avoid duplicate exports
-export { 
-  logAuditEvent,
-  getAuditLogs
-} from './supabase/auditService';
-export * from './supabase/companyService';
+// Export default companies information to maintain compatibility
+export { defaultCompanies } from './supabase/index';
 
 // Exportar o cliente Supabase para uso no componente PrintButton
 export { supabase } from './supabase/supabaseClient';

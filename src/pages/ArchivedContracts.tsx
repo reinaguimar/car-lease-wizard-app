@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getContracts, searchContracts, Contract } from "@/services/supabase";
+import { getRentals, searchRentals, Rental } from "@/services/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
@@ -17,15 +17,15 @@ import { useLoading } from "@/hooks/useLoading";
 const ArchivedContracts = () => {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
-  const [filteredContracts, setFilteredContracts] = useState<Contract[]>([]);
+  const [filteredContracts, setFilteredContracts] = useState<Rental[]>([]);
   const itemsPerPage = 10;
   
   // Fetch archived contracts (completed or canceled)
   const { data: archivedContracts, isLoading, error, refetch } = useQuery({
     queryKey: ['archivedContracts'],
     queryFn: async () => {
-      const completedContracts = await getContracts({ status: "completed" });
-      const canceledContracts = await getContracts({ status: "canceled" });
+      const completedContracts = await getRentals({ status: "completed" });
+      const canceledContracts = await getRentals({ status: "canceled" });
       return [...completedContracts, ...canceledContracts];
     },
   });
@@ -43,7 +43,7 @@ const ArchivedContracts = () => {
       return archivedContracts || [];
     }
     
-    const results = await searchContracts(term);
+    const results = await searchRentals(term);
     // Filter to only show archived contracts (completed or canceled)
     const archivedResults = results.filter(contract => 
       contract.status === "completed" || contract.status === "canceled"
@@ -150,18 +150,14 @@ const ArchivedContracts = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {paginatedContracts.map((contract: Contract) => (
+                  {paginatedContracts.map((contract: Rental) => (
                     <TableRow key={contract.id}>
                       <TableCell className="font-medium">{contract.contract_number}</TableCell>
                       <TableCell>
-                        {contract.clients
-                          ? `${contract.clients.first_name} ${contract.clients.surname}`
-                          : "N/A"}
+                        {`${contract.client_name} ${contract.client_surname}`}
                       </TableCell>
                       <TableCell>
-                        {contract.vehicles
-                          ? `${contract.vehicles.make} ${contract.vehicles.model}`
-                          : "N/A"}
+                        {`${contract.vehicle_make} ${contract.vehicle_model}`}
                       </TableCell>
                       <TableCell>
                         {format(new Date(contract.start_date), "dd/MM/yyyy")}

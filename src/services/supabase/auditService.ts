@@ -1,11 +1,12 @@
 
-import { supabase, handleSupabaseError } from './supabaseClient';
+// Since we removed the audit_logs table, this service is now a stub
+// that doesn't actually store audit logs but doesn't break the existing code
 
 export type AuditAction = 'create' | 'update' | 'delete' | 'view' | 'search';
 export type AuditResource = 'contract' | 'client' | 'vehicle' | 'company';
 
 export interface AuditLog {
-  id: string;  // Make this required to match the database schema
+  id: string;
   action: AuditAction;
   resource: AuditResource;
   resource_id: string;
@@ -22,24 +23,17 @@ export const logAuditEvent = async (
   userId?: string
 ): Promise<void> => {
   try {
-    const auditLog = {
+    // Just log to console instead of storing in database
+    console.log('Audit log (not stored):', {
       action,
       resource,
       resource_id: resourceId,
       details,
-      user_id: userId
-    };
-    
-    // Tentativa de registro de auditoria (não crítica, pode falhar silenciosamente)
-    const { error } = await supabase.from('audit_logs').insert([auditLog]);
-    
-    if (error) {
-      console.warn("Falha no registro de auditoria, mas continuando operação:", error.message);
-      // Não lançamos o erro aqui para não interromper o fluxo principal
-    }
+      user_id: userId,
+      created_at: new Date().toISOString()
+    });
   } catch (error) {
-    // Apenas registramos o erro sem interromper o fluxo principal
-    console.warn("Erro ao registrar auditoria, continuando operação:", error);
+    console.warn("Error logging audit event:", error);
   }
 };
 
@@ -55,50 +49,7 @@ export const getAuditLogs = async (
     offset?: number;
   }
 ): Promise<AuditLog[]> => {
-  try {
-    let query = supabase.from('audit_logs').select('*');
-    
-    if (options?.resource) {
-      query = query.eq('resource', options.resource);
-    }
-    
-    if (options?.resourceId) {
-      query = query.eq('resource_id', options.resourceId);
-    }
-    
-    if (options?.action) {
-      query = query.eq('action', options.action);
-    }
-    
-    if (options?.userId) {
-      query = query.eq('user_id', options.userId);
-    }
-    
-    if (options?.fromDate) {
-      query = query.gte('created_at', options.fromDate.toISOString());
-    }
-    
-    if (options?.toDate) {
-      query = query.lte('created_at', options.toDate.toISOString());
-    }
-    
-    if (options?.limit) {
-      query = query.limit(options.limit);
-    }
-    
-    if (options?.offset) {
-      query = query.range(options.offset, options.offset + (options.limit || 10) - 1);
-    }
-    
-    // Always order by most recent first
-    query = query.order('created_at', { ascending: false });
-    
-    const { data, error } = await query;
-    
-    if (error) throw error;
-    return data as AuditLog[];
-  } catch (error) {
-    handleSupabaseError(error, 'consulta de logs de auditoria');
-    return [];
-  }
+  // Return empty array since we're not storing audit logs anymore
+  console.log('Audit logs requested (not available):', options);
+  return [];
 };

@@ -35,9 +35,6 @@ export type Vehicle = {
 export type Contract = {
   id: string;
   contract_number: string;
-  client_id?: string;
-  vehicle_id?: string;
-  company_id?: string;
   start_date: string;
   start_time: string;
   end_date: string;
@@ -54,6 +51,29 @@ export type Contract = {
   created_at?: string;
   updated_at?: string;
   created_by?: string;
+  
+  // Client information directly embedded
+  client_name: string;
+  client_surname: string;
+  client_id_number: string;
+  client_address: string;
+  client_email?: string | null;
+  client_phone?: string | null;
+  
+  // Vehicle information directly embedded
+  vehicle_type: string;
+  vehicle_make: string;
+  vehicle_model: string;
+  vehicle_fuel: string;
+  vehicle_license_plate?: string | null;
+  vehicle_year?: string | null;
+  vehicle_color?: string | null;
+  
+  // Company information directly embedded
+  company_name: string;
+  company_code: string;
+  company_logo_url?: string | null;
+  company_theme_color?: string | null;
 };
 
 export type Company = {
