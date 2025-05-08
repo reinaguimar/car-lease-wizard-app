@@ -173,9 +173,12 @@ export default function Dashboard() {
   return (
     <div className="container mx-auto py-4 sm:py-6 px-2 sm:px-6">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#EF65CF]">Dashboard</h1>
-          <p className="text-muted-foreground">Visão geral dos contratos de locação</p>
+        <div className="flex items-center">
+          <img 
+            src="/lovable-uploads/adfeb8cd-d721-4411-819d-eabc5f4ad102.png" 
+            alt="Yoou Rent a Car" 
+            className="h-12 sm:h-16"
+          />
         </div>
         <div className="flex flex-wrap gap-2">
           <Link to="/archived" className="w-full sm:w-auto">
