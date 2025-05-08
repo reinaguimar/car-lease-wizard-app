@@ -91,5 +91,43 @@
 
   body {
     @apply bg-background text-foreground;
+    /* Prevent content shift when scrollbar appears */
+    overflow-y: scroll;
+  }
+  
+  /* Fix input zooming on mobile */
+  input, select, textarea {
+    font-size: 16px;
+  }
+  
+  /* Improve touch targets on mobile */
+  button, 
+  [role="button"],
+  a.btn,
+  input[type="submit"],
+  input[type="button"] {
+    @apply min-h-10 px-4;
+  }
+  
+  /* Fix tables on mobile */
+  .responsive-table {
+    @apply block w-full overflow-x-auto;
+  }
+}
+
+/* Responsive utilities */
+@layer utilities {
+  .touch-scroll {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

@@ -98,3 +98,43 @@
 .yoou-logo:hover {
   filter: drop-shadow(0 0 8px rgba(239, 101, 207, 0.5));
 }
+
+/* Better mobile responsiveness */
+@media (max-width: 640px) {
+  /* Smaller buttons on mobile */
+  button, .btn-yoou, .btn-yoou-outline {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Fix table overflow on mobile */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  /* Better card spacing on mobile */
+  .card, .contract-section {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  /* Improve form inputs on mobile */
+  input, select, textarea {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+  
+  /* Better spacing between form elements */
+  .form-group, .form-field {
+    margin-bottom: 0.75rem;
+  }
+}
+
+/* Fix iPad and tablet view */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

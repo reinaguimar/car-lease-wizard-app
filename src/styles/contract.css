@@ -259,3 +259,51 @@
 .pdf-optimized .text-sm {
   font-size: 8pt;
 }
+
+/* Enhanced Mobile Responsiveness */
+@media (max-width: 640px) {
+  /* Better form layout on mobile */
+  input, select, textarea {
+    font-size: 16px !important; /* Prevents iOS zoom */
+  }
+  
+  /* Improve contract view on mobile */
+  .contract-container {
+    padding: 0.75rem;
+    font-size: 13px;
+  }
+  
+  .contract-section {
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+  }
+  
+  .contract-clause {
+    margin-bottom: 0.5rem;
+    padding: 0.3rem 0;
+  }
+  
+  /* Better contract signatures on mobile */
+  .contract-signature-line {
+    width: 150px;
+    margin-top: 1.5rem;
+  }
+  
+  /* Fix scroll issues in contract preview */
+  .contract-preview-container {
+    max-height: 80vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Better tablet experience */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .contract-container {
+    padding: 1.5rem;
+  }
+  
+  .contract-section {
+    padding: 0.85rem;
+  }
+}
