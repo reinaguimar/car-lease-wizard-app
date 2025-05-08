@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,7 +21,8 @@ import {
   PieChart as PieChartIcon,
   Filter,
   Calendar,
-  FileText
+  FileText,
+  FilePlus
 } from "lucide-react";
 import { LoadingState } from "@/components/LoadingState";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -182,8 +184,11 @@ export default function Dashboard() {
               Logs de Auditoria
             </Button>
           </Link>
-          <Link to="/">
-            <Button>Novo Contrato</Button>
+          <Link to="/contracts/new">
+            <Button className="flex items-center gap-2">
+              <FilePlus className="h-4 w-4" />
+              Novo Contrato
+            </Button>
           </Link>
         </div>
       </div>
@@ -464,7 +469,7 @@ export default function Dashboard() {
                 </Card>
               </Link>
               
-              <Link to="/">
+              <Link to="/contracts/new">
                 <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
                   <CardContent className="p-6 flex flex-col items-center text-center">
                     <Car className="h-10 w-10 mb-2" />
