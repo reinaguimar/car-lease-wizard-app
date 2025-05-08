@@ -11,9 +11,9 @@ export function ContractHeader({ company }: ContractHeaderProps) {
     return (
       <div className="contract-header">
         <div className="yoou-logo">
-          <img src="/lovable-uploads/77ecfed0-4dfe-41b1-a907-c8c9241166ee.png" alt="Yoou Logo" className="h-16 mb-2" />
+          <img src="/lovable-uploads/53871a52-f729-4f9f-83e6-26375e4f52b0.png" alt="Yoou Logo" className="h-16 mb-2" />
         </div>
-        <div className="text-xl text-[#EF65CF]">
+        <div className="text-xl font-bold">
           CAR RENTAL AGREEMENT / <span className="translation">CONTRATO DE ALUGUEL DE VEÍCULOS</span>
         </div>
       </div>
@@ -26,8 +26,8 @@ export function ContractHeader({ company }: ContractHeaderProps) {
         <div className="moove-logo">
           <img src="/lovable-uploads/27f46107-fd10-473b-a6fb-af0e0f1a6a1c.png" alt="Moove Logo" className="h-16 mb-2" />
         </div>
-        <div className="text-xl text-[#33C3F0]">
-          CAR RENTAL AGREEMENT / <span className="translation text-gray-600">CONTRATO DE ALUGUEL DE VEÍCULOS</span>
+        <div className="text-xl font-bold">
+          CAR RENTAL AGREEMENT / <span className="translation">CONTRATO DE ALUGUEL DE VEÍCULOS</span>
         </div>
       </div>
     );

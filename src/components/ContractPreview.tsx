@@ -33,8 +33,8 @@ export function ContractPreview({ data, company }: ContractPreviewProps) {
   }
   
   return (
-    <Card className={`w-full ${themeClass}`}>
-      <CardContent className="p-6">
+    <Card className={`w-full shadow-lg ${themeClass}`}>
+      <CardContent className="p-0 overflow-hidden">
         <div className="contract-container">
           <ContractHeader company={company} />
           

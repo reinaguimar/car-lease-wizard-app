@@ -3,25 +3,36 @@
 .yoou-theme .contract-container {
   font-family: 'Poppins', 'Helvetica Neue', sans-serif;
   color: #333;
+  border-top: 6px solid #EF65CF;
 }
 
 .yoou-theme .contract-header {
   background-color: #EF65CF;
   color: white;
-  padding: 1rem;
+  padding: 1.5rem;
   border-radius: 8px;
   margin-bottom: 2rem;
+  box-shadow: 0 4px 10px rgba(239, 101, 207, 0.2);
 }
 
 .yoou-theme .contract-section {
-  border-left: 3px solid #EF65CF;
-  padding-left: 1rem;
+  border-left: 4px solid #EF65CF;
+  padding: 1rem 1.5rem;
   margin-bottom: 1.5rem;
-  border-bottom-color: #f3f3f3;
+  background-color: #fef6fc;
+  transition: all 0.3s ease;
+}
+
+.yoou-theme .contract-clause {
+  color: #333333;
 }
 
 .yoou-theme .translation {
-  color: #EF65CF;
+  color: #A8499E;
+}
+
+.yoou-theme .font-semibold {
+  color: #D33AAF;
 }
 
 .yoou-theme .contract-signature-line {
@@ -32,10 +43,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 8px;
 }
 
 .yoou-logo img {
-  height: 50px;
+  height: 60px;
   max-width: 200px;
 }
+
+.yoou-theme .contract-section:hover {
+  box-shadow: 0 2px 10px rgba(239, 101, 207, 0.1);
+  transition: all 0.3s ease;
+}
+
