@@ -1,32 +1,14 @@
 
 import { createClient } from '@supabase/supabase-js';
 import { toast } from "sonner";
+import { Database } from '@/integrations/supabase/types';
 
 // Get environment variables or provide fallback values for local development
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder-url.supabase.co';
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY || 'placeholder-key';
+const supabaseUrl = "https://oxkopqltbmwxrdobaims.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im94a29wcWx0Ym13eHJkb2JhaW1zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY3MTE2NjEsImV4cCI6MjA2MjI4NzY2MX0.kDQDRqu50p8voYWBl0SkjdDZj_tFrZ2wh92_p4le1JI";
 
-// Check if the real environment variables are set
-const areMissingEnvVars = !import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_KEY;
-if (areMissingEnvVars) {
-  const missingVars = [];
-  if (!import.meta.env.VITE_SUPABASE_URL) missingVars.push('VITE_SUPABASE_URL');
-  if (!import.meta.env.VITE_SUPABASE_KEY) missingVars.push('VITE_SUPABASE_KEY');
-  
-  const errorMessage = `Variáveis de ambiente Supabase não configuradas: ${missingVars.join(', ')}`;
-  console.error(errorMessage);
-  
-  // Show toast only in browser environment to avoid SSR issues
-  if (typeof window !== 'undefined') {
-    toast.error(errorMessage, {
-      description: "Configure as variáveis no arquivo .env ou .env.local",
-      duration: 10000
-    });
-  }
-}
-
-// Create a Supabase client with the environment variables or fallbacks
-export const supabase = createClient(
+// Create a Supabase client with the Supabase credentials
+export const supabase = createClient<Database>(
   supabaseUrl,
   supabaseKey,
   {
@@ -39,7 +21,7 @@ export const supabase = createClient(
 
 // Helper to detect if Supabase is properly configured with real credentials
 export const isSupabaseConfigured = () => {
-  return !areMissingEnvVars;
+  return true; // We're now using direct credentials instead of env vars
 };
 
 // Helper function to handle query errors consistently
