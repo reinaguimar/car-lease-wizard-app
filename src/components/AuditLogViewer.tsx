@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getAuditLogs } from "@/services/supabase/auditService";
+import { getAuditLogs, AuditLog, AuditAction, AuditResource } from "@/services/supabase/auditService";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -9,18 +9,8 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-interface AuditLog {
-  id: string;
-  action: string;
-  resource: string;
-  resource_id: string;
-  details?: string;
-  user_id?: string;
-  created_at: string;
-}
-
 interface AuditLogViewerProps {
-  resourceType?: "contract" | "client" | "vehicle" | "company";
+  resourceType?: AuditResource;
   resourceId?: string;
   maxItems?: number;
   showTitle?: boolean;
@@ -44,7 +34,12 @@ export function AuditLogViewer({
     const fetchLogs = async () => {
       setLoading(true);
       try {
-        const options: any = {
+        const options: {
+          resource?: AuditResource;
+          resourceId?: string;
+          action?: AuditAction;
+          limit: number;
+        } = {
           limit: maxItems,
         };
 
@@ -57,7 +52,7 @@ export function AuditLogViewer({
         }
 
         if (filter !== "all") {
-          options.action = filter;
+          options.action = filter as AuditAction;
         }
 
         const auditLogs = await getAuditLogs(options);

@@ -1,196 +1,135 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { AuditLogViewer } from "@/components/AuditLogViewer";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, FileText, Users, Car, Building } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { AuditLogViewer } from "@/components/AuditLogViewer";
+import { DateRange } from "react-day-picker";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+
+import { Button } from "@/components/ui/button";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { AuditAction, AuditResource } from "@/services/supabase/auditService";
+
 export default function AuditLogsPage() {
-  const [activeTab, setActiveTab] = useState("all");
-  const [dateRange, setDateRange] = useState<{
-    from: Date | undefined;
-    to: Date | undefined;
-  }>({
-    from: undefined,
-    to: undefined,
+  const [resourceType, setResourceType] = useState<string>("all");
+  const [actionType, setActionType] = useState<string>("all");
+  
+  // Using DateRange type directly from react-day-picker
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: new Date(new Date().setDate(new Date().getDate() - 30)),
+    to: new Date(),
   });
 
   return (
-    <div className="container mx-auto py-6">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-2">
-          <Link to="/dashboard">
-            <Button variant="outline" size="icon" className="mr-2">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <div>
-            <h1 className="text-3xl font-bold">Logs de Auditoria</h1>
-            <p className="text-muted-foreground">
-              Visualize e analise todas as atividades do sistema
-            </p>
-          </div>
-        </div>
-        
-        <div className="flex gap-2">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline">
-                {dateRange.from && dateRange.to ? (
-                  <>
-                    {format(dateRange.from, "dd/MM/yyyy", { locale: ptBR })} - {format(dateRange.to, "dd/MM/yyyy", { locale: ptBR })}
-                  </>
-                ) : (
-                  "Selecionar período"
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="end">
-              <Calendar
-                initialFocus
-                mode="range"
-                defaultMonth={dateRange.from}
-                selected={dateRange}
-                onSelect={setDateRange}
-                locale={ptBR}
-              />
-            </PopoverContent>
-          </Popover>
-
-          <Select>
-            <SelectTrigger className="w-[150px]">
-              <SelectValue placeholder="Ordenar por" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Mais recentes</SelectItem>
-              <SelectItem value="oldest">Mais antigos</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+    <div className="container mx-auto py-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold">Logs de Auditoria</h1>
       </div>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-4">
-          <TabsTrigger value="all">Todos os Logs</TabsTrigger>
-          <TabsTrigger value="contracts" className="flex items-center gap-1">
-            <FileText className="h-4 w-4" />
-            Contratos
-          </TabsTrigger>
-          <TabsTrigger value="clients" className="flex items-center gap-1">
-            <Users className="h-4 w-4" />
-            Clientes
-          </TabsTrigger>
-          <TabsTrigger value="vehicles" className="flex items-center gap-1">
-            <Car className="h-4 w-4" />
-            Veículos
-          </TabsTrigger>
-          <TabsTrigger value="companies" className="flex items-center gap-1">
-            <Building className="h-4 w-4" />
-            Empresas
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="all">
-          <Card>
-            <CardHeader>
-              <CardTitle>Todos os Logs de Auditoria</CardTitle>
-              <CardDescription>
-                Visualize todas as atividades registradas no sistema
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <AuditLogViewer 
-                maxItems={50} 
-                showTitle={false} 
-                height="500px" 
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="contracts">
-          <Card>
-            <CardHeader>
-              <CardTitle>Logs de Contratos</CardTitle>
-              <CardDescription>
-                Visualize todas as atividades relacionadas aos contratos
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <AuditLogViewer 
-                resourceType="contract" 
-                maxItems={50} 
-                showTitle={false} 
-                height="500px" 
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="clients">
-          <Card>
-            <CardHeader>
-              <CardTitle>Logs de Clientes</CardTitle>
-              <CardDescription>
-                Visualize todas as atividades relacionadas aos clientes
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <AuditLogViewer 
-                resourceType="client" 
-                maxItems={50} 
-                showTitle={false} 
-                height="500px" 
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="vehicles">
-          <Card>
-            <CardHeader>
-              <CardTitle>Logs de Veículos</CardTitle>
-              <CardDescription>
-                Visualize todas as atividades relacionadas aos veículos
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <AuditLogViewer 
-                resourceType="vehicle" 
-                maxItems={50} 
-                showTitle={false} 
-                height="500px" 
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="companies">
-          <Card>
-            <CardHeader>
-              <CardTitle>Logs de Empresas</CardTitle>
-              <CardDescription>
-                Visualize todas as atividades relacionadas às empresas
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <AuditLogViewer 
-                resourceType="company" 
-                maxItems={50} 
-                showTitle={false} 
-                height="500px" 
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle>Filtros</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Tipo de Recurso</label>
+              <Select value={resourceType} onValueChange={setResourceType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecionar recurso" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="contract">Contratos</SelectItem>
+                  <SelectItem value="client">Clientes</SelectItem>
+                  <SelectItem value="vehicle">Veículos</SelectItem>
+                  <SelectItem value="company">Empresas</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Tipo de Ação</label>
+              <Select value={actionType} onValueChange={setActionType}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecionar ação" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas</SelectItem>
+                  <SelectItem value="create">Criação</SelectItem>
+                  <SelectItem value="update">Atualização</SelectItem>
+                  <SelectItem value="delete">Exclusão</SelectItem>
+                  <SelectItem value="view">Visualização</SelectItem>
+                  <SelectItem value="search">Busca</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Período</label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {dateRange?.from ? (
+                      dateRange.to ? (
+                        <>
+                          {format(dateRange.from, "dd/MM/yyyy", { locale: ptBR })} -{" "}
+                          {format(dateRange.to, "dd/MM/yyyy", { locale: ptBR })}
+                        </>
+                      ) : (
+                        format(dateRange.from, "dd/MM/yyyy", { locale: ptBR })
+                      )
+                    ) : (
+                      <span>Selecionar data</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    initialFocus
+                    mode="range"
+                    defaultMonth={dateRange?.from}
+                    selected={dateRange}
+                    onSelect={setDateRange}
+                    numberOfMonths={2}
+                    locale={ptBR}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <Separator className="my-6" />
+      
+      <AuditLogViewer 
+        resourceType={resourceType !== "all" ? resourceType as AuditResource : undefined}
+        maxItems={100}
+        height="600px"
+        className="mb-6"
+      />
     </div>
   );
 }

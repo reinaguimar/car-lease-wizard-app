@@ -1,17 +1,17 @@
 
 import { supabase, handleSupabaseError } from './supabaseClient';
 
-type AuditAction = 'create' | 'update' | 'delete' | 'view' | 'search';
-type AuditResource = 'contract' | 'client' | 'vehicle' | 'company';
+export type AuditAction = 'create' | 'update' | 'delete' | 'view' | 'search';
+export type AuditResource = 'contract' | 'client' | 'vehicle' | 'company';
 
-interface AuditLog {
-  id?: string;
+export interface AuditLog {
+  id: string;  // Make this required to match the database schema
   action: AuditAction;
   resource: AuditResource;
   resource_id: string;
   details?: string;
   user_id?: string;
-  created_at?: string;
+  created_at: string;
 }
 
 export const logAuditEvent = async (
@@ -22,7 +22,7 @@ export const logAuditEvent = async (
   userId?: string
 ): Promise<void> => {
   try {
-    const auditLog: AuditLog = {
+    const auditLog = {
       action,
       resource,
       resource_id: resourceId,

@@ -2,15 +2,16 @@
 import { createClient } from '@supabase/supabase-js';
 import { toast } from "sonner";
 
-// Get environment variables or provide fallbacks for local development
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY || '';
+// Get environment variables or provide fallback values for local development
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder-url.supabase.co';
+const supabaseKey = import.meta.env.VITE_SUPABASE_KEY || 'placeholder-key';
 
-// Check if the required environment variables are set
-if (!supabaseUrl || !supabaseKey) {
+// Check if the real environment variables are set
+const areMissingEnvVars = !import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_KEY;
+if (areMissingEnvVars) {
   const missingVars = [];
-  if (!supabaseUrl) missingVars.push('VITE_SUPABASE_URL');
-  if (!supabaseKey) missingVars.push('VITE_SUPABASE_KEY');
+  if (!import.meta.env.VITE_SUPABASE_URL) missingVars.push('VITE_SUPABASE_URL');
+  if (!import.meta.env.VITE_SUPABASE_KEY) missingVars.push('VITE_SUPABASE_KEY');
   
   const errorMessage = `Variáveis de ambiente Supabase não configuradas: ${missingVars.join(', ')}`;
   console.error(errorMessage);
@@ -24,7 +25,7 @@ if (!supabaseUrl || !supabaseKey) {
   }
 }
 
-// Create a Supabase client with the environment variables
+// Create a Supabase client with the environment variables or fallbacks
 export const supabase = createClient(
   supabaseUrl,
   supabaseKey,
@@ -36,9 +37,9 @@ export const supabase = createClient(
   }
 );
 
-// Helper to detect if Supabase is properly configured
+// Helper to detect if Supabase is properly configured with real credentials
 export const isSupabaseConfigured = () => {
-  return Boolean(supabaseUrl && supabaseKey);
+  return !areMissingEnvVars;
 };
 
 // Helper function to handle query errors consistently
