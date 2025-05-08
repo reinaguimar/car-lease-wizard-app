@@ -1,0 +1,105 @@
+
+import { supabase } from './supabaseClient';
+import { Client, Vehicle, Contract } from './types';
+import { createClient as createClientService } from './clientService';
+import { createVehicle as createVehicleService } from './vehicleService';
+import { createContract as createContractService } from './contractService';
+import { handleSupabaseError } from './supabaseClient';
+
+// Cria ou busca um cliente por CPF/documento
+export async function createClient(clientData: { 
+  first_name: string;
+  surname: string;
+  id_number: string;
+  address: string;
+  email?: string;
+  phone?: string;
+}): Promise<Client | null> {
+  try {
+    // Verifica se o cliente já existe pelo documento
+    const { data: existingClient, error: searchError } = await supabase
+      .from('clients')
+      .select('*')
+      .eq('id_number', clientData.id_number)
+      .single();
+      
+    if (searchError && searchError.code !== 'PGRST116') { // PGRST116 = Not found
+      throw searchError;
+    }
+    
+    // Se o cliente já existe, retorna os dados
+    if (existingClient) {
+      return existingClient as Client;
+    }
+    
+    // Se não existe, cria um novo cliente
+    return await createClientService(clientData);
+    
+  } catch (error) {
+    handleSupabaseError(error, 'verificação/criação de cliente');
+    return null;
+  }
+}
+
+// Cria ou busca um veículo com os mesmos dados
+export async function createVehicle(vehicleData: {
+  vehicle_type: string;
+  make: string;
+  model: string;
+  fuel: string;
+  company_id: string;
+  license_plate?: string;
+  year?: string;
+  color?: string;
+}): Promise<Vehicle | null> {
+  try {
+    // Busca por veículo similar (mesma marca, modelo e combustível)
+    const { data: existingVehicles, error: searchError } = await supabase
+      .from('vehicles')
+      .select('*')
+      .eq('company_id', vehicleData.company_id)
+      .eq('make', vehicleData.make)
+      .eq('model', vehicleData.model)
+      .eq('fuel', vehicleData.fuel);
+      
+    if (searchError) {
+      throw searchError;
+    }
+    
+    // Se encontrou um veículo similar, retorna o primeiro
+    if (existingVehicles && existingVehicles.length > 0) {
+      return existingVehicles[0] as Vehicle;
+    }
+    
+    // Se não existe, cria um novo veículo
+    return await createVehicleService(vehicleData);
+    
+  } catch (error) {
+    handleSupabaseError(error, 'verificação/criação de veículo');
+    return null;
+  }
+}
+
+// Cria um contrato
+export async function createContract(contractData: {
+  contract_number: string;
+  client_id: string;
+  vehicle_id: string;
+  company_id: string;
+  start_date: string;
+  start_time: string;
+  end_date: string;
+  end_time: string;
+  delivery_location: string;
+  return_location: string;
+  rental_rate: number;
+  deposit: number;
+  sign_date: string;
+}): Promise<Contract | null> {
+  try {
+    return await createContractService(contractData);
+  } catch (error) {
+    handleSupabaseError(error, 'criação de contrato');
+    return null;
+  }
+}
