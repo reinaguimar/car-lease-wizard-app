@@ -127,6 +127,11 @@
   text-align: center;
 }
 
+.translation {
+  font-style: italic;
+  color: #555555;
+}
+
 @media print {
   .no-print {
     display: none !important;
