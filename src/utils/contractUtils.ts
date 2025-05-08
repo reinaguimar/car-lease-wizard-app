@@ -1,4 +1,3 @@
-
 export const generateContractNumber = (): string => {
   // Format: YYYY-MM-NNNN (Year-Month-Random)
   const now = new Date();
@@ -21,4 +20,3 @@ export const getContractStatusColor = (status: string): string => {
       return 'bg-gray-100 text-gray-800';
   }
 };
-
