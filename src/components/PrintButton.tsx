@@ -11,6 +11,7 @@ import { createClient } from "@/services/supabase/clientService";
 import { createVehicle } from "@/services/supabase/vehicleService";
 import html2pdf from 'html2pdf.js';
 import { useNavigate } from "react-router-dom";
+import { getCompanyById } from "@/services/supabase/companyService";
 
 interface PrintButtonProps {
   data: Partial<FormData>;
@@ -44,6 +45,7 @@ export function PrintButton({ data, company }: PrintButtonProps) {
       // Verificar se todos os dados necessários estão presentes
       if (!isComplete) {
         toast.error("Por favor, complete todos os campos do formulário antes de salvar");
+        setIsSaving(false);
         return;
       }
       
@@ -52,13 +54,29 @@ export function PrintButton({ data, company }: PrintButtonProps) {
       // Gerar número de contrato
       const contractNumber = generateContractNumber();
       
+      // Buscar companyId real usando o company code (moove ou yoou)
+      let companyId;
+      try {
+        // Buscar a empresa pelo código
+        const companyData = await getCompanyById(company);
+        if (!companyData || !companyData.id) {
+          throw new Error("Empresa não encontrada");
+        }
+        companyId = companyData.id;
+        console.log("ID da empresa encontrado:", companyId);
+      } catch (error) {
+        console.error("Erro ao buscar empresa:", error);
+        toast.error("Erro ao identificar a empresa");
+        setIsSaving(false);
+        return;
+      }
+      
       // Primeiro, salvar os dados do cliente
       const clientData = {
         first_name: data.firstName || '',
         surname: data.surname || '',
         id_number: data.idNumber || '',
         address: data.address || '',
-        // Verificar se os campos opcionais estão disponíveis no tipo FormData antes de usá-los
         email: data.email as string | null || null,
         phone: data.phone as string | null || null
       };
@@ -85,7 +103,7 @@ export function PrintButton({ data, company }: PrintButtonProps) {
         license_plate: data.licensePlate as string | null || null,
         year: data.year as string | null || null,
         color: data.color as string | null || null,
-        company_id: `company-${company}`
+        company_id: companyId // Usar o ID real da empresa
       };
       
       let vehicleId = '';
@@ -101,16 +119,13 @@ export function PrintButton({ data, company }: PrintButtonProps) {
         return;
       }
       
-      // Preparar dados do contrato para salvar com os IDs reais
-      const companyId = `company-${company}`;
-      
       try {
         // Salvar contrato no banco de dados
         const newContract = await createContract({
           contract_number: contractNumber,
           client_id: clientId,
           vehicle_id: vehicleId,
-          company_id: companyId,
+          company_id: companyId, // Usar o ID real da empresa
           start_date: data.startDate ? data.startDate.toISOString().split('T')[0] : '',
           start_time: data.startTime || '',
           end_date: data.endDate ? data.endDate.toISOString().split('T')[0] : '',
@@ -124,23 +139,43 @@ export function PrintButton({ data, company }: PrintButtonProps) {
           status: 'active'
         });
         
+        if (!newContract) {
+          throw new Error("Falha ao criar contrato");
+        }
+        
         console.log("Contrato criado:", newContract);
         
         toast.success("Contrato salvo com sucesso!", {
           description: `Nº ${contractNumber}`,
           duration: 5000
         });
+        
+        // Gerar PDF usando html2pdf.js
+        await generatePDF(contractNumber);
+        
       } catch (error) {
         console.error("Erro ao salvar contrato:", error);
         toast.error("Erro ao salvar contrato no banco de dados");
-        // Continue mesmo se o salvamento falhar, para permitir que o PDF seja gerado
+        setIsSaving(false);
+        return;
       }
-      
-      // Gerar PDF usando html2pdf.js
+    } catch (error) {
+      console.error("Erro ao processar contrato:", error);
+      toast.error("Erro ao processar contrato", {
+        description: error instanceof Error ? error.message : "Erro desconhecido",
+      });
+      setIsSaving(false);
+    }
+  };
+  
+  // Função separada para gerar o PDF para melhor organização
+  const generatePDF = async (contractNumber: string) => {
+    try {
       const contractElement = document.querySelector('.contract-container');
       
       if (!contractElement) {
         toast.error("Elemento de contrato não encontrado");
+        setIsSaving(false);
         return;
       }
       
@@ -182,6 +217,7 @@ export function PrintButton({ data, company }: PrintButtonProps) {
 
           // Perguntar se o usuário quer ir para a página de contratos
           setTimeout(() => {
+            setIsSaving(false);
             if (confirm("Deseja visualizar a lista de contratos?")) {
               navigate("/contracts");
             }
@@ -193,14 +229,11 @@ export function PrintButton({ data, company }: PrintButtonProps) {
           toast.error("Erro ao gerar o PDF", {
             description: "Tente novamente ou use a função de impressão do navegador"
           });
+          setIsSaving(false);
         });
-        
     } catch (error) {
-      console.error("Erro ao processar contrato:", error);
-      toast.error("Erro ao processar contrato", {
-        description: error instanceof Error ? error.message : "Erro desconhecido",
-      });
-    } finally {
+      console.error("Erro ao gerar PDF:", error);
+      toast.error("Erro ao gerar o PDF");
       setIsSaving(false);
     }
   };

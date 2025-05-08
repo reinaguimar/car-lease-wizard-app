@@ -1,34 +1,21 @@
 
-export interface Company {
-  id: string;
-  name: string;
-  code: string;
-  // Add other company fields as needed
-}
+// Re-exporte dos tipos do Supabase
+import type { Database } from '@/integrations/supabase/types';
 
-export interface Client {
-  id: string;
-  first_name: string;
-  surname: string;
-  id_number: string;
-  address: string;
-  email?: string;
-  phone?: string;
-}
+export type Tables = Database['public']['Tables'];
 
-export interface Vehicle {
-  id: string;
-  vehicle_type: string;
-  make: string;
-  model: string;
-  fuel: string;
-  license_plate?: string;
-  year?: string;
-  color?: string;
-  company_id: string;
-}
+// Tipos para os clientes
+export type Client = Tables['clients']['Row'];
+export type NewClient = Tables['clients']['Insert'];
+export type UpdateClient = Tables['clients']['Update'];
 
-export interface Contract {
+// Tipos para os veículos
+export type Vehicle = Tables['vehicles']['Row'];
+export type NewVehicle = Tables['vehicles']['Insert'];
+export type UpdateVehicle = Tables['vehicles']['Update'];
+
+// Tipos para os contratos
+export type Contract = {
   id: string;
   contract_number: string;
   client_id: string;
@@ -45,8 +32,20 @@ export interface Contract {
   sign_date: string;
   pdf_url?: string;
   status?: string;
+  created_at?: string;
+  updated_at?: string;
+  created_by?: string;
+  // Foreign tables
   clients?: Client;
   vehicles?: Vehicle;
   companies?: Company;
-  created_at?: string;
-}
+};
+
+// Tipos para auditoria
+export type AuditLog = Tables['audit_logs']['Row'];
+export type NewAuditLog = Tables['audit_logs']['Insert'];
+
+// Tipos para empresas
+export type Company = Tables['companies']['Row'];
+export type NewCompany = Tables['companies']['Insert'];
+export type UpdateCompany = Tables['companies']['Update'];

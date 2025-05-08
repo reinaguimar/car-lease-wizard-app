@@ -1,74 +1,146 @@
 
-import { supabase } from './supabaseClient';
-import { Company } from './types';
-import { handleSupabaseError } from './supabaseClient';
+import { supabase, handleSupabaseError } from './supabaseClient';
+import { Company as CompanyType } from './types';
+import { logAuditEvent } from './auditService';
 
-export const getCompanies = async (): Promise<Company[]> => {
+export const getCompanies = async (): Promise<CompanyType[]> => {
   try {
     const { data, error } = await supabase
       .from('companies')
       .select('*');
       
     if (error) throw error;
-    return (data || []) as Company[];
+    return (data || []) as CompanyType[];
   } catch (error) {
     handleSupabaseError(error, 'busca de empresas');
     return [];
   }
 };
 
-export const getCompanyByCode = async (code: string): Promise<Company | null> => {
+export const getCompanyById = async (code: string): Promise<CompanyType | null> => {
   try {
-    console.log("Buscando empresa com código:", code);
+    console.log(`Buscando empresa com código: ${code}`);
     
-    // Alterar para não usar .single() e verificar manualmente se há resultados
     const { data, error } = await supabase
       .from('companies')
       .select('*')
-      .eq('code', code);
+      .eq('code', code)
+      .single();
       
     if (error) {
-      console.error(`Erro ao buscar empresa com código ${code}:`, error);
-      throw error;
+      // Se não encontrou pelo código, vamos tentar pelo ID, pode ser que o código passado seja um ID
+      const { data: dataById, error: errorById } = await supabase
+        .from('companies')
+        .select('*')
+        .eq('id', code)
+        .single();
+        
+      if (errorById) throw error; // Se ainda assim deu erro, lança o erro original
+      return dataById as CompanyType;
     }
     
-    if (!data || data.length === 0) {
-      console.warn(`Nenhuma empresa encontrada com o código ${code}`);
-      return null;
-    }
-    
-    console.log(`Empresa encontrada com código ${code}:`, data[0]);
-    return data[0] as Company;
+    console.log("Empresa encontrada:", data);
+    return data as CompanyType;
   } catch (error) {
-    handleSupabaseError(error, `busca da empresa com código ${code}`);
+    handleSupabaseError(error, `busca da empresa ${code}`);
     return null;
   }
 };
 
-export const getCompanyById = async (id: string): Promise<Company | null> => {
+export const createCompany = async (company: {
+  name: string;
+  code: string;
+  logo_url?: string;
+  theme_color?: string;
+  cnpj?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+}): Promise<CompanyType | null> => {
   try {
-    console.log("Buscando empresa com ID:", id);
-    
-    // Alterar para não usar .single() e verificar manualmente se há resultados
     const { data, error } = await supabase
       .from('companies')
-      .select('*')
+      .insert([company])
+      .select();
+      
+    if (error) throw error;
+    
+    const newCompany = data?.[0] as CompanyType;
+    
+    if (newCompany) {
+      await logAuditEvent(
+        'create',
+        'company',
+        newCompany.id,
+        `Empresa ${company.name} criada`
+      );
+    }
+    
+    return newCompany;
+  } catch (error) {
+    handleSupabaseError(error, 'criação de empresa');
+    return null;
+  }
+};
+
+export const updateCompany = async (id: string, company: {
+  name?: string;
+  code?: string;
+  logo_url?: string;
+  theme_color?: string;
+  cnpj?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+}): Promise<CompanyType | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('companies')
+      .update(company)
+      .eq('id', id)
+      .select();
+      
+    if (error) throw error;
+    
+    const updatedCompany = data?.[0] as CompanyType;
+    
+    if (updatedCompany) {
+      await logAuditEvent(
+        'update',
+        'company',
+        id,
+        `Empresa ${updatedCompany.name} atualizada`
+      );
+    }
+    
+    return updatedCompany;
+  } catch (error) {
+    handleSupabaseError(error, `atualização da empresa ${id}`);
+    return null;
+  }
+};
+
+export const deleteCompany = async (id: string): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from('companies')
+      .delete()
       .eq('id', id);
       
-    if (error) {
-      console.error(`Erro ao buscar empresa com ID ${id}:`, error);
-      throw error;
-    }
+    if (error) throw error;
     
-    if (!data || data.length === 0) {
-      console.warn(`Nenhuma empresa encontrada com o ID ${id}`);
-      return null;
-    }
+    await logAuditEvent(
+      'delete',
+      'company',
+      id,
+      'Empresa excluída'
+    );
     
-    console.log(`Empresa encontrada com ID ${id}:`, data[0]);
-    return data[0] as Company;
+    return true;
   } catch (error) {
-    handleSupabaseError(error, `busca da empresa com ID ${id}`);
-    return null;
+    handleSupabaseError(error, `exclusão da empresa ${id}`);
+    return false;
   }
 };

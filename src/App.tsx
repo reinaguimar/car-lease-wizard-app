@@ -1,36 +1,37 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import ContractsPage from "./pages/ContractsPage";
-import ArchivedContracts from "./pages/ArchivedContracts";
-import Dashboard from "./pages/Dashboard";
-import AuditLogsPage from "./pages/AuditLogsPage";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Dashboard from './pages/Dashboard';
+import Index from './pages/Index';
+import ContractsPage from './pages/ContractsPage';
+import ArchivedContracts from './pages/ArchivedContracts';
+import AuditLogsPage from './pages/AuditLogsPage';
+import NotFound from './pages/NotFound';
+import './App.css';
+import './styles/base.css';
+import './styles/contract.css';
+import './styles/moove-theme.css';
+import './styles/yoou-theme.css';
+import { useEffect } from 'react';
+import { ensureCompaniesExist } from './utils/initializeData';
 
-const queryClient = new QueryClient();
+function App() {
+  useEffect(() => {
+    // Inicializar dados básicos do sistema
+    ensureCompaniesExist().catch(console.error);
+  }, []);
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/contracts/new" element={<Index />} />
-          <Route path="/contracts" element={<ContractsPage />} />
-          <Route path="/archived" element={<ArchivedContracts />} />
-          <Route path="/audit" element={<AuditLogsPage />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/contracts/new" element={<Index />} />
+        <Route path="/contracts" element={<ContractsPage />} />
+        <Route path="/archived" element={<ArchivedContracts />} />
+        <Route path="/audit" element={<AuditLogsPage />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
+  );
+}
 
 export default App;
