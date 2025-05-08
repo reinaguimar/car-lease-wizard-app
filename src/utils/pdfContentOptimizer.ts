@@ -1,3 +1,4 @@
+import { type Company } from "@/components/CompanySelector";
 
 export const optimizePDFContent = (contractContainer: HTMLElement): void => {
   // Apply compact layout optimizations
