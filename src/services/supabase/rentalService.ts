@@ -1,14 +1,16 @@
-
 import { supabase } from './supabaseClient';
 import { Rental, NewRental, UpdateRental } from './types';
 import { FormData } from '@/components/RentalForm';
 import { Company } from '@/components/CompanySelector';
+import { toast } from 'sonner';
 
 /**
  * Create a new rental record
  */
 export const createRental = async (data: NewRental): Promise<Rental | null> => {
   try {
+    console.log('Creating rental with data:', data);
+    
     const { data: rental, error } = await supabase
       .from('rentals')
       .insert(data)
@@ -17,12 +19,15 @@ export const createRental = async (data: NewRental): Promise<Rental | null> => {
       
     if (error) {
       console.error('Error creating rental:', error);
+      toast.error(`Erro ao salvar contrato: ${error.message}`);
       return null;
     }
     
+    console.log('Rental created successfully:', rental);
     return rental;
   } catch (error) {
-    console.error('Error creating rental:', error);
+    console.error('Exception creating rental:', error);
+    toast.error(`Erro ao processar contrato: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
     return null;
   }
 };

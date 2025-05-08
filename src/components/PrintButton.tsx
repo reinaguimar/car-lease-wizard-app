@@ -50,9 +50,14 @@ export function PrintButton({ data, company }: PrintButtonProps) {
       // Generate contract number
       const contractNumber = generateContractNumber();
       
+      console.log("Generated contract number:", contractNumber);
+      console.log("Form data:", data);
+      console.log("Selected company:", company);
+      
       try {
         // Prepare rental data from form data
         const rentalData = formDataToRental(data as FormData, company, contractNumber);
+        console.log("Prepared rental data:", rentalData);
         
         // Save rental to database
         const newRental = await createRental(rentalData);
@@ -73,7 +78,9 @@ export function PrintButton({ data, company }: PrintButtonProps) {
         
       } catch (error) {
         console.error("Erro ao salvar contrato:", error);
-        toast.error("Erro ao salvar contrato no banco de dados");
+        toast.error("Erro ao salvar contrato no banco de dados", {
+          description: error instanceof Error ? error.message : "Verifique os logs para mais detalhes",
+        });
         setIsSaving(false);
         return;
       }
