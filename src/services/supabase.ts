@@ -14,6 +14,16 @@ export {
   formDataToRental
 } from './supabase/rentalService';
 
+// Re-export contract service functions
+export {
+  createContract,
+  getContracts,
+  getContractById,
+  updateContractStatus,
+  updateContractPdfUrl,
+  deleteContract
+} from './supabase/contractService';
+
 // Export default companies information to maintain compatibility
 export { defaultCompanies } from './supabase/companyService';
 
