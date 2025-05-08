@@ -10,7 +10,8 @@ import {
   createClientHelper as createClient, 
   createVehicleHelper as createVehicle, 
   createContractHelper as createContract,
-  getCompanyByCode 
+  getCompanyByCode,
+  supabase // Import the supabase client
 } from "@/services/supabase";
 
 interface PrintButtonProps {
