@@ -98,6 +98,8 @@ export function PrintButton({ data, company }: PrintButtonProps) {
         sign_date: formatDateToISO(data.signDate!)
       };
       
+      console.log("Dados do contrato a serem salvos:", contractData);
+      
       const contract = await createContract(contractData);
       
       if (!contract) {
@@ -133,6 +135,10 @@ export function PrintButton({ data, company }: PrintButtonProps) {
   
   // Função para formatar data para ISO string (YYYY-MM-DD)
   const formatDateToISO = (date: Date): string => {
+    if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
+      console.error("Data inválida:", date);
+      return new Date().toISOString().split('T')[0]; // Fallback para data atual
+    }
     return date.toISOString().split('T')[0];
   };
 

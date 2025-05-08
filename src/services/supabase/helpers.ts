@@ -36,6 +36,7 @@ export async function createClient(clientData: {
     return await createClientService(clientData);
     
   } catch (error) {
+    console.error("Erro em createClient:", error);
     handleSupabaseError(error, 'verificação/criação de cliente');
     return null;
   }
@@ -75,6 +76,7 @@ export async function createVehicle(vehicleData: {
     return await createVehicleService(vehicleData);
     
   } catch (error) {
+    console.error("Erro em createVehicle:", error);
     handleSupabaseError(error, 'verificação/criação de veículo');
     return null;
   }
@@ -97,8 +99,12 @@ export async function createContract(contractData: {
   sign_date: string;
 }): Promise<Contract | null> {
   try {
-    return await createContractService(contractData);
+    console.log("Dados do contrato antes de enviar para o Supabase:", contractData);
+    const result = await createContractService(contractData);
+    console.log("Resultado da criação do contrato:", result);
+    return result;
   } catch (error) {
+    console.error("Erro detalhado em createContract:", error);
     handleSupabaseError(error, 'criação de contrato');
     return null;
   }
