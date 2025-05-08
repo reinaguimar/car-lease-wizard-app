@@ -46,7 +46,7 @@ const Index = () => {
         </TabsContent>
         <TabsContent value="preview">
           <div className="flex justify-end mb-4">
-            <PrintButton />
+            <PrintButton data={formData} company={selectedCompany} />
           </div>
           <ContractPreview data={formData} company={selectedCompany} />
         </TabsContent>
