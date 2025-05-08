@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { CompanySelector, type Company } from "@/components/CompanySelector";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Archive, File } from "lucide-react";
+import { Archive, BarChart2, File } from "lucide-react";
 
 const Index = () => {
   const [formData, setFormData] = useState<Partial<FormData>>({});
@@ -40,6 +40,12 @@ const Index = () => {
         />
         
         <div className="no-print flex gap-2">
+          <Link to="/dashboard">
+            <Button variant="outline" className="gap-2">
+              <BarChart2 className="h-4 w-4" />
+              Dashboard
+            </Button>
+          </Link>
           <Link to="/contracts">
             <Button variant="outline" className="gap-2">
               <File className="h-4 w-4" />
