@@ -15,7 +15,7 @@ interface VehicleInfoProps {
 
 export function VehicleInfo({ form, handleFormChange }: VehicleInfoProps) {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <FormField
         control={form.control}
         name="vehicleType"
@@ -34,7 +34,7 @@ export function VehicleInfo({ form, handleFormChange }: VehicleInfoProps) {
                   <SelectValue placeholder="Selecione o tipo de veículo" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <SelectContent className="max-h-[300px]">
                 {vehicleTypes.map(type => (
                   <SelectItem key={type} value={type}>{type}</SelectItem>
                 ))}
@@ -105,7 +105,7 @@ export function VehicleInfo({ form, handleFormChange }: VehicleInfoProps) {
                   <SelectValue placeholder="Selecione o combustível" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent>
+              <SelectContent className="max-h-[300px]">
                 {fuelTypes.map(type => (
                   <SelectItem key={type} value={type}>{type}</SelectItem>
                 ))}

@@ -109,13 +109,13 @@ export function RentalForm({ onFormChange }: RentalFormProps) {
 
   return (
     <Card className="w-full mb-6">
-      <CardContent className="p-6">
+      <CardContent className="p-4 sm:p-6">
         <Tabs defaultValue="renter" onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-4 mb-6">
-            <TabsTrigger value="renter">Dados do Locatário</TabsTrigger>
-            <TabsTrigger value="vehicle">Dados do Veículo</TabsTrigger>
-            <TabsTrigger value="period">Período de Locação</TabsTrigger>
-            <TabsTrigger value="pricing">Valores e Termos</TabsTrigger>
+          <TabsList className="grid grid-cols-2 sm:grid-cols-4 mb-6 w-full overflow-x-auto">
+            <TabsTrigger value="renter" className="text-xs sm:text-sm">Dados do Locatário</TabsTrigger>
+            <TabsTrigger value="vehicle" className="text-xs sm:text-sm">Dados do Veículo</TabsTrigger>
+            <TabsTrigger value="period" className="text-xs sm:text-sm">Período de Locação</TabsTrigger>
+            <TabsTrigger value="pricing" className="text-xs sm:text-sm">Valores e Termos</TabsTrigger>
           </TabsList>
 
           <Form {...form}>
@@ -139,7 +139,7 @@ export function RentalForm({ onFormChange }: RentalFormProps) {
                 <Button 
                   onClick={handleUpdateContract} 
                   type="button"
-                  className="gap-2"
+                  className="gap-2 w-full sm:w-auto"
                 >
                   <RefreshCw className="h-4 w-4" />
                   Atualizar Contrato

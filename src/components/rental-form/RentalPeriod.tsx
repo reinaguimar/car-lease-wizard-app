@@ -9,6 +9,7 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UseFormReturn } from "react-hook-form";
 import { FormData } from "../RentalForm";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface RentalPeriodProps {
   form: UseFormReturn<FormData>;
@@ -16,8 +17,10 @@ interface RentalPeriodProps {
 }
 
 export function RentalPeriod({ form, handleFormChange }: RentalPeriodProps) {
+  const isMobile = useIsMobile();
+  
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <FormField
         control={form.control}
         name="startDate"
@@ -43,7 +46,7 @@ export function RentalPeriod({ form, handleFormChange }: RentalPeriodProps) {
                   </Button>
                 </FormControl>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className={cn("w-auto p-0", isMobile ? "w-[280px]" : "")} align="start">
                 <Calendar
                   mode="single"
                   selected={field.value}
@@ -128,7 +131,7 @@ export function RentalPeriod({ form, handleFormChange }: RentalPeriodProps) {
                   </Button>
                 </FormControl>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className={cn("w-auto p-0", isMobile ? "w-[280px]" : "")} align="start">
                 <Calendar
                   mode="single"
                   selected={field.value}

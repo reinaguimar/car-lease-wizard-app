@@ -139,7 +139,7 @@ export function PrintButton({ data, company }: PrintButtonProps) {
   return (
     <Button 
       onClick={handleSaveAsPDF}
-      className="no-print mb-6"
+      className="no-print mb-6 w-full sm:w-auto text-xs sm:text-sm"
       variant="default"
       disabled={isSaving || !isComplete}
     >

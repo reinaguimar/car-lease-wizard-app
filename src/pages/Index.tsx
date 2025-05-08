@@ -26,10 +26,10 @@ const Index = () => {
   };
 
   return (
-    <div className="container mx-auto py-6 px-4 sm:px-6 flex flex-col min-h-screen">
-      <div className="mb-6 text-center">
-        <h1 className="text-2xl sm:text-3xl font-bold">Sistema de Locação de Veículos</h1>
-        <p className="text-muted-foreground text-sm sm:text-base">
+    <div className="container mx-auto py-4 sm:py-6 px-3 sm:px-6 flex flex-col min-h-screen">
+      <div className="mb-4 sm:mb-6 text-center">
+        <h1 className="text-xl sm:text-3xl font-bold">Sistema de Locação de Veículos</h1>
+        <p className="text-muted-foreground text-xs sm:text-base">
           Preencha os dados do contrato e visualize em tempo real
         </p>
       </div>
@@ -44,8 +44,8 @@ const Index = () => {
 
       <Tabs defaultValue="form" className="w-full no-print flex-1">
         <TabsList className="grid w-full grid-cols-2 mb-4">
-          <TabsTrigger value="form">Formulário</TabsTrigger>
-          <TabsTrigger value="preview">Visualizar Contrato</TabsTrigger>
+          <TabsTrigger value="form" className="text-xs sm:text-sm">Formulário</TabsTrigger>
+          <TabsTrigger value="preview" className="text-xs sm:text-sm">Visualizar Contrato</TabsTrigger>
         </TabsList>
         <TabsContent value="form">
           <RentalForm onFormChange={handleFormChange} />
@@ -63,15 +63,15 @@ const Index = () => {
       </div>
       
       {/* Botões de navegação no final da página */}
-      <div className="mt-8 pt-4 border-t no-print flex flex-wrap gap-2 justify-center">
+      <div className="mt-6 sm:mt-8 pt-4 border-t no-print flex flex-wrap gap-2 justify-center">
         <Link to="/contracts" className="w-full sm:w-auto">
-          <Button variant="outline" className="w-full sm:w-auto gap-2">
+          <Button variant="outline" className="w-full sm:w-auto gap-2 text-sm">
             <File className="h-4 w-4" />
             Ver Contratos
           </Button>
         </Link>
         <Link to="/archived" className="w-full sm:w-auto">
-          <Button variant="outline" className="w-full sm:w-auto gap-2">
+          <Button variant="outline" className="w-full sm:w-auto gap-2 text-sm">
             <Archive className="h-4 w-4" />
             Ver Arquivados
           </Button>
