@@ -5,27 +5,28 @@ export const optimizePDFContent = (contractContainer: HTMLElement): void => {
   
   // Create two-column layout for specific shorter sections
   if (contractSections.length >= 6) {
-    // Group some sections into two columns for space efficiency
-    const qualificationsSection = contractContainer.querySelector('.contract-section:nth-of-type(4)');
-    const conditionSection = contractContainer.querySelector('.contract-section:nth-of-type(3)');
+    // Only group sections that are NOT vehicle info or condition sections
+    // Look for shorter sections that can be grouped together
+    const qualificationsSection = contractContainer.querySelector('.contract-section:nth-of-type(5)'); // Changed from 4 to 5
+    const obligationsSection = contractContainer.querySelector('.contract-section:nth-of-type(7)'); // Using obligations instead of condition
     
-    if (qualificationsSection && conditionSection) {
+    if (qualificationsSection && obligationsSection) {
       const twoColumnWrapper = document.createElement('div');
       twoColumnWrapper.className = 'two-columns contract-section';
       
       const column1 = document.createElement('div');
       column1.className = 'column';
-      column1.appendChild(conditionSection.cloneNode(true));
+      column1.appendChild(qualificationsSection.cloneNode(true));
       
       const column2 = document.createElement('div');
       column2.className = 'column';
-      column2.appendChild(qualificationsSection.cloneNode(true));
+      column2.appendChild(obligationsSection.cloneNode(true));
       
       twoColumnWrapper.appendChild(column1);
       twoColumnWrapper.appendChild(column2);
       
-      conditionSection.parentNode?.replaceChild(twoColumnWrapper, conditionSection);
-      qualificationsSection.parentNode?.removeChild(qualificationsSection);
+      qualificationsSection.parentNode?.replaceChild(twoColumnWrapper, qualificationsSection);
+      obligationsSection.parentNode?.removeChild(obligationsSection);
     }
   }
 };
@@ -39,4 +40,3 @@ export const fixImageUrls = (container: HTMLElement): void => {
     }
   });
 };
-

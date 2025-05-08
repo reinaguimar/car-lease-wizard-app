@@ -72,9 +72,18 @@ export const populatePDFContent = (pdfWindow: Window): void => {
       // Fix absolute URLs for images
       fixImageUrls(contractContainer);
       
+      // Ensure vehicle info and condition sections are not merged
+      const vehicleInfoSection = contractContainer.querySelector('.contract-section:nth-of-type(2)');
+      const conditionSection = contractContainer.querySelector('.contract-section:nth-of-type(3)');
+      
+      if (vehicleInfoSection && conditionSection) {
+        vehicleInfoSection.style.pageBreakAfter = 'auto';
+        vehicleInfoSection.style.clear = 'both';
+        conditionSection.style.clear = 'both';
+      }
+      
       // Apply layout optimizations for PDF
       optimizePDFContent(contractContainer);
     }
   }
 };
-
