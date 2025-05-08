@@ -1,5 +1,5 @@
 
-import { supabase } from './supabaseClient';
+import { supabase, handleSupabaseError } from './supabaseClient';
 import { Contract } from './types';
 
 export const searchContracts = async (searchTerm: string): Promise<Contract[]> => {
@@ -30,7 +30,7 @@ export const searchContracts = async (searchTerm: string): Promise<Contract[]> =
     if (error) throw error;
     return (data as unknown as Contract[]) || [];
   } catch (error) {
-    console.error('Error searching contracts:', error);
+    handleSupabaseError(error, 'busca de contratos');
     return [];
   }
 };

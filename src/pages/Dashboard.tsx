@@ -10,6 +10,7 @@ import {
   PieChart, Pie, Cell 
 } from 'recharts';
 import { getContracts, Contract } from "@/services/supabase";
+import { isSupabaseConfigured } from "@/services/supabase/supabaseClient";
 import { 
   ArrowRight, 
   Car, 
@@ -26,6 +27,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { toast } from "sonner";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
@@ -54,11 +56,25 @@ export default function Dashboard() {
     const fetchContracts = async () => {
       setLoading(true);
       try {
+        // Check if Supabase is configured before fetching
+        if (!isSupabaseConfigured()) {
+          toast.error("Configuração do Supabase necessária", {
+            description: "Configure as variáveis de ambiente do Supabase para carregar os dados.",
+            duration: 5000
+          });
+          setLoading(false);
+          return;
+        }
+
         const contractsData = await getContracts();
         setContracts(contractsData);
         setFilteredContracts(contractsData);
       } catch (error) {
         console.error("Error fetching contracts:", error);
+        toast.error("Erro ao carregar contratos", {
+          description: "Verifique a conexão com o Supabase.",
+          duration: 5000
+        });
       } finally {
         setLoading(false);
       }

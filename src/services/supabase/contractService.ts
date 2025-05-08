@@ -1,5 +1,5 @@
 
-import { supabase } from './supabaseClient';
+import { supabase, handleSupabaseError, validateSupabaseResponse } from './supabaseClient';
 import { Contract } from './types';
 
 export const createContract = async (contract: {
@@ -27,7 +27,7 @@ export const createContract = async (contract: {
     if (error) throw error;
     return data?.[0] as Contract;
   } catch (error) {
-    console.error('Error creating contract:', error);
+    handleSupabaseError(error, 'criação de contrato');
     return null;
   }
 };
@@ -69,7 +69,7 @@ export const getContracts = async (options?: {
     if (error) throw error;
     return (data || []) as unknown as Contract[];
   } catch (error) {
-    console.error('Error fetching contracts:', error);
+    handleSupabaseError(error, 'busca de contratos');
     return [];
   }
 };
@@ -85,7 +85,7 @@ export const updateContractStatus = async (id: string, status: string): Promise<
     if (error) throw error;
     return data?.[0] as Contract;
   } catch (error) {
-    console.error(`Error updating contract ${id} status to ${status}:`, error);
+    handleSupabaseError(error, `atualização de status do contrato ${id}`);
     return null;
   }
 };
@@ -101,7 +101,7 @@ export const updateContractPdfUrl = async (id: string, pdf_url: string): Promise
     if (error) throw error;
     return data?.[0] as Contract;
   } catch (error) {
-    console.error(`Error updating contract ${id} PDF URL:`, error);
+    handleSupabaseError(error, `atualização de URL do PDF do contrato ${id}`);
     return null;
   }
 };

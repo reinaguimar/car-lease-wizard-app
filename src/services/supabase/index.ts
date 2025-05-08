@@ -6,3 +6,4 @@ export * from './clientService';
 export * from './vehicleService';
 export * from './contractService';
 export * from './searchService';
+export * from './supabaseClient';
