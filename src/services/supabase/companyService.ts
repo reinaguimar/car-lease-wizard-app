@@ -9,7 +9,7 @@ export const getCompanies = async (): Promise<Company[]> => {
       .select('*');
       
     if (error) throw error;
-    return data as Company[] || [];
+    return (data || []) as Company[];
   } catch (error) {
     console.error('Error fetching companies:', error);
     return [];

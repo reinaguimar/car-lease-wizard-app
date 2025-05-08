@@ -67,7 +67,7 @@ export const getContracts = async (options?: {
     const { data, error } = await query;
     
     if (error) throw error;
-    return (data as unknown as Contract[]) || [];
+    return (data || []) as unknown as Contract[];
   } catch (error) {
     console.error('Error fetching contracts:', error);
     return [];
