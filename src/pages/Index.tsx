@@ -26,7 +26,7 @@ const Index = () => {
   };
 
   return (
-    <div className="container mx-auto py-6 px-4 sm:px-6">
+    <div className="container mx-auto py-6 px-4 sm:px-6 flex flex-col min-h-screen">
       <div className="mb-6 text-center">
         <h1 className="text-2xl sm:text-3xl font-bold">Sistema de Locação de Veículos</h1>
         <p className="text-muted-foreground text-sm sm:text-base">
@@ -34,30 +34,15 @@ const Index = () => {
         </p>
       </div>
 
-      <div className={`mb-4 ${isMobile ? 'flex flex-col gap-4' : 'flex justify-between items-center'}`}>
+      <div className="mb-4">
         <CompanySelector 
           selectedCompany={selectedCompany}
           onCompanyChange={handleCompanyChange}
           className="no-print w-full sm:w-auto"
         />
-        
-        <div className="no-print flex flex-wrap gap-2">
-          <Link to="/contracts" className="w-full sm:w-auto">
-            <Button variant="outline" className="gap-2 w-full sm:w-auto">
-              <File className="h-4 w-4" />
-              Ver Contratos
-            </Button>
-          </Link>
-          <Link to="/archived" className="w-full sm:w-auto">
-            <Button variant="outline" className="gap-2 w-full sm:w-auto">
-              <Archive className="h-4 w-4" />
-              Ver Arquivados
-            </Button>
-          </Link>
-        </div>
       </div>
 
-      <Tabs defaultValue="form" className="w-full no-print">
+      <Tabs defaultValue="form" className="w-full no-print flex-1">
         <TabsList className="grid w-full grid-cols-2 mb-4">
           <TabsTrigger value="form">Formulário</TabsTrigger>
           <TabsTrigger value="preview">Visualizar Contrato</TabsTrigger>
@@ -75,6 +60,22 @@ const Index = () => {
 
       <div className="print-only">
         <ContractPreview data={formData} company={selectedCompany} />
+      </div>
+      
+      {/* Botões de navegação no final da página */}
+      <div className="mt-8 pt-4 border-t no-print flex flex-wrap gap-2 justify-center">
+        <Link to="/contracts" className="w-full sm:w-auto">
+          <Button variant="outline" className="w-full sm:w-auto gap-2">
+            <File className="h-4 w-4" />
+            Ver Contratos
+          </Button>
+        </Link>
+        <Link to="/archived" className="w-full sm:w-auto">
+          <Button variant="outline" className="w-full sm:w-auto gap-2">
+            <Archive className="h-4 w-4" />
+            Ver Arquivados
+          </Button>
+        </Link>
       </div>
       
       <Toaster />

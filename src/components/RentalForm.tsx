@@ -80,6 +80,7 @@ export function RentalForm({ onFormChange }: RentalFormProps) {
   });
   
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState("renter");
 
   const handleFormChange = (field: keyof FormData, value: any) => {
     form.setValue(field, value);
@@ -109,7 +110,7 @@ export function RentalForm({ onFormChange }: RentalFormProps) {
   return (
     <Card className="w-full mb-6">
       <CardContent className="p-6">
-        <Tabs defaultValue="renter">
+        <Tabs defaultValue="renter" onValueChange={setActiveTab}>
           <TabsList className="grid grid-cols-4 mb-6">
             <TabsTrigger value="renter">Dados do Locatário</TabsTrigger>
             <TabsTrigger value="vehicle">Dados do Veículo</TabsTrigger>
@@ -132,18 +133,19 @@ export function RentalForm({ onFormChange }: RentalFormProps) {
 
             <TabsContent value="pricing" className="mt-0">
               <PricingInfo form={form} handleFormChange={handleFormChange} />
+              
+              {/* Botão de atualizar contrato apenas na última guia */}
+              <div className="mt-6 flex justify-end">
+                <Button 
+                  onClick={handleUpdateContract} 
+                  type="button"
+                  className="gap-2"
+                >
+                  <RefreshCw className="h-4 w-4" />
+                  Atualizar Contrato
+                </Button>
+              </div>
             </TabsContent>
-
-            <div className="mt-6 flex justify-end">
-              <Button 
-                onClick={handleUpdateContract} 
-                type="button"
-                className="gap-2"
-              >
-                <RefreshCw className="h-4 w-4" />
-                Atualizar Contrato
-              </Button>
-            </div>
           </Form>
         </Tabs>
       </CardContent>
