@@ -11,9 +11,9 @@ export function ContractHeader({ company }: ContractHeaderProps) {
     return (
       <div className="contract-header">
         <div className="yoou-logo">
-          <img src="/lovable-uploads/84eac6d9-3068-4699-b09d-04269c7c8870.png" alt="Yoou Logo" className="h-12 mb-2" />
+          <img src="/lovable-uploads/77ecfed0-4dfe-41b1-a907-c8c9241166ee.png" alt="Yoou Logo" className="h-16 mb-2" />
         </div>
-        <div className="text-xl">
+        <div className="text-xl text-[#EF65CF]">
           CAR RENTAL AGREEMENT / <span className="translation">CONTRATO DE ALUGUEL DE VEÍCULOS</span>
         </div>
       </div>

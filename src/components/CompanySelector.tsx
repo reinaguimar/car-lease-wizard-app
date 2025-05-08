@@ -33,14 +33,14 @@ export function CompanySelector({ selectedCompany, onCompanyChange }: CompanySel
           </Label>
         </div>
         
-        <div className={`border rounded-md p-4 ${selectedCompany === "yoou" ? "border-[#D946EF] bg-pink-50" : "border-gray-200"}`}>
+        <div className={`border rounded-md p-4 ${selectedCompany === "yoou" ? "border-[#EF65CF] bg-pink-50" : "border-gray-200"}`}>
           <RadioGroupItem value="yoou" id="yoou" className="sr-only" />
           <Label htmlFor="yoou" className="flex items-center justify-center gap-2 cursor-pointer">
-            <div className="bg-[#D946EF] text-white p-1 rounded-full">
+            <div className="bg-[#EF65CF] text-white p-1 rounded-full">
               <Car className="w-5 h-5" />
             </div>
             <div className="text-center">
-              <h3 className="font-bold text-lg text-[#D946EF]">Yoou Rent a Car</h3>
+              <h3 className="font-bold text-lg text-[#EF65CF]">Yoou Rent a Car</h3>
               <p className="text-muted-foreground text-sm">Novo contrato</p>
             </div>
           </Label>

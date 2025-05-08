@@ -139,7 +139,7 @@
 }
 
 .yoou-theme .contract-header {
-  background-color: #D946EF;
+  background-color: #EF65CF;
   color: white;
   padding: 1rem;
   border-radius: 8px;
@@ -147,18 +147,18 @@
 }
 
 .yoou-theme .contract-section {
-  border-left: 3px solid #9b87f5;
+  border-left: 3px solid #EF65CF;
   padding-left: 1rem;
   margin-bottom: 1.5rem;
   border-bottom-color: #f3f3f3;
 }
 
 .yoou-theme .translation {
-  color: #9b87f5;
+  color: #EF65CF;
 }
 
 .yoou-theme .contract-signature-line {
-  border-top: 2px solid #D946EF;
+  border-top: 2px solid #EF65CF;
 }
 
 .yoou-logo {
@@ -170,6 +170,7 @@
 
 .yoou-logo img {
   height: 50px;
+  max-width: 200px;
 }
 
 /* Estilos específicos da Moove */
