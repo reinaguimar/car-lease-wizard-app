@@ -73,8 +73,8 @@ export const populatePDFContent = (pdfWindow: Window): void => {
       fixImageUrls(contractContainer);
       
       // Ensure vehicle info and condition sections are not merged
-      const vehicleInfoSection = contractContainer.querySelector('.contract-section:nth-of-type(2)');
-      const conditionSection = contractContainer.querySelector('.contract-section:nth-of-type(3)');
+      const vehicleInfoSection = contractContainer.querySelector('.contract-section:nth-of-type(2)') as HTMLElement;
+      const conditionSection = contractContainer.querySelector('.contract-section:nth-of-type(3)') as HTMLElement;
       
       if (vehicleInfoSection && conditionSection) {
         vehicleInfoSection.style.pageBreakAfter = 'auto';
