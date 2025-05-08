@@ -12,6 +12,7 @@ import { createVehicle } from "@/services/supabase/vehicleService";
 import html2pdf from 'html2pdf.js';
 import { useNavigate } from "react-router-dom";
 import { getCompanyById } from "@/services/supabase/companyService";
+import { ensureCompaniesExist } from "@/utils/initializeData";
 
 interface PrintButtonProps {
   data: Partial<FormData>;
@@ -51,6 +52,9 @@ export function PrintButton({ data, company }: PrintButtonProps) {
       
       toast.info("Preparando contrato...");
       
+      // Garantir que as empresas existam no banco de dados
+      await ensureCompaniesExist();
+      
       // Gerar número de contrato
       const contractNumber = generateContractNumber();
       
@@ -65,10 +69,12 @@ export function PrintButton({ data, company }: PrintButtonProps) {
         companyId = companyData.id;
         console.log("ID da empresa encontrado:", companyId);
         
-        // Se for um ID simulado (começando com "mock"), usamos o código da empresa
+        // Se for um ID simulado (começando com "mock"), usamos um UUID válido
         if (companyId.startsWith('mock')) {
-          console.log("Usando código de empresa como ID para contrato:", company);
-          companyId = company; // Usar o código da empresa como fallback
+          console.log("Usando UUID gerado para contrato");
+          // Gerar um UUID válido usando crypto
+          companyId = crypto.randomUUID();
+          console.log("UUID gerado:", companyId);
         }
       } catch (error) {
         console.error("Erro ao buscar empresa:", error);
@@ -131,7 +137,7 @@ export function PrintButton({ data, company }: PrintButtonProps) {
           contract_number: contractNumber,
           client_id: clientId,
           vehicle_id: vehicleId,
-          company_id: companyId, // Usar o ID real da empresa ou fallback
+          company_id: companyId, // Usar o ID real da empresa ou UUID gerado
           start_date: data.startDate ? data.startDate.toISOString().split('T')[0] : '',
           start_time: data.startTime || '',
           end_date: data.endDate ? data.endDate.toISOString().split('T')[0] : '',

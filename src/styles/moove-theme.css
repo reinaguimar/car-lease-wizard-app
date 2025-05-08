@@ -4,6 +4,7 @@
   font-family: 'Montserrat', 'Arial', sans-serif;
   color: #222222;
   border-top: 6px solid #4B80C3;
+  text-align: left;
 }
 
 .moove-theme .contract-header {
@@ -33,6 +34,7 @@
 
 .moove-theme .header-text {
   padding: 0 1.5rem;
+  text-align: center;
 }
 
 .moove-theme .contract-section {
@@ -40,10 +42,12 @@
   padding: 1rem 1.5rem;
   margin-bottom: 1.5rem;
   background-color: #f9fdff;
+  text-align: left;
 }
 
 .moove-theme .contract-clause {
   color: #333333;
+  text-align: left;
 }
 
 .moove-theme .translation {

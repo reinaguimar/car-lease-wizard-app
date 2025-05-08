@@ -110,10 +110,12 @@ export const getCompanyById = async (codeOrId: string): Promise<CompanyType | nu
       
     // Se não encontrou pelo código ou deu erro, tentar pelo ID
     if (result.error || !result.data || result.data.length === 0) {
-      result = await supabase
-        .from('companies')
-        .select('*')
-        .eq('id', codeOrId);
+      if (codeOrId && codeOrId.length >= 30) {
+        result = await supabase
+          .from('companies')
+          .select('*')
+          .eq('id', codeOrId);
+      }
     }
     
     // Se ainda não encontrou, tentar buscar empresas padrão

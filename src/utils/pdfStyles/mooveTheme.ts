@@ -6,6 +6,7 @@ export const getMoovePDFStyles = (): string => {
       font-family: 'Arial', sans-serif;
       color: #222222;
       border-top: 0;
+      text-align: left;
     }
     
     .moove-theme .contract-header {
@@ -55,11 +56,13 @@ export const getMoovePDFStyles = (): string => {
       padding: 0.5rem 0.75rem;
       margin-bottom: 1rem;
       background-color: #fff;
+      text-align: left;
     }
     
     .moove-theme .contract-clause {
       color: #333333;
       margin-bottom: 0.5rem;
+      text-align: left;
     }
     
     .moove-theme .translation {
@@ -80,6 +83,7 @@ export const getMoovePDFStyles = (): string => {
       font-weight: bold;
       color: #4B80C3;
       margin-bottom: 0.5rem;
+      text-align: left;
     }
   `;
 };
