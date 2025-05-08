@@ -129,6 +129,14 @@
   .form-group, .form-field {
     margin-bottom: 0.75rem;
   }
+  
+  /* Navigation button styling */
+  .form-nav-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
 }
 
 /* Fix iPad and tablet view */
@@ -137,4 +145,16 @@
     padding-left: 1rem;
     padding-right: 1rem;
   }
+}
+
+/* Arrow navigation button animation */
+.btn-with-arrow:hover svg {
+  transform: translateX(3px);
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Disabled button styling */
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

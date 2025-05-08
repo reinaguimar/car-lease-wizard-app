@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
-import { RefreshCw } from "lucide-react";
+import { ArrowRight, RefreshCw } from "lucide-react";
 
 // Import the form section components
 import { RenterInfo } from "./rental-form/RenterInfo";
@@ -57,9 +58,10 @@ export type FormData = z.infer<typeof formSchema>;
 
 interface RentalFormProps {
   onFormChange: (data: FormData) => void;
+  onViewContract?: () => void;
 }
 
-export function RentalForm({ onFormChange }: RentalFormProps) {
+export function RentalForm({ onFormChange, onViewContract }: RentalFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -105,6 +107,11 @@ export function RentalForm({ onFormChange }: RentalFormProps) {
         title: "Contrato atualizado",
         description: "Os dados foram aplicados ao contrato com sucesso",
       });
+      
+      // Navigate to preview tab if provided
+      if (onViewContract) {
+        onViewContract();
+      }
     } else {
       // Trigger validation on all fields
       form.trigger();
@@ -115,11 +122,35 @@ export function RentalForm({ onFormChange }: RentalFormProps) {
       });
     }
   };
+  
+  // Define tab order for navigation
+  const tabOrder = ["renter", "vehicle", "period", "pricing"];
+  
+  // Function to navigate to next tab
+  const goToNextTab = () => {
+    const currentIndex = tabOrder.indexOf(activeTab);
+    if (currentIndex < tabOrder.length - 1) {
+      setActiveTab(tabOrder[currentIndex + 1]);
+    }
+  };
+  
+  // Function to check if current tab is valid
+  const isCurrentTabValid = () => {
+    const fieldsPerTab = {
+      renter: ["firstName", "surname", "idNumber", "address"],
+      vehicle: ["vehicleType", "make", "model", "fuel"],
+      period: ["startDate", "startTime", "deliveryLocation", "endDate", "endTime", "returnLocation"],
+      pricing: ["rentalRate", "deposit", "signDate"]
+    };
+    
+    const currentTabFields = fieldsPerTab[activeTab as keyof typeof fieldsPerTab];
+    return currentTabFields.every(field => !form.formState.errors[field as keyof FormData]);
+  };
 
   return (
     <Card className="w-full mb-6">
       <CardContent className="p-4 sm:p-6">
-        <Tabs defaultValue="renter" onValueChange={setActiveTab}>
+        <Tabs value={activeTab} defaultValue="renter" onValueChange={setActiveTab}>
           <TabsList className="grid grid-cols-2 sm:grid-cols-4 mb-6 w-full overflow-x-auto">
             <TabsTrigger value="renter" className="text-xs sm:text-sm">Dados do Locatário</TabsTrigger>
             <TabsTrigger value="vehicle" className="text-xs sm:text-sm">Dados do Veículo</TabsTrigger>
@@ -130,14 +161,59 @@ export function RentalForm({ onFormChange }: RentalFormProps) {
           <Form {...form}>
             <TabsContent value="renter" className="mt-0">
               <RenterInfo form={form} handleFormChange={handleFormChange} />
+              <div className="mt-6 flex justify-end">
+                <Button 
+                  onClick={() => {
+                    form.trigger(["firstName", "surname", "idNumber", "address"]);
+                    if (isCurrentTabValid()) {
+                      goToNextTab();
+                    }
+                  }} 
+                  type="button"
+                  className="gap-2"
+                >
+                  Próximo
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
             </TabsContent>
 
             <TabsContent value="vehicle" className="mt-0">
               <VehicleInfo form={form} handleFormChange={handleFormChange} />
+              <div className="mt-6 flex justify-end">
+                <Button 
+                  onClick={() => {
+                    form.trigger(["vehicleType", "make", "model", "fuel"]);
+                    if (isCurrentTabValid()) {
+                      goToNextTab();
+                    }
+                  }} 
+                  type="button"
+                  className="gap-2"
+                >
+                  Próximo
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
             </TabsContent>
 
             <TabsContent value="period" className="mt-0">
               <RentalPeriod form={form} handleFormChange={handleFormChange} />
+              <div className="mt-6 flex justify-end">
+                <Button 
+                  onClick={() => {
+                    form.trigger(["startDate", "startTime", "deliveryLocation", "endDate", "endTime", "returnLocation"]);
+                    if (isCurrentTabValid()) {
+                      goToNextTab();
+                    }
+                  }} 
+                  type="button"
+                  className="gap-2"
+                >
+                  Próximo
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
             </TabsContent>
 
             <TabsContent value="pricing" className="mt-0">
@@ -149,6 +225,7 @@ export function RentalForm({ onFormChange }: RentalFormProps) {
                   onClick={handleUpdateContract} 
                   type="button"
                   className="gap-2 w-full sm:w-auto"
+                  disabled={!form.formState.isValid}
                 >
                   <RefreshCw className="h-4 w-4" />
                   Atualizar Contrato

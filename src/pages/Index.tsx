@@ -17,6 +17,7 @@ import { InfoIcon } from "lucide-react";
 const Index = () => {
   const [formData, setFormData] = useState<Partial<FormData>>({});
   const [selectedCompany, setSelectedCompany] = useState<Company>("moove");
+  const [activeTab, setActiveTab] = useState("form");
   const isMobile = useIsMobile();
 
   const handleFormChange = (data: FormData) => {
@@ -25,6 +26,10 @@ const Index = () => {
 
   const handleCompanyChange = (company: Company) => {
     setSelectedCompany(company);
+  };
+  
+  const handleViewContract = () => {
+    setActiveTab("preview");
   };
 
   return (
@@ -53,13 +58,13 @@ const Index = () => {
         />
       </div>
 
-      <Tabs defaultValue="form" className="w-full no-print flex-1">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full no-print flex-1">
         <TabsList className="grid w-full grid-cols-2 mb-4">
           <TabsTrigger value="form" className="text-xs sm:text-sm">Formulário</TabsTrigger>
           <TabsTrigger value="preview" className="text-xs sm:text-sm">Visualizar Contrato</TabsTrigger>
         </TabsList>
         <TabsContent value="form">
-          <RentalForm onFormChange={handleFormChange} />
+          <RentalForm onFormChange={handleFormChange} onViewContract={handleViewContract} />
         </TabsContent>
         <TabsContent value="preview">
           <div className="flex justify-end mb-4">
