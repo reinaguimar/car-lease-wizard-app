@@ -3,20 +3,42 @@
 .moove-theme .contract-container {
   font-family: 'Montserrat', 'Arial', sans-serif;
   color: #222222;
-  border-top: 6px solid #33C3F0;
+  border-top: 6px solid #0D92B8;
 }
 
 .moove-theme .contract-header {
-  background-color: #33C3F0;
+  background-color: #0D92B8;
   color: white;
-  padding: 1.5rem;
   border-radius: 8px;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 10px rgba(51, 195, 240, 0.2);
+  box-shadow: 0 4px 10px rgba(13, 146, 184, 0.2);
+}
+
+.moove-theme .header-content {
+  display: flex;
+  align-items: center;
+}
+
+.moove-theme .company-logo {
+  background-color: white;
+  padding: 0.5rem;
+  border-radius: 8px 0 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+}
+
+.moove-theme .company-logo img {
+  height: 60px;
+}
+
+.moove-theme .header-text {
+  padding: 0 1.5rem;
 }
 
 .moove-theme .contract-section {
-  border-left: 4px solid #33C3F0;
+  border-left: 4px solid #0D92B8;
   padding: 1rem 1.5rem;
   margin-bottom: 1.5rem;
   background-color: #f9fdff;
@@ -35,25 +57,10 @@
 }
 
 .moove-theme .contract-signature-line {
-  border-top: 2px solid #33C3F0;
-}
-
-.moove-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1.5rem;
-  background-color: white;
-  padding: 1rem;
-  border-radius: 8px;
-}
-
-.moove-logo img {
-  height: 60px;
+  border-top: 2px solid #0D92B8;
 }
 
 .moove-theme .contract-section:hover {
-  box-shadow: 0 2px 10px rgba(51, 195, 240, 0.1);
+  box-shadow: 0 2px 10px rgba(13, 146, 184, 0.1);
   transition: all 0.3s ease;
 }
-

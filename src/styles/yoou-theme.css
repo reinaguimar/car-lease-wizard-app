@@ -9,10 +9,33 @@
 .yoou-theme .contract-header {
   background-color: #EF65CF;
   color: white;
-  padding: 1.5rem;
   border-radius: 8px;
   margin-bottom: 2rem;
   box-shadow: 0 4px 10px rgba(239, 101, 207, 0.2);
+}
+
+.yoou-theme .header-content {
+  display: flex;
+  align-items: center;
+}
+
+.yoou-theme .company-logo {
+  background-color: white;
+  padding: 0.5rem;
+  border-radius: 8px 0 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px;
+}
+
+.yoou-theme .company-logo img {
+  height: 60px;
+  max-width: 200px;
+}
+
+.yoou-theme .header-text {
+  padding: 0 1.5rem;
 }
 
 .yoou-theme .contract-section {
@@ -39,23 +62,7 @@
   border-top: 2px solid #EF65CF;
 }
 
-.yoou-logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1.5rem;
-  background-color: white;
-  padding: 1rem;
-  border-radius: 8px;
-}
-
-.yoou-logo img {
-  height: 60px;
-  max-width: 200px;
-}
-
 .yoou-theme .contract-section:hover {
   box-shadow: 0 2px 10px rgba(239, 101, 207, 0.1);
   transition: all 0.3s ease;
 }
-
