@@ -1,3 +1,4 @@
+
 import { supabase } from './supabaseClient';
 import { Rental, NewRental, UpdateRental } from './types';
 import { FormData } from '@/components/RentalForm';
