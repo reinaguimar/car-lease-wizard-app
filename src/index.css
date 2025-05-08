@@ -132,6 +132,46 @@
   color: #555555;
 }
 
+/* Estilos específicos da Yoou */
+.yoou-theme .contract-container {
+  font-family: 'Poppins', 'Helvetica Neue', sans-serif;
+  color: #333;
+}
+
+.yoou-theme .contract-header {
+  background-color: #D946EF;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.yoou-theme .contract-section {
+  border-left: 3px solid #9b87f5;
+  padding-left: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom-color: #f3f3f3;
+}
+
+.yoou-theme .translation {
+  color: #9b87f5;
+}
+
+.yoou-theme .contract-signature-line {
+  border-top: 2px solid #D946EF;
+}
+
+.yoou-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.yoou-logo img {
+  height: 50px;
+}
+
 @media print {
   .no-print {
     display: none !important;

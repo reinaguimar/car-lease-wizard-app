@@ -16,17 +16,21 @@ import { TerminationSection } from "./contract/TerminationSection";
 import { ReturnSection } from "./contract/ReturnSection";
 import { JurisdictionSection } from "./contract/JurisdictionSection";
 import { SignatureSection } from "./contract/SignatureSection";
+import { type Company } from "./CompanySelector";
 
 interface ContractPreviewProps {
   data: Partial<FormData>;
+  company: Company;
 }
 
-export function ContractPreview({ data }: ContractPreviewProps) {
+export function ContractPreview({ data, company }: ContractPreviewProps) {
+  const themeClass = company === "yoou" ? "yoou-theme" : "";
+  
   return (
-    <Card className="w-full">
+    <Card className={`w-full ${themeClass}`}>
       <CardContent className="p-6">
         <div className="contract-container">
-          <ContractHeader />
+          <ContractHeader company={company} />
           
           <ContractSection>
             <RenterInfoSection data={data} />

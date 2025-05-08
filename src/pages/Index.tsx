@@ -6,12 +6,18 @@ import { PrintButton } from "@/components/PrintButton";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Toaster } from "@/components/ui/toaster";
+import { CompanySelector, type Company } from "@/components/CompanySelector";
 
 const Index = () => {
   const [formData, setFormData] = useState<Partial<FormData>>({});
+  const [selectedCompany, setSelectedCompany] = useState<Company>("moove");
 
   const handleFormChange = (data: FormData) => {
     setFormData(data);
+  };
+
+  const handleCompanyChange = (company: Company) => {
+    setSelectedCompany(company);
   };
 
   return (
@@ -21,6 +27,13 @@ const Index = () => {
         <p className="text-muted-foreground">
           Preencha os dados do contrato e visualize em tempo real
         </p>
+      </div>
+
+      <div className="no-print">
+        <CompanySelector 
+          selectedCompany={selectedCompany}
+          onCompanyChange={handleCompanyChange}
+        />
       </div>
 
       <Tabs defaultValue="form" className="w-full no-print">
@@ -35,12 +48,12 @@ const Index = () => {
           <div className="flex justify-end mb-4">
             <PrintButton />
           </div>
-          <ContractPreview data={formData} />
+          <ContractPreview data={formData} company={selectedCompany} />
         </TabsContent>
       </Tabs>
 
       <div className="print-only">
-        <ContractPreview data={formData} />
+        <ContractPreview data={formData} company={selectedCompany} />
       </div>
       
       <Toaster />
