@@ -7,7 +7,7 @@ interface ContractSectionProps {
 
 export function ContractSection({ children }: ContractSectionProps) {
   return (
-    <div className="contract-section">
+    <div className="contract-section w-full">
       {children}
     </div>
   );
