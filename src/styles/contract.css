@@ -76,13 +76,25 @@
   font-weight: 600;
 }
 
+/* Two-column layout for efficiency when needed */
+.two-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.column {
+  flex: 1;
+  min-width: 45%;
+}
+
 @media print {
   .no-print {
     display: none !important;
   }
   
   body {
-    font-size: 12pt;
+    font-size: 11pt;
     line-height: 1.3;
     background: #fff;
     color: #000;
@@ -123,4 +135,34 @@
   margin: 0 auto;
   box-shadow: none;
   border-radius: 0;
+}
+
+/* Compact layout for PDF output */
+.compact-layout .contract-section {
+  margin-bottom: 0.7rem;
+  padding: 0.5rem;
+}
+
+.compact-layout .contract-clause {
+  margin-bottom: 0.3rem;
+}
+
+.compact-layout .contract-signature {
+  margin-top: 1.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .contract-container {
+    padding: 1rem;
+  }
+  
+  .contract-section {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .header-content {
+    padding: 0.75rem;
+  }
 }
