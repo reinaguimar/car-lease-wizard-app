@@ -4,18 +4,53 @@ import { Vehicle } from './types';
 import { handleSupabaseError } from './supabaseClient';
 import { logAuditEvent } from './auditService';
 
+// Mock vehicles for stub implementation
+const mockVehicles: Vehicle[] = [
+  {
+    id: 'mock-vehicle-1',
+    vehicle_type: 'Car',
+    make: 'Toyota',
+    model: 'Corolla',
+    fuel: 'Gasoline',
+    license_plate: 'ABC-1234',
+    year: '2022',
+    color: 'Silver',
+    company_id: 'moove'
+  },
+  {
+    id: 'mock-vehicle-2',
+    vehicle_type: 'SUV',
+    make: 'Honda',
+    model: 'CR-V',
+    fuel: 'Gasoline',
+    license_plate: 'DEF-5678',
+    year: '2023',
+    color: 'Black',
+    company_id: 'moove'
+  },
+  {
+    id: 'mock-vehicle-3',
+    vehicle_type: 'Truck',
+    make: 'Ford',
+    model: 'Ranger',
+    fuel: 'Diesel',
+    license_plate: 'GHI-9012',
+    year: '2021',
+    color: 'White',
+    company_id: 'yoou'
+  }
+];
+
 export const getVehicles = async (companyId?: string): Promise<Vehicle[]> => {
   try {
-    let query = supabase.from('vehicles').select('*');
+    console.log('Getting vehicles (stub):', companyId);
     
+    // If companyId is provided, filter the mock vehicles
     if (companyId) {
-      query = query.eq('company_id', companyId);
+      return mockVehicles.filter(vehicle => vehicle.company_id === companyId);
     }
     
-    const { data, error } = await query;
-    
-    if (error) throw error;
-    return (data || []) as Vehicle[];
+    return [...mockVehicles];
   } catch (error) {
     handleSupabaseError(error, 'busca de veículos');
     return [];
@@ -33,23 +68,28 @@ export const createVehicle = async (vehicle: {
   company_id: string;
 }): Promise<Vehicle | null> => {
   try {
-    const { data, error } = await supabase
-      .from('vehicles')
-      .insert([vehicle])
-      .select();
-      
-    if (error) throw error;
+    console.log('Creating vehicle (stub):', vehicle);
     
-    const newVehicle = data?.[0] as Vehicle;
+    // Create a new mock vehicle
+    const newVehicle: Vehicle = {
+      id: `mock-vehicle-${Date.now()}`,
+      vehicle_type: vehicle.vehicle_type,
+      make: vehicle.make,
+      model: vehicle.model,
+      fuel: vehicle.fuel,
+      license_plate: vehicle.license_plate,
+      year: vehicle.year,
+      color: vehicle.color,
+      company_id: vehicle.company_id
+    };
     
-    if (newVehicle) {
-      await logAuditEvent(
-        'create',
-        'vehicle',
-        newVehicle.id,
-        `Veículo ${vehicle.make} ${vehicle.model} criado`
-      );
-    }
+    // Log audit event
+    await logAuditEvent(
+      'create',
+      'vehicle',
+      newVehicle.id,
+      `Veículo ${vehicle.make} ${vehicle.model} criado`
+    );
     
     return newVehicle;
   } catch (error) {
@@ -60,14 +100,16 @@ export const createVehicle = async (vehicle: {
 
 export const getVehicleById = async (id: string): Promise<Vehicle | null> => {
   try {
-    const { data, error } = await supabase
-      .from('vehicles')
-      .select('*')
-      .eq('id', id)
-      .single();
-      
-    if (error) throw error;
-    return data as Vehicle;
+    console.log('Getting vehicle by ID (stub):', id);
+    
+    // Find the vehicle in our mock data
+    const vehicle = mockVehicles.find(v => v.id === id);
+    
+    if (!vehicle) {
+      return null;
+    }
+    
+    return { ...vehicle };
   } catch (error) {
     handleSupabaseError(error, `busca do veículo ${id}`);
     return null;
@@ -84,24 +126,28 @@ export const updateVehicle = async (id: string, vehicle: {
   color?: string;
 }): Promise<Vehicle | null> => {
   try {
-    const { data, error } = await supabase
-      .from('vehicles')
-      .update(vehicle)
-      .eq('id', id)
-      .select();
-      
-    if (error) throw error;
+    console.log('Updating vehicle (stub):', id, vehicle);
     
-    const updatedVehicle = data?.[0] as Vehicle;
+    // Find the vehicle in our mock data
+    const existingVehicle = mockVehicles.find(v => v.id === id);
     
-    if (updatedVehicle) {
-      await logAuditEvent(
-        'update',
-        'vehicle',
-        id,
-        `Veículo ${updatedVehicle.make} ${updatedVehicle.model} atualizado`
-      );
+    if (!existingVehicle) {
+      return null;
     }
+    
+    // Create an updated vehicle
+    const updatedVehicle: Vehicle = {
+      ...existingVehicle,
+      ...vehicle
+    };
+    
+    // Log audit event
+    await logAuditEvent(
+      'update',
+      'vehicle',
+      id,
+      `Veículo ${updatedVehicle.make} ${updatedVehicle.model} atualizado`
+    );
     
     return updatedVehicle;
   } catch (error) {
@@ -112,13 +158,9 @@ export const updateVehicle = async (id: string, vehicle: {
 
 export const deleteVehicle = async (id: string): Promise<boolean> => {
   try {
-    const { error } = await supabase
-      .from('vehicles')
-      .delete()
-      .eq('id', id);
-      
-    if (error) throw error;
+    console.log('Deleting vehicle (stub):', id);
     
+    // Log audit event
     await logAuditEvent(
       'delete',
       'vehicle',

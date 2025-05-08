@@ -46,7 +46,7 @@ export type Contract = {
   total_days: number;
   total_amount: number;
   sign_date: string;
-  pdf_url?: string;
+  pdf_url?: string | null;
   status?: string;
   created_at?: string;
   updated_at?: string;
@@ -77,7 +77,7 @@ export type Contract = {
 };
 
 export type Company = {
-  id: string;
+  id?: string;
   name: string;
   code: string;
   logo_url?: string | null;

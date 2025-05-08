@@ -24,7 +24,7 @@ export {
   deleteContract
 } from './supabase/contractService';
 
-// Export default companies information to maintain compatibility
+// Export default companies information
 export { defaultCompanies } from './supabase/companyService';
 
 // Exportar o cliente Supabase para uso no componente PrintButton

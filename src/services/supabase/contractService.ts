@@ -169,7 +169,7 @@ export const getContracts = async (options?: {
 }): Promise<Contract[]> => {
   try {
     // Use the rentals service to get rentals
-    const rentals = await getRentals(options?.status);
+    const rentals = await getRentals(options ? { status: options.status } : undefined);
     
     // Convert rentals to contracts
     return rentals.map(rentalToContract);
