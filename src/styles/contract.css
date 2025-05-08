@@ -166,3 +166,32 @@
     padding: 0.75rem;
   }
 }
+
+/* PDF-specific optimizations */
+@page {
+  size: A4;
+  margin: 0.5cm;
+}
+
+.pdf-optimized {
+  font-size: 9pt;
+  line-height: 1.2;
+}
+
+.pdf-optimized .contract-container {
+  padding: 0.5rem;
+}
+
+.pdf-optimized .contract-section {
+  margin-bottom: 0.4rem;
+  padding: 0.3rem 0.5rem;
+}
+
+.pdf-optimized .contract-clause {
+  margin-bottom: 0.2rem;
+  padding: 0.1rem 0;
+}
+
+.pdf-optimized .text-sm {
+  font-size: 8pt;
+}
