@@ -15,7 +15,7 @@ export {
 } from './supabase/rentalService';
 
 // Export default companies information to maintain compatibility
-export { defaultCompanies } from './supabase/index';
+export { defaultCompanies } from './supabase/companyService';
 
 // Exportar o cliente Supabase para uso no componente PrintButton
 export { supabase } from './supabase/supabaseClient';

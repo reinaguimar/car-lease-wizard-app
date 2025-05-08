@@ -82,4 +82,9 @@ export type Company = {
   code: string;
   logo_url?: string | null;
   theme_color?: string | null;
+  cnpj?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
 };

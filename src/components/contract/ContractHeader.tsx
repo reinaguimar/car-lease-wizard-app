@@ -1,9 +1,9 @@
 
 import React from "react";
-import { type Company } from "@/components/CompanySelector";
+import { type Company } from "@/services/supabase/types";
 
 interface ContractHeaderProps {
-  company: Company;
+  company: "moove" | "yoou";
 }
 
 export function ContractHeader({ company }: ContractHeaderProps) {
