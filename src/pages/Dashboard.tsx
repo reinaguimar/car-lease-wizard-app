@@ -9,7 +9,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   PieChart, Pie, Cell 
 } from 'recharts';
-import { getContracts, Contract } from "@/services/supabase";
+import { getRentals, Rental } from "@/services/supabase";
 import { isSupabaseConfigured } from "@/services/supabase/supabaseClient";
 import { 
   ArrowRight, 
@@ -40,8 +40,8 @@ type DateRange = "all" | "thisMonth" | "lastMonth" | "last3Months" | "last6Month
 type StatusFilter = "all" | "active" | "completed" | "canceled";
 
 export default function Dashboard() {
-  const [contracts, setContracts] = useState<Contract[]>([]);
-  const [filteredContracts, setFilteredContracts] = useState<Contract[]>([]);
+  const [contracts, setContracts] = useState<Rental[]>([]);
+  const [filteredContracts, setFilteredContracts] = useState<Rental[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
   const isMobile = useIsMobile();
@@ -71,7 +71,7 @@ export default function Dashboard() {
           return;
         }
 
-        const contractsData = await getContracts();
+        const contractsData = await getRentals();
         setContracts(contractsData);
         setFilteredContracts(contractsData);
       } catch (error) {
@@ -144,8 +144,8 @@ export default function Dashboard() {
   const canceledContracts = filteredContracts.filter(c => c.status === 'canceled').length;
   
   // Calculate unique clients and vehicles
-  const uniqueClients = new Set(filteredContracts.map(c => c.client_id)).size;
-  const uniqueVehicles = new Set(filteredContracts.map(c => c.vehicle_id)).size;
+  const uniqueClients = new Set(filteredContracts.map(c => c.client_id_number)).size;
+  const uniqueVehicles = new Set(filteredContracts.map(c => c.vehicle_license_plate)).size;
 
   // Prepare chart data
   const statusData = [
