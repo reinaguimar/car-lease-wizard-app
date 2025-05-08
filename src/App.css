@@ -19,10 +19,10 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em #EF65CFaa);
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 2em #EF65CFaa);
 }
 
 @keyframes logo-spin {
@@ -59,3 +59,33 @@
     padding-right: 0.5rem;
   }
 }
+
+/* Estilos específicos para a identidade Yoou */
+.yoou-gradient {
+  background: linear-gradient(135deg, #EF65CF 0%, #F391DC 100%);
+}
+
+.btn-yoou {
+  background-color: #EF65CF;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.btn-yoou:hover {
+  background-color: #D33AAF;
+  box-shadow: 0 2px 10px rgba(239, 101, 207, 0.3);
+}
+
+.btn-yoou-outline {
+  border: 1px solid #EF65CF;
+  color: #EF65CF;
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.btn-yoou-outline:hover {
+  background-color: #fef6fc;
+  color: #D33AAF;
+  border-color: #D33AAF;
+}
+

@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -21,7 +21,6 @@ import {
   PieChart as PieChartIcon,
   Filter,
   Calendar,
-  FileText,
   FilePlus
 } from "lucide-react";
 import { LoadingState } from "@/components/LoadingState";
@@ -30,10 +29,9 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { toast } from "sonner";
-import { AuditLogViewer } from "@/components/AuditLogViewer";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+const COLORS = ['#EF65CF', '#F391DC', '#F7B4E5', '#FBDBF0', '#FEF6FC'];
 
 // Dashboard filter types
 type DateRange = "all" | "thisMonth" | "lastMonth" | "last3Months" | "last6Months" | "custom";
@@ -176,18 +174,18 @@ export default function Dashboard() {
     <div className="container mx-auto py-4 sm:py-6 px-2 sm:px-6">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#EF65CF]">Dashboard</h1>
           <p className="text-muted-foreground">Visão geral dos contratos de locação</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link to="/audit" className="w-full sm:w-auto">
-            <Button variant="outline" className="flex items-center gap-2 w-full sm:w-auto">
-              <FileText className="h-4 w-4" />
-              Logs de Auditoria
+          <Link to="/archived" className="w-full sm:w-auto">
+            <Button variant="outline" className="flex items-center gap-2 w-full sm:w-auto border-[#EF65CF] text-[#EF65CF] hover:bg-[#fef6fc] hover:text-[#D33AAF]">
+              <FileX className="h-4 w-4" />
+              Contratos Arquivados
             </Button>
           </Link>
           <Link to="/contracts/new" className="w-full sm:w-auto">
-            <Button className="flex items-center gap-2 w-full sm:w-auto">
+            <Button className="flex items-center gap-2 w-full sm:w-auto bg-[#EF65CF] hover:bg-[#D33AAF]">
               <FilePlus className="h-4 w-4" />
               Novo Contrato
             </Button>
@@ -196,22 +194,22 @@ export default function Dashboard() {
       </div>
 
       {/* Filters Section */}
-      <Card className="mb-6">
+      <Card className="mb-6 border-[#EF65CF]/20 shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
+          <CardTitle className="text-lg flex items-center gap-2 text-[#D33AAF]">
             <Filter className="h-4 w-4" />
             Filtros
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium mb-2 block">Status do Contrato</label>
+              <label className="text-sm font-medium mb-2 block text-[#A8499E]">Status do Contrato</label>
               <Select
                 value={statusFilter}
                 onValueChange={(value) => setStatusFilter(value as StatusFilter)}
               >
-                <SelectTrigger>
+                <SelectTrigger className="border-[#EF65CF]/30 focus:ring-[#EF65CF]/20">
                   <SelectValue placeholder="Todos os status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -224,13 +222,13 @@ export default function Dashboard() {
             </div>
             
             <div>
-              <label className="text-sm font-medium mb-2 block">Período</label>
+              <label className="text-sm font-medium mb-2 block text-[#A8499E]">Período</label>
               <div className="flex flex-col sm:flex-row gap-2">
                 <Select
                   value={dateRange}
                   onValueChange={(value) => setDateRange(value as DateRange)}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full border-[#EF65CF]/30 focus:ring-[#EF65CF]/20">
                     <SelectValue placeholder="Todos os períodos" />
                   </SelectTrigger>
                   <SelectContent>
@@ -246,7 +244,7 @@ export default function Dashboard() {
                 {dateRange === "custom" && (
                   <Popover>
                     <PopoverTrigger asChild>
-                      <Button variant="outline" className="flex gap-2 w-full sm:w-auto">
+                      <Button variant="outline" className="flex gap-2 w-full sm:w-auto border-[#EF65CF]/30 text-[#A8499E]">
                         <Calendar className="h-4 w-4" />
                         {customDateRange.from && customDateRange.to ? (
                           <span>
@@ -290,52 +288,52 @@ export default function Dashboard() {
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <Card>
+            <Card className="border-[#EF65CF]/20 shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total de Contratos</CardTitle>
-                <FileCheck className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium text-[#A8499E]">Total de Contratos</CardTitle>
+                <FileCheck className="h-4 w-4 text-[#EF65CF]" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{totalContracts}</div>
+                <div className="text-2xl font-bold text-[#D33AAF]">{totalContracts}</div>
                 <p className="text-xs text-muted-foreground">
                   {activeContracts} ativos
                 </p>
               </CardContent>
             </Card>
             
-            <Card>
+            <Card className="border-[#EF65CF]/20 shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Clientes</CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium text-[#A8499E]">Clientes</CardTitle>
+                <Users className="h-4 w-4 text-[#EF65CF]" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{uniqueClients}</div>
+                <div className="text-2xl font-bold text-[#D33AAF]">{uniqueClients}</div>
                 <p className="text-xs text-muted-foreground">
                   clientes únicos
                 </p>
               </CardContent>
             </Card>
             
-            <Card>
+            <Card className="border-[#EF65CF]/20 shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Veículos</CardTitle>
-                <Car className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium text-[#A8499E]">Veículos</CardTitle>
+                <Car className="h-4 w-4 text-[#EF65CF]" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{uniqueVehicles}</div>
+                <div className="text-2xl font-bold text-[#D33AAF]">{uniqueVehicles}</div>
                 <p className="text-xs text-muted-foreground">
                   veículos alugados
                 </p>
               </CardContent>
             </Card>
             
-            <Card>
+            <Card className="border-[#EF65CF]/20 shadow-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Cancelamentos</CardTitle>
-                <FileX className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium text-[#A8499E]">Cancelamentos</CardTitle>
+                <FileX className="h-4 w-4 text-[#EF65CF]" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{canceledContracts}</div>
+                <div className="text-2xl font-bold text-[#D33AAF]">{canceledContracts}</div>
                 <p className="text-xs text-muted-foreground">
                   {totalContracts > 0 ? ((canceledContracts / totalContracts) * 100).toFixed(1) : "0"}% do total
                 </p>
@@ -344,152 +342,86 @@ export default function Dashboard() {
           </div>
 
           <div className="grid grid-cols-1 gap-6 mb-6">
-            <div className="col-span-1">
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-                <TabsList className="w-full">
-                  <TabsTrigger value="overview" className="gap-2 w-full">
-                    <BarChart2 className="h-4 w-4" />
-                    <span className={isMobile ? "hidden" : ""}>Visão Geral</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="status" className="gap-2 w-full">
-                    <PieChartIcon className="h-4 w-4" />
-                    <span className={isMobile ? "hidden" : ""}>Status dos Contratos</span>
-                  </TabsTrigger>
-                </TabsList>
+            <Card className="border-[#EF65CF]/20 shadow-sm">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <CardHeader className="pb-0">
+                  <CardTitle className="text-[#D33AAF]">Análise de Contratos</CardTitle>
+                  <CardDescription>
+                    Visualização gráfica dos contratos de locação
+                  </CardDescription>
+                  <TabsList className="mt-4 bg-[#fef6fc]/50">
+                    <TabsTrigger value="overview" className="data-[state=active]:bg-[#EF65CF] data-[state=active]:text-white gap-2 w-full">
+                      <BarChart2 className="h-4 w-4" />
+                      <span className={isMobile ? "hidden" : ""}>Visão Geral</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="status" className="data-[state=active]:bg-[#EF65CF] data-[state=active]:text-white gap-2 w-full">
+                      <PieChartIcon className="h-4 w-4" />
+                      <span className={isMobile ? "hidden" : ""}>Status dos Contratos</span>
+                    </TabsTrigger>
+                  </TabsList>
+                </CardHeader>
                 
-                <TabsContent value="overview" className="space-y-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Contratos por Mês ({currentYear})</CardTitle>
-                      <CardDescription>
-                        Distribuição de contratos ao longo do ano
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="px-0 sm:px-2 overflow-x-auto">
+                <CardContent className="pt-6">
+                  <TabsContent value="overview" className="mt-0">
+                    <div className="px-0 sm:px-2 overflow-x-auto">
                       <div style={{ width: '100%', height: 350, minWidth: isMobile ? 500 : 'auto' }}>
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={monthlyData}>
-                            <CartesianGrid strokeDasharray="3 3" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="#F7B4E5" />
                             <XAxis dataKey="name" />
                             <YAxis allowDecimals={false} />
-                            <Tooltip />
+                            <Tooltip 
+                              contentStyle={{ 
+                                backgroundColor: '#fff', 
+                                border: '1px solid #EF65CF',
+                                borderRadius: '8px' 
+                              }} 
+                            />
                             <Legend />
-                            <Bar dataKey="contratos" fill="#8884d8" />
+                            <Bar dataKey="contratos" fill="#EF65CF" radius={[4, 4, 0, 0]} />
                           </BarChart>
                         </ResponsiveContainer>
                       </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-                
-                <TabsContent value="status" className="space-y-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Status dos Contratos</CardTitle>
-                      <CardDescription>
-                        Distribuição de contratos por status
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex items-center justify-center h-80">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <PieChart>
-                            <Pie
-                              data={statusData}
-                              cx="50%"
-                              cy="50%"
-                              labelLine={false}
-                              outerRadius={isMobile ? 60 : 80}
-                              fill="#8884d8"
-                              dataKey="value"
-                              label={({ name, percent }) => 
-                                isMobile ? 
-                                `${name[0]}${name.length > 3 ? name[1] : ''}: ${(percent * 100).toFixed(0)}%` :
-                                `${name}: ${(percent * 100).toFixed(0)}%`
-                              }
-                            >
-                              {statusData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                              ))}
-                            </Pie>
-                            <Tooltip />
-                            <Legend />
-                          </PieChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              </Tabs>
-            </div>
-            
-            <div>
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Atividade Recente</CardTitle>
-                </CardHeader>
-                <CardContent className="px-0 sm:px-2">
-                  <AuditLogViewer maxItems={isMobile ? 5 : 8} showTitle={false} height={isMobile ? "250px" : "320px"} />
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="status" className="mt-0">
+                    <div className="flex items-center justify-center h-80">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={statusData}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            outerRadius={isMobile ? 60 : 80}
+                            fill="#8884d8"
+                            dataKey="value"
+                            label={({ name, percent }) => 
+                              isMobile ? 
+                              `${name[0]}${name.length > 3 ? name[1] : ''}: ${(percent * 100).toFixed(0)}%` :
+                              `${name}: ${(percent * 100).toFixed(0)}%`
+                            }
+                          >
+                            {statusData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip 
+                            contentStyle={{ 
+                              backgroundColor: '#fff', 
+                              border: '1px solid #EF65CF',
+                              borderRadius: '8px' 
+                            }} 
+                          />
+                          <Legend />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </TabsContent>
                 </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-4">Ações Rápidas</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              <Link to="/contracts" className="w-full">
-                <Card className="hover:bg-muted/50 transition-colors cursor-pointer h-full">
-                  <CardContent className="p-4 sm:p-6 flex flex-col items-center text-center h-full">
-                    <FileCheck className="h-8 w-8 sm:h-10 sm:w-10 mb-2" />
-                    <h3 className="font-medium mb-1">Ver Contratos Ativos</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Acesse todos os contratos ativos
-                    </p>
-                    <ArrowRight className="h-4 w-4 mt-auto" />
-                  </CardContent>
-                </Card>
-              </Link>
-              
-              <Link to="/archived" className="w-full">
-                <Card className="hover:bg-muted/50 transition-colors cursor-pointer h-full">
-                  <CardContent className="p-4 sm:p-6 flex flex-col items-center text-center h-full">
-                    <FileX className="h-8 w-8 sm:h-10 sm:w-10 mb-2" />
-                    <h3 className="font-medium mb-1">Contratos Arquivados</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Acesse contratos concluídos e cancelados
-                    </p>
-                    <ArrowRight className="h-4 w-4 mt-auto" />
-                  </CardContent>
-                </Card>
-              </Link>
-              
-              <Link to="/audit" className="w-full">
-                <Card className="hover:bg-muted/50 transition-colors cursor-pointer h-full">
-                  <CardContent className="p-4 sm:p-6 flex flex-col items-center text-center h-full">
-                    <FileText className="h-8 w-8 sm:h-10 sm:w-10 mb-2" />
-                    <h3 className="font-medium mb-1">Logs de Auditoria</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Visualize todas as atividades do sistema
-                    </p>
-                    <ArrowRight className="h-4 w-4 mt-auto" />
-                  </CardContent>
-                </Card>
-              </Link>
-              
-              <Link to="/contracts/new" className="w-full">
-                <Card className="hover:bg-muted/50 transition-colors cursor-pointer h-full">
-                  <CardContent className="p-4 sm:p-6 flex flex-col items-center text-center h-full">
-                    <Car className="h-8 w-8 sm:h-10 sm:w-10 mb-2" />
-                    <h3 className="font-medium mb-1">Novo Contrato</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Crie um novo contrato de locação
-                    </p>
-                    <ArrowRight className="h-4 w-4 mt-auto" />
-                  </CardContent>
-                </Card>
-              </Link>
-            </div>
+              </Tabs>
+            </Card>
           </div>
         </>
       )}
