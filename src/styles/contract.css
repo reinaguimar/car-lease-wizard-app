@@ -1,0 +1,64 @@
+
+.contract-container {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.contract-header {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.contract-section {
+  margin-bottom: 1rem;
+}
+
+.contract-clause {
+  margin-bottom: 0.5rem;
+}
+
+.contract-signature {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.contract-signature-line {
+  border-top: 1px solid black;
+  width: 200px;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.translation {
+  font-style: italic;
+  color: #555555;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.3;
+    background: #fff;
+    color: #000;
+  }
+  
+  .contract-container {
+    width: 100%;
+    padding: 20px;
+  }
+}
+
+.print-only {
+  display: none;
+}

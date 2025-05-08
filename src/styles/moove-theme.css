@@ -1,0 +1,40 @@
+
+/* Moove Theme Styles */
+.moove-theme .contract-container {
+  font-family: 'Arial', 'Helvetica Neue', sans-serif;
+  color: #222222;
+}
+
+.moove-theme .contract-header {
+  background-color: #33C3F0;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.moove-theme .contract-section {
+  border-left: 3px solid #33C3F0;
+  padding-left: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom-color: #f3f3f3;
+}
+
+.moove-theme .translation {
+  color: #555555;
+}
+
+.moove-theme .contract-signature-line {
+  border-top: 2px solid #33C3F0;
+}
+
+.moove-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.moove-logo img {
+  height: 50px;
+}
