@@ -83,12 +83,12 @@ export function ContractPreview({ data }: ContractPreviewProps) {
             </div>
             <div className="contract-clause">
               5.1 Starting Date / <span className="translation">Data de Início:</span> {formatDate(data.startDate)}<br />
-              Time / <span className="translation">Hora:</span> {data.startTime || "_________________"}<br />
+              Time / <span className="translation">Hora:</span> {data.startTime || "_________________"} / <span className="translation">Hora</span> {data.startTime || "_________________"}h<br />
               5.1.1 Delivery location: {data.deliveryLocation || "_________________"} / <span className="translation">Local de entrega:</span> {data.deliveryLocation || "_________________"}
             </div>
             <div className="contract-clause">
               5.2 Ending Date / <span className="translation">Data de Término:</span> {formatDate(data.endDate)}<br />
-              Time / <span className="translation">Hora:</span> {data.endTime || "_________________"}<br />
+              Time / <span className="translation">Hora:</span> {data.endTime || "_________________"} / <span className="translation">Hora</span> {data.endTime || "_________________"}h<br />
               5.2.1 Return location: {data.returnLocation || "_________________"} / <span className="translation">Local de retorno:</span> {data.returnLocation || "_________________"}
             </div>
           </div>
@@ -116,11 +116,11 @@ export function ContractPreview({ data }: ContractPreviewProps) {
               7.4 The rented vehicle shall not be used for any race or in any competition.<br />
               7.5 The rented vehicle shall not be used for any illegal purpose.<br />
               7.6 The Renter shall not operate the vehicle in a negligent manner.<br />
-              7.7 The rented vehicle shall not be operated by any other person other than the Renter stipulated in 1.2 above without the written permission of the Owner.<br />
-              7.8 The Renter agrees to use the vehicle exclusively for legal purposes and in compliance with all applicable traffic laws in the state of Florida.<br />
-              7.9 In the state of Florida, only a physical driver's license is accepted.<br />
+              7.7 The rented vehicle shall not be operated by any other person other than the Renter stipulated in 1.2 above without the written permission of the Owner. If Renter allows any other driver under the age of 25 years old to drive the rented vehicle, the Renter will be fully responsible for all expenses relating to the rental car and any other Vehicle involve in any type of accident.<br />
+              7.8 The Renter agrees to use the vehicle exclusively for legal purposes and in compliance with all applicable traffic laws in the state of Florida. The Renter shall not permit unauthorized third parts to operate the vehicle. In the event of fines, a surcharge of 20% will be applied to the fine amount, which must be paid within 3 days of notification.<br />
+              7.9 In the state of Florida, only a physical driver's license is accepted. The Renter is responsible for providing the Owner, at the time of signing this contract, with the documents of the individuals authorized to drive each vehicle, properly licensed, and provide a passport.<br />
               7.10 The Owner shall provide the Renter with the vehicle documents and proof of insurance at the time of vehicle delivery.<br />
-              7.11 The Owner shall be responsible for all maintenance and repairs required to ensure the vehicle remains in safe and proper working condition during the rental period.
+              7.11 The Owner shall be responsible for all maintenance and repairs required to ensure the vehicle remains in safe and proper working condition during the rental period. However, any repairs necessitated by negligence or misuse by the Renter shall be the sole responsibility of the Renter.
             </div>
             <div className="contract-clause translation text-xs">
               7.1 O veículo alugado não deve ser usado para transportar passageiros ou mercadorias para fins comerciais.<br />
@@ -129,11 +129,11 @@ export function ContractPreview({ data }: ContractPreviewProps) {
               7.4 O veículo alugado não deve ser usado em corridas ou competições.<br />
               7.5 O veículo alugado não deve ser usado para qualquer propósito ilegal.<br />
               7.6 O Locatário não deve operar o veículo de maneira negligente.<br />
-              7.7 O veículo alugado não deve ser operado por qualquer pessoa que não seja o Locatário estipulado na cláusula 1.2 acima sem a permissão por escrito do Proprietário.<br />
-              7.8 O LOCATÁRIO compromete-se a utilizar o veículo exclusivamente para fins legais, em conformidade com todas as leis de trânsito aplicáveis no estado da Flórida.<br />
-              7.9 No estado da Flórida, é aceita apenas a CNH física.<br />
+              7.7 O veículo alugado não deve ser operado por qualquer pessoa que não seja o Locatário estipulado na cláusula 1.2 acima sem a permissão por escrito do Proprietário. Se o Locatário permitir que qualquer outro motorista com menos de 25 anos de idade conduza o veículo alugado, o Locatário será totalmente responsável por todas as despesas relacionadas ao carro alugado e qualquer outro veículo envolvido em qualquer tipo de acidente.<br />
+              7.8 O LOCATÁRIO compromete-se a utilizar o veículo exclusivamente para fins legais, em conformidade com todas as leis de trânsito aplicáveis no estado da Flórida. O LOCATÁRIO não permitirá que terceiros não autorizados conduzam o veículo. Em caso de multas, será aplicada uma taxa adicional de 20% sobre o valor da multa, a ser paga em até 3 dias após sua notificação.<br />
+              7.9 No estado da Flórida, é aceita apenas a CNH física. O LOCATÁRIO é responsável por enviar ao PROPRIETÁRIO, no momento da assinatura deste contrato, os documentos das pessoas autorizadas a conduzir cada veículo, ser devidamente habilitadas, e apresentar o passaporte.<br />
               7.10 O PROPRIETÁRIO, por sua vez, deverá entregar ao LOCATÁRIO os documentos dos veículos e os comprovantes de seguro no momento da entrega dos veículos.<br />
-              7.11 O PROPRIETÁRIO será responsável por todas as manutenções e reparos necessários para assegurar que o veículo permaneça em condições seguras e adequadas de uso durante o período de locação.
+              7.11 O PROPRIETÁRIO será responsável por todas as manutenções e reparos necessários para assegurar que o veículo permaneça em condições seguras e adequadas de uso durante o período de locação. Contudo, qualquer reparo necessário devido a negligência ou uso indevido por parte do LOCATÁRIO será de responsabilidade exclusiva deste.
             </div>
           </div>
 
@@ -170,7 +170,7 @@ export function ContractPreview({ data }: ContractPreviewProps) {
             </div>
             <div className="contract-clause">
               <span className="text-sm">11.1 The Renter hereby agrees to return the above-described vehicle to the pick up location later than 01PM.</span> <span className="translation text-sm">O Locatário concorda em devolver o veículo descrito acima ao local de retirada até no máximo 10h.</span><br />
-              <span className="text-sm">11.2. The Renter must return the vehicles to the OWNER on the lease end date of the airport at {data.returnLocation || "_________________"}, as agreed, in the same condition as received, except for normal wear and tear. The vehicle must be returned with a full tank; otherwise, a fee of $60.00 (sixty dollars) per vehicle will be charged. In case of excessive dirt, a fee of $100.00 per car will be applied.</span> <span className="translation text-sm">O Locatário deve devolver os veículos ao PROPRIETÁRIO na data de término da locação, no aeroporto de {data.returnLocation || "_________________"}, conforme acordado, nas mesmas condições em que foram recebidos, exceto pelo desgaste natural. O veículo deve ser devolvido com o tanque cheio; caso contrário, será cobrada uma taxa de $60,00 (sessenta dólares). Em caso de sujeira excessiva, será aplicada uma taxa de $100,00 por carro.</span>
+              <span className="text-sm">11.2. The Renter must return the vehicles to the OWNER on the lease end date of the airport at {data.returnLocation ? data.returnLocation.toUpperCase() : "AEROPORTO DE ORLANDO"}, as agreed, in the same condition as received, except for normal wear and tear. The vehicle must be returned with a full tank; otherwise, a fee of $60.00 (sixty dollars) per vehicle will be charged. In case of excessive dirt, a fee of $100.00 per car will be applied.</span> <span className="translation text-sm">O Locatário deve devolver os veículos ao PROPRIETÁRIO na data de término da locação, no aeroporto de {data.returnLocation ? data.returnLocation.toUpperCase() : "AEROPORTO DE ORLANDO"}, conforme acordado, nas mesmas condições em que foram recebidos, exceto pelo desgaste natural. O veículo deve ser devolvido com o tanque cheio; caso contrário, será cobrada uma taxa de $60,00 (sessenta dólares). Em caso de sujeira excessiva, será aplicada uma taxa de $100,00 por carro.</span>
             </div>
           </div>
 
