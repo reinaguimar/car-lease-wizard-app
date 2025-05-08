@@ -5,7 +5,7 @@ import { createClient as createClientService } from './clientService';
 import { createVehicle as createVehicleService } from './vehicleService';
 import { createContract as createContractService } from './contractService';
 import { handleSupabaseError } from './supabaseClient';
-import { getCompanyByCode } from './companyService';
+import { getCompanyById } from './companyService';
 
 // Cria ou busca um cliente por CPF/documento
 export async function createClient(clientData: { 

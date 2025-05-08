@@ -16,7 +16,11 @@ export * from './supabase/clientService';
 export * from './supabase/vehicleService';
 export * from './supabase/contractService';
 export * from './supabase/searchService';
-export * from './supabase/auditService';
+// Export audit service explicitly to avoid duplicate exports
+export { 
+  logAuditEvent,
+  getAuditLogs
+} from './supabase/auditService';
 export * from './supabase/companyService';
 
 // Exportar o cliente Supabase para uso no componente PrintButton

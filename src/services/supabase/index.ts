@@ -16,4 +16,8 @@ export * from './vehicleService';
 export * from './contractService';
 export * from './searchService';
 export * from './supabaseClient';
-export * from './auditService';
+// Export audit service explicitly to avoid duplicate exports
+export { 
+  logAuditEvent,
+  getAuditLogs
+} from './auditService';
