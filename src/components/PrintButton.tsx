@@ -9,7 +9,8 @@ import { useState } from "react";
 import { 
   createClientHelper as createClient, 
   createVehicleHelper as createVehicle, 
-  createContractHelper as createContract 
+  createContractHelper as createContract,
+  getCompanyByCode 
 } from "@/services/supabase";
 import { generateContractNumber } from "@/utils/contractUtils";
 import { useLoading } from "@/hooks/useLoading";
@@ -38,15 +39,33 @@ export function PrintButton({ data, company }: PrintButtonProps) {
   // Verifica se o formulário está completo
   const isComplete = isFormDataComplete(data);
   
-  // Mapeamento de IDs de empresa corretos para o Supabase
-  const getCompanyId = (companyCode: Company): string => {
-    // IDs reais do banco de dados Supabase 
-    // (obtidos através dos registros existentes)
-    const companyIds = {
-      'moove': '79c81b51-8a37-46f0-9b67-d38e3ab6d159',
-      'yoou': '23a81c52-8b38-47f1-9c67-e37e4ab6d160'
-    };
-    return companyIds[companyCode] || companyIds['moove']; // fallback para moove
+  // Função para obter o ID da empresa a partir do código
+  const getCompanyId = async (companyCode: Company): Promise<string> => {
+    try {
+      // Tentar obter o ID da empresa do banco de dados
+      const companyData = await getCompanyByCode(companyCode);
+      
+      if (companyData && companyData.id) {
+        console.log(`ID da empresa ${companyCode} obtido do banco de dados:`, companyData.id);
+        return companyData.id;
+      }
+      
+      // Fallback para IDs fixos caso a consulta falhe
+      console.warn("Não foi possível obter o ID da empresa do banco de dados, usando IDs fixos como fallback.");
+      const companyIds: Record<string, string> = {
+        'moove': '79c81b51-8a37-46f0-9b67-d38e3ab6d159',
+        'yoou': '23a81c52-8b38-47f1-9c67-e37e4ab6d160'
+      };
+      return companyIds[companyCode] || companyIds['moove'];
+    } catch (error) {
+      console.error("Erro ao obter ID da empresa:", error);
+      // Fallback para IDs fixos em caso de erro
+      const companyIds: Record<string, string> = {
+        'moove': '79c81b51-8a37-46f0-9b67-d38e3ab6d159',
+        'yoou': '23a81c52-8b38-47f1-9c67-e37e4ab6d160'
+      };
+      return companyIds[companyCode] || companyIds['moove'];
+    }
   };
   
   const handleSaveAsPDF = async () => {
@@ -75,8 +94,8 @@ export function PrintButton({ data, company }: PrintButtonProps) {
         throw new Error("Erro ao criar/buscar cliente");
       }
       
-      // 2. Criar ou buscar veículo no banco de dados
-      const companyId = getCompanyId(company);
+      // 2. Obter o ID da empresa e criar ou buscar veículo
+      const companyId = await getCompanyId(company);
       console.log("Usando company_id:", companyId, "para empresa:", company);
       
       const vehicleData = {

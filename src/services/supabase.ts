@@ -17,3 +17,4 @@ export * from './supabase/vehicleService';
 export * from './supabase/contractService';
 export * from './supabase/searchService';
 export * from './supabase/auditService';
+export * from './supabase/companyService';

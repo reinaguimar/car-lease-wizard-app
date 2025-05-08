@@ -42,6 +42,27 @@ export async function createClient(clientData: {
   }
 }
 
+// Função para verificar se um company_id é válido
+async function isValidCompanyId(companyId: string): Promise<boolean> {
+  try {
+    const { data, error } = await supabase
+      .from('companies')
+      .select('id')
+      .eq('id', companyId)
+      .single();
+      
+    if (error) {
+      console.error("Erro ao verificar company_id:", error);
+      return false;
+    }
+    
+    return !!data;
+  } catch (error) {
+    console.error("Erro ao verificar company_id:", error);
+    return false;
+  }
+}
+
 // Cria ou busca um veículo com os mesmos dados
 export async function createVehicle(vehicleData: {
   vehicle_type: string;
@@ -54,6 +75,13 @@ export async function createVehicle(vehicleData: {
   color?: string;
 }): Promise<Vehicle | null> {
   try {
+    // Primeiro, verificamos se o company_id é válido
+    const isValid = await isValidCompanyId(vehicleData.company_id);
+    if (!isValid) {
+      console.error("Company ID inválido:", vehicleData.company_id);
+      throw new Error(`Company ID inválido: ${vehicleData.company_id}. Verifique se o ID existe na tabela companies.`);
+    }
+    
     // Busca por veículo similar (mesma marca, modelo e combustível)
     const { data: existingVehicles, error: searchError } = await supabase
       .from('vehicles')
@@ -98,6 +126,13 @@ export async function createContract(contractData: {
   sign_date: string;
 }): Promise<Contract | null> {
   try {
+    // Verificar se o company_id é válido
+    const isValid = await isValidCompanyId(contractData.company_id);
+    if (!isValid) {
+      console.error("Company ID inválido no contrato:", contractData.company_id);
+      throw new Error(`Company ID inválido no contrato: ${contractData.company_id}`);
+    }
+    
     console.log("Dados do contrato antes de enviar para o Supabase:", contractData);
     const result = await createContractService(contractData);
     console.log("Resultado da criação do contrato:", result);
