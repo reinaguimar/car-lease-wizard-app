@@ -9,121 +9,18 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      audit_logs: {
+      rentals: {
         Row: {
-          action: string
-          created_at: string
-          details: string | null
-          id: string
-          resource: string
-          resource_id: string
-          user_id: string | null
-        }
-        Insert: {
-          action: string
-          created_at?: string
-          details?: string | null
-          id?: string
-          resource: string
-          resource_id: string
-          user_id?: string | null
-        }
-        Update: {
-          action?: string
-          created_at?: string
-          details?: string | null
-          id?: string
-          resource?: string
-          resource_id?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      clients: {
-        Row: {
-          address: string
-          created_at: string
-          email: string | null
-          first_name: string
-          id: string
-          id_number: string
-          phone: string | null
-          surname: string
-          updated_at: string
-        }
-        Insert: {
-          address: string
-          created_at?: string
-          email?: string | null
-          first_name: string
-          id?: string
-          id_number: string
-          phone?: string | null
-          surname: string
-          updated_at?: string
-        }
-        Update: {
-          address?: string
-          created_at?: string
-          email?: string | null
-          first_name?: string
-          id?: string
-          id_number?: string
-          phone?: string | null
-          surname?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      companies: {
-        Row: {
-          address: string | null
-          city: string | null
-          cnpj: string | null
-          code: string
-          country: string | null
-          created_at: string
-          id: string
-          logo_url: string | null
-          name: string
-          state: string | null
-          theme_color: string | null
-          updated_at: string
-        }
-        Insert: {
-          address?: string | null
-          city?: string | null
-          cnpj?: string | null
-          code: string
-          country?: string | null
-          created_at?: string
-          id?: string
-          logo_url?: string | null
-          name: string
-          state?: string | null
-          theme_color?: string | null
-          updated_at?: string
-        }
-        Update: {
-          address?: string | null
-          city?: string | null
-          cnpj?: string | null
-          code?: string
-          country?: string | null
-          created_at?: string
-          id?: string
-          logo_url?: string | null
-          name?: string
-          state?: string | null
-          theme_color?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      contracts: {
-        Row: {
-          client_id: string
-          company_id: string
+          client_address: string
+          client_email: string | null
+          client_id_number: string
+          client_name: string
+          client_phone: string | null
+          client_surname: string
+          company_code: string
+          company_logo_url: string | null
+          company_name: string
+          company_theme_color: string | null
           contract_number: string
           created_at: string
           created_by: string | null
@@ -139,12 +36,28 @@ export type Database = {
           start_date: string
           start_time: string
           status: string
+          total_amount: number
+          total_days: number
           updated_at: string
-          vehicle_id: string
+          vehicle_color: string | null
+          vehicle_fuel: string
+          vehicle_license_plate: string | null
+          vehicle_make: string
+          vehicle_model: string
+          vehicle_type: string
+          vehicle_year: string | null
         }
         Insert: {
-          client_id: string
-          company_id: string
+          client_address: string
+          client_email?: string | null
+          client_id_number: string
+          client_name: string
+          client_phone?: string | null
+          client_surname: string
+          company_code: string
+          company_logo_url?: string | null
+          company_name: string
+          company_theme_color?: string | null
           contract_number: string
           created_at?: string
           created_by?: string | null
@@ -160,12 +73,28 @@ export type Database = {
           start_date: string
           start_time: string
           status?: string
+          total_amount: number
+          total_days: number
           updated_at?: string
-          vehicle_id: string
+          vehicle_color?: string | null
+          vehicle_fuel: string
+          vehicle_license_plate?: string | null
+          vehicle_make: string
+          vehicle_model: string
+          vehicle_type: string
+          vehicle_year?: string | null
         }
         Update: {
-          client_id?: string
-          company_id?: string
+          client_address?: string
+          client_email?: string | null
+          client_id_number?: string
+          client_name?: string
+          client_phone?: string | null
+          client_surname?: string
+          company_code?: string
+          company_logo_url?: string | null
+          company_name?: string
+          company_theme_color?: string | null
           contract_number?: string
           created_at?: string
           created_by?: string | null
@@ -181,82 +110,18 @@ export type Database = {
           start_date?: string
           start_time?: string
           status?: string
+          total_amount?: number
+          total_days?: number
           updated_at?: string
-          vehicle_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "contracts_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "contracts_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "contracts_vehicle_id_fkey"
-            columns: ["vehicle_id"]
-            isOneToOne: false
-            referencedRelation: "vehicles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      vehicles: {
-        Row: {
-          color: string | null
-          company_id: string
-          created_at: string
-          fuel: string
-          id: string
-          license_plate: string | null
-          make: string
-          model: string
-          updated_at: string
-          vehicle_type: string
-          year: string | null
-        }
-        Insert: {
-          color?: string | null
-          company_id: string
-          created_at?: string
-          fuel: string
-          id?: string
-          license_plate?: string | null
-          make: string
-          model: string
-          updated_at?: string
-          vehicle_type: string
-          year?: string | null
-        }
-        Update: {
-          color?: string | null
-          company_id?: string
-          created_at?: string
-          fuel?: string
-          id?: string
-          license_plate?: string | null
-          make?: string
-          model?: string
-          updated_at?: string
+          vehicle_color?: string | null
+          vehicle_fuel?: string
+          vehicle_license_plate?: string | null
+          vehicle_make?: string
+          vehicle_model?: string
           vehicle_type?: string
-          year?: string | null
+          vehicle_year?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "vehicles_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {

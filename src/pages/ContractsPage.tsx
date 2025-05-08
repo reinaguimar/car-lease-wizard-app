@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Contract, getContracts, updateContractStatus, searchContracts } from "@/services/supabase";
+import { getRentals, searchRentals, updateRentalStatus, Rental } from "@/services/supabase";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Eye, FileText, ArrowLeft, AlertCircle, Loader } from "lucide-react";
@@ -23,36 +23,36 @@ import { useLoading } from "@/hooks/useLoading";
 import { useToast } from "@/hooks/use-toast";
 
 export default function ContractsPage() {
-  const [contracts, setContracts] = useState<Contract[]>([]);
-  const [filteredContracts, setFilteredContracts] = useState<Contract[]>([]);
+  const [rentals, setRentals] = useState<Rental[]>([]);
+  const [filteredRentals, setFilteredRentals] = useState<Rental[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const { toast } = useToast();
   
-  const [isLoading, _, fetchContracts, error] = useLoading(async () => {
-    const data = await getContracts({ status: "active" });
-    setContracts(data);
-    setFilteredContracts(data);
+  const [isLoading, _, fetchRentals, error] = useLoading(async () => {
+    const data = await getRentals({ status: "active" });
+    setRentals(data);
+    setFilteredRentals(data);
     return data;
   });
 
   const [isSearching, __, executeSearch] = useLoading(async (term: string) => {
     if (!term.trim()) {
-      setFilteredContracts(contracts);
-      return contracts;
+      setFilteredRentals(rentals);
+      return rentals;
     }
     
-    const results = await searchContracts(term);
-    setFilteredContracts(results);
+    const results = await searchRentals(term);
+    setFilteredRentals(results);
     return results;
   });
 
   const [isUpdating, ___, executeUpdate] = useLoading(async (id: string, status: string) => {
-    return await updateContractStatus(id, status);
+    return await updateRentalStatus(id, status);
   });
 
   useEffect(() => {
-    fetchContracts();
+    fetchRentals();
   }, []);
 
   const handleStatusChange = async (id: string, newStatus: string) => {
@@ -66,8 +66,8 @@ export default function ContractsPage() {
         }`,
       });
       
-      // Atualiza a lista de contratos após a mudança de status
-      fetchContracts();
+      // Refresh the rentals list after status change
+      fetchRentals();
     } catch (error) {
       toast({
         title: "Erro ao atualizar status",
@@ -90,10 +90,10 @@ export default function ContractsPage() {
     }
   };
 
-  // Paginação
+  // Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredContracts.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredRentals.slice(indexOfFirstItem, indexOfLastItem);
   
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -122,7 +122,7 @@ export default function ContractsPage() {
         <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
         <h2 className="text-2xl font-bold mb-2">Erro ao carregar contratos</h2>
         <p className="text-muted-foreground mb-6">{error.message}</p>
-        <Button onClick={() => fetchContracts()}>Tentar novamente</Button>
+        <Button onClick={() => fetchRentals()}>Tentar novamente</Button>
       </div>
     );
   }
@@ -154,7 +154,7 @@ export default function ContractsPage() {
         )}
       </div>
 
-      {filteredContracts.length === 0 ? (
+      {filteredRentals.length === 0 ? (
         <div className="text-center py-12 border rounded-lg bg-muted/20">
           <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-20" />
           <h3 className="font-medium text-lg">Nenhum contrato encontrado</h3>
@@ -172,34 +172,37 @@ export default function ContractsPage() {
                 <TableHead>Cliente</TableHead>
                 <TableHead>Veículo</TableHead>
                 <TableHead>Período</TableHead>
+                <TableHead>Valor Total</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentItems.map((contract) => (
-                <TableRow key={contract.id}>
-                  <TableCell className="font-medium">{contract.contract_number}</TableCell>
+              {currentItems.map((rental) => (
+                <TableRow key={rental.id}>
+                  <TableCell className="font-medium">{rental.contract_number}</TableCell>
                   <TableCell>
-                    {contract.clients
-                      ? `${contract.clients.first_name} ${contract.clients.surname}`
-                      : "N/A"}
+                    {`${rental.client_name} ${rental.client_surname}`}
                   </TableCell>
                   <TableCell>
-                    {contract.vehicles
-                      ? `${contract.vehicles.make} ${contract.vehicles.model}`
-                      : "N/A"}
+                    {`${rental.vehicle_make} ${rental.vehicle_model}`}
                   </TableCell>
                   <TableCell>
-                    {format(new Date(contract.start_date), "dd/MM/yyyy", {
+                    {format(new Date(rental.start_date), "dd/MM/yyyy", {
                       locale: ptBR,
                     })}{" "}
                     a{" "}
-                    {format(new Date(contract.end_date), "dd/MM/yyyy", {
+                    {format(new Date(rental.end_date), "dd/MM/yyyy", {
                       locale: ptBR,
                     })}
                   </TableCell>
-                  <TableCell>{renderContractStatus(contract.status)}</TableCell>
+                  <TableCell>
+                    {new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: 'USD'
+                    }).format(rental.total_amount)}
+                  </TableCell>
+                  <TableCell>{renderContractStatus(rental.status)}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
                       <Button size="sm" variant="outline">
@@ -208,7 +211,7 @@ export default function ContractsPage() {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => handleStatusChange(contract.id, "completed")}
+                        onClick={() => handleStatusChange(rental.id, "completed")}
                         disabled={isUpdating}
                       >
                         Concluir
@@ -217,7 +220,7 @@ export default function ContractsPage() {
                         size="sm"
                         variant="outline"
                         className="text-red-500 hover:text-red-700"
-                        onClick={() => handleStatusChange(contract.id, "canceled")}
+                        onClick={() => handleStatusChange(rental.id, "canceled")}
                         disabled={isUpdating}
                       >
                         Cancelar
@@ -230,7 +233,7 @@ export default function ContractsPage() {
           </Table>
 
           <ContractsPagination
-            totalItems={filteredContracts.length}
+            totalItems={filteredRentals.length}
             itemsPerPage={itemsPerPage}
             currentPage={currentPage}
             onPageChange={handlePageChange}
