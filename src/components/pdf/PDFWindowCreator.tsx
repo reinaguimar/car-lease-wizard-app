@@ -39,7 +39,7 @@ export const createPDFWindow = ({ company }: PDFWindowCreatorProps): Window | nu
       </head>
       <body>
         <div class="print-container ${themeClass}">
-          <div id="contract-container" class="compact-layout"></div>
+          <div id="contract-container" class="compact-layout extra-compact"></div>
         </div>
         <script>
           // Auto print when content is loaded
@@ -72,36 +72,34 @@ export const populatePDFContent = (pdfWindow: Window, company: Company): void =>
       // Fix absolute URLs for images
       fixImageUrls(contractContainer);
       
-      // Ensure proper page breaks between important sections
+      // Make all sections more compact
       const sections = contractContainer.querySelectorAll('.contract-section') as NodeListOf<HTMLElement>;
       
-      // Apply page breaks after specific sections
-      if (sections.length >= 9) {
-        // Force page break after vehicle condition (section 3)
-        const vehicleConditionSection = sections[2] as HTMLElement;
-        if (vehicleConditionSection) {
-          vehicleConditionSection.style.pageBreakAfter = 'always';
-        }
+      sections.forEach((section) => {
+        section.style.marginBottom = '0.3rem';
+        section.style.padding = '0.3rem 0.4rem';
         
-        // Force page break after rental period (section 5)
-        const rentalPeriodSection = sections[4] as HTMLElement;
-        if (rentalPeriodSection) {
-          rentalPeriodSection.style.pageBreakAfter = 'always';
-        }
-        
-        // Make sure sections don't split across pages (except for longer ones)
-        sections.forEach((section, index) => {
-          // Don't apply page-break-inside: avoid to longer sections that may need to span pages
-          if (index !== 2 && index !== 6 && index !== 7) { // Skip vehicle info, obligations and insurance
-            section.style.pageBreakInside = 'avoid';
-          }
+        // Make all clauses more compact
+        const clauses = section.querySelectorAll('.contract-clause');
+        clauses.forEach(clause => {
+          (clause as HTMLElement).style.marginBottom = '0.1rem';
+          (clause as HTMLElement).style.padding = '0.1rem 0';
         });
+      });
+      
+      // Compact signature section
+      const signatureSection = contractContainer.querySelector('.contract-signature') as HTMLElement;
+      if (signatureSection) {
+        signatureSection.style.marginTop = '0.5rem';
       }
       
-      // Add headers to all pages
+      // DO NOT add any manual page breaks - let the content flow naturally
+      // NO PAGE BREAKS to fit into 2 pages maximum
+      
+      // Add single header at the top only
       addHeaderToAllPages(contractContainer, company);
       
-      // Apply layout optimizations for PDF
+      // Apply layout optimizations to get two columns for short sections
       optimizePDFContent(contractContainer);
     }
   }

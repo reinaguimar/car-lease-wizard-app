@@ -19,6 +19,11 @@ export function PrintButton({ data, company }: PrintButtonProps) {
     
     if (pdfWindow) {
       populatePDFContent(pdfWindow, company);
+      
+      // This is important to remind the user
+      setTimeout(() => {
+        toast.info("Utilize a opção 'Salvar como PDF' na janela de impressão para gerar o documento PDF");
+      }, 1500);
     }
   };
 
