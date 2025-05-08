@@ -58,7 +58,6 @@ export async function createVehicle(vehicleData: {
     const { data: existingVehicles, error: searchError } = await supabase
       .from('vehicles')
       .select('*')
-      .eq('company_id', vehicleData.company_id)
       .eq('make', vehicleData.make)
       .eq('model', vehicleData.model)
       .eq('fuel', vehicleData.fuel);

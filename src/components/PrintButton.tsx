@@ -38,6 +38,17 @@ export function PrintButton({ data, company }: PrintButtonProps) {
   // Verifica se o formulário está completo
   const isComplete = isFormDataComplete(data);
   
+  // Mapeamento de IDs de empresa corretos para o Supabase
+  const getCompanyId = (companyCode: Company): string => {
+    // IDs reais do banco de dados Supabase 
+    // (obtidos através dos registros existentes)
+    const companyIds = {
+      'moove': '79c81b51-8a37-46f0-9b67-d38e3ab6d159',
+      'yoou': '23a81c52-8b38-47f1-9c67-e37e4ab6d160'
+    };
+    return companyIds[companyCode] || companyIds['moove']; // fallback para moove
+  };
+  
   const handleSaveAsPDF = async () => {
     try {
       setIsSaving(true);
@@ -65,14 +76,15 @@ export function PrintButton({ data, company }: PrintButtonProps) {
       }
       
       // 2. Criar ou buscar veículo no banco de dados
+      const companyId = getCompanyId(company);
+      console.log("Usando company_id:", companyId, "para empresa:", company);
+      
       const vehicleData = {
         vehicle_type: data.vehicleType!,
         make: data.make!,
         model: data.model!,
         fuel: data.fuel!,
-        company_id: company === 'moove' 
-          ? '79c81b51-8a37-46f0-9b67-d38e3ab6d159' // ID fixo da Moove
-          : '23a81c52-8b38-47f1-9c67-e37e4ab6d160'  // ID fixo da Yoou
+        company_id: companyId
       };
       
       const vehicle = await createVehicle(vehicleData);
@@ -86,7 +98,7 @@ export function PrintButton({ data, company }: PrintButtonProps) {
         contract_number: generateContractNumber(),
         client_id: client.id,
         vehicle_id: vehicle.id,
-        company_id: vehicleData.company_id,
+        company_id: companyId,
         start_date: formatDateToISO(data.startDate!),
         start_time: data.startTime!,
         end_date: formatDateToISO(data.endDate!),

@@ -30,12 +30,16 @@ export const logAuditEvent = async (
       user_id: userId
     };
     
+    // Tentativa de registro de auditoria (não crítica, pode falhar silenciosamente)
     const { error } = await supabase.from('audit_logs').insert([auditLog]);
     
-    if (error) throw error;
+    if (error) {
+      console.warn("Falha no registro de auditoria, mas continuando operação:", error.message);
+      // Não lançamos o erro aqui para não interromper o fluxo principal
+    }
   } catch (error) {
-    handleSupabaseError(error, `registro de auditoria (${action} ${resource})`);
-    // We don't want to throw here as audit logging should not break the main functionality
+    // Apenas registramos o erro sem interromper o fluxo principal
+    console.warn("Erro ao registrar auditoria, continuando operação:", error);
   }
 };
 
