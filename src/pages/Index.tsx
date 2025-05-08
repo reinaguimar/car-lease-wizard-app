@@ -9,8 +9,10 @@ import { Toaster } from "@/components/ui/sonner";
 import { CompanySelector, type Company } from "@/components/CompanySelector";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Archive, File } from "lucide-react";
+import { Archive, File, BarChart2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { InfoIcon } from "lucide-react";
 
 const Index = () => {
   const [formData, setFormData] = useState<Partial<FormData>>({});
@@ -33,6 +35,15 @@ const Index = () => {
           Preencha os dados do contrato e visualize em tempo real
         </p>
       </div>
+
+      <Alert className="mb-4">
+        <InfoIcon className="h-4 w-4" />
+        <AlertTitle>Como usar</AlertTitle>
+        <AlertDescription>
+          Preencha todos os campos do formulário, visualize o contrato e depois clique em "Salvar Contrato" para gerar o PDF e salvar os dados.
+          Os contratos salvos estarão disponíveis na página "Ver Contratos".
+        </AlertDescription>
+      </Alert>
 
       <div className="mb-4">
         <CompanySelector 
@@ -64,8 +75,14 @@ const Index = () => {
       
       {/* Botões de navegação no final da página */}
       <div className="mt-6 sm:mt-8 pt-4 border-t no-print flex flex-wrap gap-2 justify-center">
-        <Link to="/contracts" className="w-full sm:w-auto">
+        <Link to="/" className="w-full sm:w-auto">
           <Button variant="outline" className="w-full sm:w-auto gap-2 text-sm">
+            <BarChart2 className="h-4 w-4" />
+            Dashboard
+          </Button>
+        </Link>
+        <Link to="/contracts" className="w-full sm:w-auto">
+          <Button variant="default" className="w-full sm:w-auto gap-2 text-sm">
             <File className="h-4 w-4" />
             Ver Contratos
           </Button>

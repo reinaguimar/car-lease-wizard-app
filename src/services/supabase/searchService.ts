@@ -47,6 +47,7 @@ export const getRecentContracts = async (limit: number = 5): Promise<Contract[]>
       
     if (error) throw error;
     
+    console.log('Contratos recentes:', data);
     return (data || []) as Contract[];
   } catch (error) {
     handleSupabaseError(error, 'busca de contratos recentes');
@@ -57,6 +58,7 @@ export const getRecentContracts = async (limit: number = 5): Promise<Contract[]>
 // Função para buscar contratos por status
 export const getContractsByStatus = async (status: string, limit: number = 20): Promise<Contract[]> => {
   try {
+    console.log(`Buscando contratos com status: ${status}`);
     const { data, error } = await supabase
       .from('contracts')
       .select(`
@@ -71,6 +73,7 @@ export const getContractsByStatus = async (status: string, limit: number = 20): 
       
     if (error) throw error;
     
+    console.log(`Contratos com status ${status}:`, data);
     return (data || []) as Contract[];
   } catch (error) {
     handleSupabaseError(error, `busca de contratos com status ${status}`);

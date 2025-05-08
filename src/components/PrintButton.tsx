@@ -7,7 +7,11 @@ import { type Company } from "./CompanySelector";
 import { useState } from "react";
 import { generateContractNumber } from "@/utils/contractUtils";
 import { createContract } from "@/services/supabase/contractService";
+import { createClient } from "@/services/supabase/clientService";
+import { createVehicle } from "@/services/supabase/vehicleService";
 import html2pdf from 'html2pdf.js';
+import { supabase } from "@/services/supabase";
+import { useNavigate } from "react-router-dom";
 
 interface PrintButtonProps {
   data: Partial<FormData>;
@@ -16,6 +20,7 @@ interface PrintButtonProps {
 
 export function PrintButton({ data, company }: PrintButtonProps) {
   const [isSaving, setIsSaving] = useState(false);
+  const navigate = useNavigate();
   
   // Função para verificar se todos os dados estão preenchidos
   const isFormDataComplete = (data: Partial<FormData>): boolean => {
@@ -48,17 +53,63 @@ export function PrintButton({ data, company }: PrintButtonProps) {
       // Gerar número de contrato
       const contractNumber = generateContractNumber();
       
-      // Preparar dados do contrato para salvar
-      const tempClientId = `temp-client-${Date.now()}`;
-      const tempVehicleId = `temp-vehicle-${Date.now()}`;
+      // Primeiro, salvar os dados do cliente
+      const clientData = {
+        first_name: data.firstName || '',
+        surname: data.surname || '',
+        id_number: data.idNumber || '',
+        address: data.address || '',
+        email: data.email || null,
+        phone: data.phone || null
+      };
+      
+      let clientId = '';
+      try {
+        const client = await createClient(clientData);
+        if (!client) throw new Error("Falha ao criar cliente");
+        clientId = client.id;
+        console.log("Cliente criado com ID:", clientId);
+      } catch (error) {
+        console.error("Erro ao criar cliente:", error);
+        toast.error("Erro ao criar registro do cliente");
+        setIsSaving(false);
+        return;
+      }
+      
+      // Em seguida, salvar os dados do veículo
+      const vehicleData = {
+        vehicle_type: data.vehicleType || '',
+        make: data.make || '',
+        model: data.model || '',
+        fuel: data.fuel || '',
+        license_plate: data.licensePlate || null,
+        year: data.year || null,
+        color: data.color || null,
+        company_id: `company-${company}`
+      };
+      
+      let vehicleId = '';
+      try {
+        const vehicle = await createVehicle(vehicleData);
+        if (!vehicle) throw new Error("Falha ao criar veículo");
+        vehicleId = vehicle.id;
+        console.log("Veículo criado com ID:", vehicleId);
+      } catch (error) {
+        console.error("Erro ao criar veículo:", error);
+        toast.error("Erro ao criar registro do veículo");
+        setIsSaving(false);
+        return;
+      }
+      
+      // Preparar dados do contrato para salvar com os IDs reais
       const companyId = `company-${company}`;
       
       try {
         // Salvar contrato no banco de dados
-        await createContract({
+        const newContract = await createContract({
           contract_number: contractNumber,
-          client_id: tempClientId,
-          vehicle_id: tempVehicleId, 
+          client_id: clientId,
+          vehicle_id: vehicleId,
           company_id: companyId,
           start_date: data.startDate ? data.startDate.toISOString().split('T')[0] : '',
           start_time: data.startTime || '',
@@ -69,9 +120,11 @@ export function PrintButton({ data, company }: PrintButtonProps) {
           rental_rate: parseFloat(data.rentalRate || '0'),
           deposit: parseFloat(data.deposit || '0'),
           sign_date: data.signDate ? data.signDate.toISOString().split('T')[0] : '',
-          pdf_url: '', // Será atualizada depois que o PDF for gerado
+          pdf_url: '',
           status: 'active'
         });
+        
+        console.log("Contrato criado:", newContract);
         
         toast.success("Contrato salvo com sucesso!", {
           description: `Nº ${contractNumber}`,
@@ -126,6 +179,13 @@ export function PrintButton({ data, company }: PrintButtonProps) {
             description: "O download do arquivo começará automaticamente",
             duration: 3000
           });
+
+          // Perguntar se o usuário quer ir para a página de contratos
+          setTimeout(() => {
+            if (confirm("Deseja visualizar a lista de contratos?")) {
+              navigate("/contracts");
+            }
+          }, 1500);
         })
         .catch((error) => {
           console.error("Erro ao gerar PDF:", error);
