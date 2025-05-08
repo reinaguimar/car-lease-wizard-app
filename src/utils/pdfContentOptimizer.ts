@@ -1,8 +1,5 @@
 
 import { type Company } from "@/components/CompanySelector";
-import { ContractHeader } from "@/components/contract/ContractHeader";
-import React from "react";
-import ReactDOM from "react-dom";
 
 // Fix absolute URLs for images
 export const fixImageUrls = (container: HTMLElement): void => {
@@ -16,14 +13,14 @@ export const fixImageUrls = (container: HTMLElement): void => {
 
 // Prepare the content specifically for PDF output
 export const prepareContentForPDF = (container: HTMLElement, company: Company): void => {
-  // Apply CSS class for PDF-specific styling
+  // Apply CSS class for PDF-optimized styling
   container.classList.add('pdf-optimized');
   
   // Add page break rules to ensure proper flow
   addPageBreakRules(container);
   
-  // Add headers to all pages
-  addHeadersToPages(container, company);
+  // Add header for repeating on each page using CSS @page rules
+  addHeaderForPages(container, company);
   
   // Ensure proper spacing for page layout
   adjustSpacingForPDF(container);
@@ -31,7 +28,7 @@ export const prepareContentForPDF = (container: HTMLElement, company: Company): 
 
 // Add page break rules to prevent awkward breaks
 const addPageBreakRules = (container: HTMLElement): void => {
-  // Apply page-break-inside: avoid to sections
+  // Apply page-break-inside: auto to sections
   const sections = container.querySelectorAll('.contract-section');
   sections.forEach((section) => {
     (section as HTMLElement).style.pageBreakInside = 'auto';
@@ -48,53 +45,43 @@ const addPageBreakRules = (container: HTMLElement): void => {
   }
 };
 
-// Add header to each page using CSS
-const addHeadersToPages = (container: HTMLElement, company: Company): void => {
-  // Create a header template
-  const headerTemplate = document.createElement('template');
+// Add header to be shown on each page using CSS @page
+const addHeaderForPages = (container: HTMLElement, company: Company): void => {
+  // Find any existing contract header in the content
+  const existingHeader = container.querySelector('.contract-header');
   
-  // Create a container for the React component
-  const headerRoot = document.createElement('div');
-  
-  // Render the ContractHeader component to the container
-  ReactDOM.render(
-    React.createElement(ContractHeader, { company }),
-    headerRoot
-  );
-  
-  // Set the header content
-  headerTemplate.innerHTML = headerRoot.innerHTML;
-  
-  // Add to the container as a header template
-  const headerContent = headerTemplate.content.firstChild;
-  
-  if (headerContent) {
-    // Modify the header for PDF display
-    const headerElement = headerContent as HTMLElement;
-    headerElement.classList.add('pdf-header');
+  // If there's an existing header in the content, modify it to be used as the repeated header
+  if (existingHeader) {
+    // We don't want to display the header twice on the first page, so hide the one in the content
+    // But preserve it to be used as the running header for pages
+    existingHeader.classList.add('pdf-header');
     
-    // Add the header to the container
-    container.insertBefore(headerElement, container.firstChild);
-    
-    // Add CSS to repeat the header on each page
-    const style = document.createElement('style');
-    style.textContent = `
+    // Add the CSS to make this header appear at the top of each page
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
       @media print {
+        /* Hide the original header in the content flow to avoid duplication */
         .pdf-header {
-          position: running(header);
-          display: block !important;
+          display: none !important;
         }
         
+        /* But use it as the repeated header on each page */
         @page {
           @top-center {
             content: element(header);
+            margin-bottom: 20px;
           }
+          margin: 2cm 1.5cm;
+        }
+        
+        /* Create a running element for the header */
+        .pdf-header {
+          position: running(header);
         }
       }
     `;
     
-    // Add the style to the container
-    container.insertBefore(style, container.firstChild);
+    container.insertBefore(styleElement, container.firstChild);
   }
 };
 

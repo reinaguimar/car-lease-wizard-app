@@ -5,7 +5,7 @@ export const getPDFStyles = (company: Company): string => {
   return `
     @page {
       size: A4;
-      margin: 1.5cm 1cm;
+      margin: 2cm 1.5cm;
     }
     
     body {
@@ -235,14 +235,15 @@ export const getPDFStyles = (company: Company): string => {
         width: 100%;
       }
       
+      /* Specific handling for headers on each page */
       .pdf-header {
-        display: block;
         position: running(header);
       }
       
       @page {
         @top-center {
           content: element(header);
+          margin-bottom: 15px;
         }
       }
       
@@ -261,9 +262,9 @@ export const getPDFStyles = (company: Company): string => {
         width: 100%;
       }
       
-      /* Ensure header looks good on each page */
-      .contract-header {
-        margin-bottom: 0.75rem;
+      /* The header is repeated by the @page rule, so hide the first one */
+      .contract-container > .contract-header:first-child {
+        display: none;
       }
       
       .contract-clause {
@@ -322,4 +323,3 @@ export const getPDFStyles = (company: Company): string => {
     }
   `;
 };
-
