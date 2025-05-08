@@ -1,28 +1,23 @@
 
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getContracts, Contract } from "@/services/supabaseService";
+import { getContracts, searchContracts, Contract } from "@/services/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
-import { 
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle 
-} from "@/components/ui/navigation-menu";
-import { ArchiveRestore } from "lucide-react";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { ArchiveRestore, Loader, AlertCircle } from "lucide-react";
+import { ContractSearch } from "@/components/ContractSearch";
+import { ContractsPagination } from "@/components/ContractsPagination";
+import { LoadingState } from "@/components/LoadingState";
+import { useLoading } from "@/hooks/useLoading";
 
 const ArchivedContracts = () => {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
+  const [filteredContracts, setFilteredContracts] = useState<Contract[]>([]);
   const itemsPerPage = 10;
   
   // Fetch archived contracts (completed or canceled)
@@ -35,11 +30,52 @@ const ArchivedContracts = () => {
     },
   });
 
-  // Handle pagination
-  const totalPages = archivedContracts ? Math.ceil(archivedContracts.length / itemsPerPage) : 0;
-  const paginatedContracts = archivedContracts ? 
-    archivedContracts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) 
-    : [];
+  // Set filtered contracts initially when data loads
+  useEffect(() => {
+    if (archivedContracts) {
+      setFilteredContracts(archivedContracts);
+    }
+  }, [archivedContracts]);
+
+  const [isSearching, _, executeSearch] = useLoading(async (term: string) => {
+    if (!term.trim()) {
+      setFilteredContracts(archivedContracts || []);
+      return archivedContracts || [];
+    }
+    
+    const results = await searchContracts(term);
+    // Filter to only show archived contracts (completed or canceled)
+    const archivedResults = results.filter(contract => 
+      contract.status === "completed" || contract.status === "canceled"
+    );
+    setFilteredContracts(archivedResults);
+    return archivedResults;
+  });
+  
+  // Handle search
+  const handleSearch = async (term: string) => {
+    try {
+      await executeSearch(term);
+      setCurrentPage(1);
+    } catch (error) {
+      toast({
+        title: "Erro na busca",
+        description: "Não foi possível completar a busca",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Pagination
+  const totalPages = filteredContracts ? Math.ceil(filteredContracts.length / itemsPerPage) : 0;
+  const paginatedContracts = filteredContracts.slice(
+    (currentPage - 1) * itemsPerPage, 
+    currentPage * itemsPerPage
+  );
+  
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   // Error handling
   useEffect(() => {
@@ -52,6 +88,21 @@ const ArchivedContracts = () => {
     }
   }, [error, toast]);
 
+  if (isLoading) {
+    return <LoadingState message="Carregando contratos arquivados..." />;
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto py-12 text-center">
+        <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+        <h2 className="text-2xl font-bold mb-2">Erro ao carregar contratos</h2>
+        <p className="text-muted-foreground mb-6">{error instanceof Error ? error.message : "Erro desconhecido"}</p>
+        <Button onClick={() => refetch()}>Tentar novamente</Button>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-6">
       <div className="mb-6 flex items-center justify-between">
@@ -61,18 +112,23 @@ const ArchivedContracts = () => {
             Visualize os contratos completados ou cancelados
           </p>
         </div>
-        <NavigationMenu>
-          <NavigationMenuList>
-            <NavigationMenuItem>
-              <Link to="/">
-                <Button variant="outline" className="gap-2">
-                  <ArchiveRestore className="h-4 w-4" />
-                  Voltar para Contratos Ativos
-                </Button>
-              </Link>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+        <Link to="/contracts">
+          <Button variant="outline" className="gap-2">
+            <ArchiveRestore className="h-4 w-4" />
+            Voltar para Contratos Ativos
+          </Button>
+        </Link>
+      </div>
+
+      <div className="flex justify-between items-center flex-wrap gap-4 mb-6">
+        <ContractSearch onSearch={handleSearch} />
+        
+        {isSearching && (
+          <div className="flex items-center gap-2">
+            <Loader className="h-4 w-4 animate-spin" />
+            <span className="text-sm text-muted-foreground">Buscando...</span>
+          </div>
+        )}
       </div>
 
       <Card>
@@ -80,11 +136,7 @@ const ArchivedContracts = () => {
           <CardTitle>Contratos Arquivados</CardTitle>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
-            <div className="flex justify-center p-6">
-              <p>Carregando contratos...</p>
-            </div>
-          ) : paginatedContracts.length > 0 ? (
+          {paginatedContracts.length > 0 ? (
             <>
               <Table>
                 <TableHeader>
@@ -102,10 +154,14 @@ const ArchivedContracts = () => {
                     <TableRow key={contract.id}>
                       <TableCell className="font-medium">{contract.contract_number}</TableCell>
                       <TableCell>
-                        {contract.clients?.first_name} {contract.clients?.surname}
+                        {contract.clients
+                          ? `${contract.clients.first_name} ${contract.clients.surname}`
+                          : "N/A"}
                       </TableCell>
                       <TableCell>
-                        {contract.vehicles?.make} {contract.vehicles?.model}
+                        {contract.vehicles
+                          ? `${contract.vehicles.make} ${contract.vehicles.model}`
+                          : "N/A"}
                       </TableCell>
                       <TableCell>
                         {format(new Date(contract.start_date), "dd/MM/yyyy")}
@@ -125,53 +181,20 @@ const ArchivedContracts = () => {
                 </TableBody>
               </Table>
               
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <Pagination className="mt-4">
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious 
-                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                        className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-                      />
-                    </PaginationItem>
-                    
-                    {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
-                      // Show pages around current page
-                      const pageToShow = currentPage <= 3 
-                        ? i + 1 
-                        : currentPage >= totalPages - 2 
-                          ? totalPages - 4 + i 
-                          : currentPage - 2 + i;
-                          
-                      if (pageToShow <= totalPages) {
-                        return (
-                          <PaginationItem key={pageToShow}>
-                            <PaginationLink 
-                              isActive={pageToShow === currentPage}
-                              onClick={() => setCurrentPage(pageToShow)}
-                            >
-                              {pageToShow}
-                            </PaginationLink>
-                          </PaginationItem>
-                        );
-                      }
-                      return null;
-                    })}
-                    
-                    <PaginationItem>
-                      <PaginationNext 
-                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                        className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              )}
+              <ContractsPagination
+                totalItems={filteredContracts.length}
+                itemsPerPage={itemsPerPage}
+                currentPage={currentPage}
+                onPageChange={handlePageChange}
+              />
             </>
           ) : (
-            <div className="flex justify-center p-6">
-              <p>Nenhum contrato arquivado encontrado.</p>
+            <div className="text-center py-12 border rounded-lg bg-muted/20">
+              <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-20" />
+              <h3 className="font-medium text-lg">Nenhum contrato encontrado</h3>
+              <p className="text-muted-foreground">
+                Não há contratos arquivados no momento ou sua busca não encontrou resultados.
+              </p>
             </div>
           )}
         </CardContent>
