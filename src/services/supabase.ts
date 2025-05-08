@@ -18,3 +18,6 @@ export * from './supabase/contractService';
 export * from './supabase/searchService';
 export * from './supabase/auditService';
 export * from './supabase/companyService';
+
+// Exportar o cliente Supabase para uso no componente PrintButton
+export { supabase } from './supabase/supabaseClient';

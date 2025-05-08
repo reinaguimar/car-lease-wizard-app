@@ -12,8 +12,6 @@ import {
   createContractHelper as createContract,
   getCompanyByCode 
 } from "@/services/supabase";
-import { generateContractNumber } from "@/utils/contractUtils";
-import { useLoading } from "@/hooks/useLoading";
 
 interface PrintButtonProps {
   data: Partial<FormData>;
@@ -40,26 +38,73 @@ export function PrintButton({ data, company }: PrintButtonProps) {
   const isComplete = isFormDataComplete(data);
   
   // Função para obter o ID da empresa a partir do código
-  const getCompanyId = async (companyCode: Company): Promise<string> => {
+  const getCompanyId = async (companyCode: string): Promise<string> => {
     try {
+      console.log("Iniciando busca de ID da empresa para o código:", companyCode);
+      
       // Tentar obter o ID da empresa do banco de dados
       const companyData = await getCompanyByCode(companyCode);
       
       if (companyData && companyData.id) {
         console.log(`ID da empresa ${companyCode} obtido do banco de dados:`, companyData.id);
         return companyData.id;
+      } else {
+        // Se não encontrou a empresa, tentar criar a empresa no banco
+        console.log("Empresa não encontrada no banco de dados, verificando se precisa inserir...");
+        
+        // Valores padrão para as empresas
+        const companyDefaults: Record<string, any> = {
+          'moove': {
+            name: 'Moove Locadora de Veículos S/A',
+            cnpj: '26.875.530/0001-77',
+            logo_url: '/lovable-uploads/77ecfed0-4dfe-41b1-a907-c8c9241166ee.png',
+            theme_color: '#4B80C3'
+          },
+          'yoou': {
+            name: 'Yoou Rent a Car LLC',
+            cnpj: 'L00000000000000',
+            logo_url: '/lovable-uploads/84eac6d9-3068-4699-b09d-04269c7c8870.png',
+            theme_color: '#EF65CF'
+          }
+        };
+        
+        // Verificar se temos padrões para essa empresa
+        if (companyDefaults[companyCode]) {
+          try {
+            const { data: newCompany, error } = await supabase
+              .from('companies')
+              .insert([{
+                code: companyCode,
+                ...companyDefaults[companyCode]
+              }])
+              .select();
+              
+            if (error) {
+              throw error;
+            }
+            
+            if (newCompany && newCompany.length > 0) {
+              console.log(`Empresa ${companyCode} criada com sucesso. ID:`, newCompany[0].id);
+              return newCompany[0].id;
+            }
+          } catch (insertError) {
+            console.error(`Erro ao criar empresa ${companyCode}:`, insertError);
+          }
+        }
+        
+        // Fallback para IDs fixos caso todas as tentativas falhem
+        console.warn("Usando IDs fixos como último recurso");
+        const companyIds: Record<string, string> = {
+          'moove': '79c81b51-8a37-46f0-9b67-d38e3ab6d159',
+          'yoou': '23a81c52-8b38-47f1-9c67-e37e4ab6d160'
+        };
+        return companyIds[companyCode] || companyIds['moove'];
       }
-      
-      // Fallback para IDs fixos caso a consulta falhe
-      console.warn("Não foi possível obter o ID da empresa do banco de dados, usando IDs fixos como fallback.");
-      const companyIds: Record<string, string> = {
-        'moove': '79c81b51-8a37-46f0-9b67-d38e3ab6d159',
-        'yoou': '23a81c52-8b38-47f1-9c67-e37e4ab6d160'
-      };
-      return companyIds[companyCode] || companyIds['moove'];
     } catch (error) {
       console.error("Erro ao obter ID da empresa:", error);
+      
       // Fallback para IDs fixos em caso de erro
+      console.warn("Usando IDs fixos devido a erro");
       const companyIds: Record<string, string> = {
         'moove': '79c81b51-8a37-46f0-9b67-d38e3ab6d159',
         'yoou': '23a81c52-8b38-47f1-9c67-e37e4ab6d160'
@@ -171,6 +216,17 @@ export function PrintButton({ data, company }: PrintButtonProps) {
       return new Date().toISOString().split('T')[0]; // Fallback para data atual
     }
     return date.toISOString().split('T')[0];
+  };
+  
+  // Função para gerar número do contrato
+  const generateContractNumber = (): string => {
+    // Format: YYYY-MM-NNNN (Year-Month-Random)
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const random = Math.floor(1000 + Math.random() * 9000); // 4-digit random number
+    
+    return `${year}-${month}-${random}`;
   };
 
   return (

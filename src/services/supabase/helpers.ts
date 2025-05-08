@@ -5,6 +5,7 @@ import { createClient as createClientService } from './clientService';
 import { createVehicle as createVehicleService } from './vehicleService';
 import { createContract as createContractService } from './contractService';
 import { handleSupabaseError } from './supabaseClient';
+import { getCompanyByCode } from './companyService';
 
 // Cria ou busca um cliente por CPF/documento
 export async function createClient(clientData: { 
@@ -20,16 +21,15 @@ export async function createClient(clientData: {
     const { data: existingClient, error: searchError } = await supabase
       .from('clients')
       .select('*')
-      .eq('id_number', clientData.id_number)
-      .single();
+      .eq('id_number', clientData.id_number);
       
-    if (searchError && searchError.code !== 'PGRST116') { // PGRST116 = Not found
+    if (searchError) {
       throw searchError;
     }
     
     // Se o cliente já existe, retorna os dados
-    if (existingClient) {
-      return existingClient as Client;
+    if (existingClient && existingClient.length > 0) {
+      return existingClient[0] as Client;
     }
     
     // Se não existe, cria um novo cliente
@@ -45,18 +45,21 @@ export async function createClient(clientData: {
 // Função para verificar se um company_id é válido
 async function isValidCompanyId(companyId: string): Promise<boolean> {
   try {
+    console.log("Verificando se company_id é válido:", companyId);
+    
     const { data, error } = await supabase
       .from('companies')
       .select('id')
-      .eq('id', companyId)
-      .single();
+      .eq('id', companyId);
       
     if (error) {
       console.error("Erro ao verificar company_id:", error);
       return false;
     }
     
-    return !!data;
+    const isValid = data && data.length > 0;
+    console.log(`Company ID ${companyId} é válido:`, isValid);
+    return isValid;
   } catch (error) {
     console.error("Erro ao verificar company_id:", error);
     return false;
