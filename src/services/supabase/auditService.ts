@@ -1,0 +1,100 @@
+
+import { supabase, handleSupabaseError } from './supabaseClient';
+
+type AuditAction = 'create' | 'update' | 'delete' | 'view' | 'search';
+type AuditResource = 'contract' | 'client' | 'vehicle' | 'company';
+
+interface AuditLog {
+  id?: string;
+  action: AuditAction;
+  resource: AuditResource;
+  resource_id: string;
+  details?: string;
+  user_id?: string;
+  created_at?: string;
+}
+
+export const logAuditEvent = async (
+  action: AuditAction,
+  resource: AuditResource,
+  resourceId: string,
+  details?: string,
+  userId?: string
+): Promise<void> => {
+  try {
+    const auditLog: AuditLog = {
+      action,
+      resource,
+      resource_id: resourceId,
+      details,
+      user_id: userId
+    };
+    
+    const { error } = await supabase.from('audit_logs').insert([auditLog]);
+    
+    if (error) throw error;
+  } catch (error) {
+    handleSupabaseError(error, `registro de auditoria (${action} ${resource})`);
+    // We don't want to throw here as audit logging should not break the main functionality
+  }
+};
+
+export const getAuditLogs = async (
+  options?: {
+    resource?: AuditResource;
+    resourceId?: string;
+    action?: AuditAction;
+    userId?: string;
+    fromDate?: Date;
+    toDate?: Date;
+    limit?: number;
+    offset?: number;
+  }
+): Promise<AuditLog[]> => {
+  try {
+    let query = supabase.from('audit_logs').select('*');
+    
+    if (options?.resource) {
+      query = query.eq('resource', options.resource);
+    }
+    
+    if (options?.resourceId) {
+      query = query.eq('resource_id', options.resourceId);
+    }
+    
+    if (options?.action) {
+      query = query.eq('action', options.action);
+    }
+    
+    if (options?.userId) {
+      query = query.eq('user_id', options.userId);
+    }
+    
+    if (options?.fromDate) {
+      query = query.gte('created_at', options.fromDate.toISOString());
+    }
+    
+    if (options?.toDate) {
+      query = query.lte('created_at', options.toDate.toISOString());
+    }
+    
+    if (options?.limit) {
+      query = query.limit(options.limit);
+    }
+    
+    if (options?.offset) {
+      query = query.range(options.offset, options.offset + (options.limit || 10) - 1);
+    }
+    
+    // Always order by most recent first
+    query = query.order('created_at', { ascending: false });
+    
+    const { data, error } = await query;
+    
+    if (error) throw error;
+    return data as AuditLog[];
+  } catch (error) {
+    handleSupabaseError(error, 'consulta de logs de auditoria');
+    return [];
+  }
+};

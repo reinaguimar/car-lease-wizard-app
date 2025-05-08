@@ -7,3 +7,4 @@ export * from './vehicleService';
 export * from './contractService';
 export * from './searchService';
 export * from './supabaseClient';
+export * from './auditService';

@@ -1,6 +1,7 @@
 
 import { supabase, handleSupabaseError, validateSupabaseResponse } from './supabaseClient';
 import { Contract } from './types';
+import { logAuditEvent } from './auditService';
 
 export const createContract = async (contract: {
   contract_number: string;
@@ -25,7 +26,20 @@ export const createContract = async (contract: {
       .select();
       
     if (error) throw error;
-    return data?.[0] as Contract;
+    
+    const newContract = data?.[0] as Contract;
+    
+    if (newContract) {
+      // Log audit event
+      await logAuditEvent(
+        'create', 
+        'contract', 
+        newContract.id, 
+        `Contrato ${contract.contract_number} criado`
+      );
+    }
+    
+    return newContract;
   } catch (error) {
     handleSupabaseError(error, 'criação de contrato');
     return null;
@@ -83,7 +97,20 @@ export const updateContractStatus = async (id: string, status: string): Promise<
       .select();
       
     if (error) throw error;
-    return data?.[0] as Contract;
+    
+    const updatedContract = data?.[0] as Contract;
+    
+    if (updatedContract) {
+      // Log audit event
+      await logAuditEvent(
+        'update', 
+        'contract', 
+        id, 
+        `Status do contrato alterado para: ${status}`
+      );
+    }
+    
+    return updatedContract;
   } catch (error) {
     handleSupabaseError(error, `atualização de status do contrato ${id}`);
     return null;
@@ -99,9 +126,66 @@ export const updateContractPdfUrl = async (id: string, pdf_url: string): Promise
       .select();
       
     if (error) throw error;
-    return data?.[0] as Contract;
+    
+    const updatedContract = data?.[0] as Contract;
+    
+    if (updatedContract) {
+      // Log audit event
+      await logAuditEvent(
+        'update', 
+        'contract', 
+        id, 
+        'URL de PDF do contrato atualizada'
+      );
+    }
+    
+    return updatedContract;
   } catch (error) {
     handleSupabaseError(error, `atualização de URL do PDF do contrato ${id}`);
+    return null;
+  }
+};
+
+export const deleteContract = async (id: string): Promise<boolean> => {
+  try {
+    const { error } = await supabase
+      .from('contracts')
+      .delete()
+      .eq('id', id);
+      
+    if (error) throw error;
+    
+    // Log audit event
+    await logAuditEvent('delete', 'contract', id, 'Contrato excluído');
+    
+    return true;
+  } catch (error) {
+    handleSupabaseError(error, `exclusão do contrato ${id}`);
+    return false;
+  }
+};
+
+export const getContractById = async (id: string): Promise<Contract | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('contracts')
+      .select(`
+        *,
+        clients:client_id(*),
+        vehicles:vehicle_id(*),
+        companies:company_id(*)
+      `)
+      .eq('id', id)
+      .single();
+      
+    if (error) throw error;
+    
+    // Log viewing of contract
+    await logAuditEvent('view', 'contract', id);
+    
+    return data as Contract;
+  } catch (error) {
+    handleSupabaseError(error, `busca do contrato ${id}`);
     return null;
   }
 };
