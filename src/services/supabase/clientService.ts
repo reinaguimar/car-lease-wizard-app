@@ -9,7 +9,7 @@ export const getClients = async (): Promise<Client[]> => {
       .select('*');
       
     if (error) throw error;
-    return data || [];
+    return data as Client[] || [];
   } catch (error) {
     console.error('Error fetching clients:', error);
     return [];
@@ -31,7 +31,7 @@ export const createClient = async (client: {
       .select();
       
     if (error) throw error;
-    return data?.[0];
+    return data?.[0] as Client;
   } catch (error) {
     console.error('Error creating client:', error);
     return null;

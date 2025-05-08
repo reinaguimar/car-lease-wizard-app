@@ -25,7 +25,7 @@ export const createContract = async (contract: {
       .select();
       
     if (error) throw error;
-    return data?.[0];
+    return data?.[0] as Contract;
   } catch (error) {
     console.error('Error creating contract:', error);
     return null;
@@ -83,7 +83,7 @@ export const updateContractStatus = async (id: string, status: string): Promise<
       .select();
       
     if (error) throw error;
-    return data?.[0];
+    return data?.[0] as Contract;
   } catch (error) {
     console.error(`Error updating contract ${id} status to ${status}:`, error);
     return null;
@@ -99,7 +99,7 @@ export const updateContractPdfUrl = async (id: string, pdf_url: string): Promise
       .select();
       
     if (error) throw error;
-    return data?.[0];
+    return data?.[0] as Contract;
   } catch (error) {
     console.error(`Error updating contract ${id} PDF URL:`, error);
     return null;

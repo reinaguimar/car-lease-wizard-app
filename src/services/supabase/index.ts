@@ -5,3 +5,4 @@ export * from './companyService';
 export * from './clientService';
 export * from './vehicleService';
 export * from './contractService';
+export * from './searchService';

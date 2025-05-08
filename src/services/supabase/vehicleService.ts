@@ -13,7 +13,7 @@ export const getVehicles = async (companyId?: string): Promise<Vehicle[]> => {
     const { data, error } = await query;
     
     if (error) throw error;
-    return data || [];
+    return data as Vehicle[] || [];
   } catch (error) {
     console.error('Error fetching vehicles:', error);
     return [];
@@ -37,7 +37,7 @@ export const createVehicle = async (vehicle: {
       .select();
       
     if (error) throw error;
-    return data?.[0];
+    return data?.[0] as Vehicle;
   } catch (error) {
     console.error('Error creating vehicle:', error);
     return null;

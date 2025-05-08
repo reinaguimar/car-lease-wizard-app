@@ -1,211 +1,242 @@
 
 import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getContracts, updateContractStatus, Contract } from "@/services/supabaseService";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { format } from "date-fns";
-import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
-import { 
-  NavigationMenu,
-  NavigationMenuList,
-  NavigationMenuItem
-} from "@/components/ui/navigation-menu";
-import { Archive, File } from "lucide-react";
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Contract, getContracts, updateContractStatus, searchContracts } from "@/services/supabase";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Eye, FileText, ArrowLeft, AlertCircle } from "lucide-react";
+import { ContractSearch } from "@/components/ContractSearch";
+import { ContractsPagination } from "@/components/ContractsPagination";
+import { LoadingState } from "@/components/LoadingState";
+import { useLoading } from "@/hooks/useLoading";
+import { useToast } from "@/hooks/use-toast";
 
-const ContractsPage = () => {
-  const { toast } = useToast();
+export default function ContractsPage() {
+  const [contracts, setContracts] = useState<Contract[]>([]);
+  const [filteredContracts, setFilteredContracts] = useState<Contract[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const { toast } = useToast();
   
-  // Fetch active contracts
-  const { data: activeContracts, isLoading, error, refetch } = useQuery({
-    queryKey: ['activeContracts'],
-    queryFn: async () => {
-      const contracts = await getContracts({ status: "active" });
-      return contracts;
-    },
+  const [isLoading, _, fetchContracts, error] = useLoading(async () => {
+    const data = await getContracts({ status: "active" });
+    setContracts(data);
+    setFilteredContracts(data);
+    return data;
   });
 
-  // Handle contract archiving (marking as completed)
-  const handleArchiveContract = async (contractId: string) => {
+  const [isSearching, __, executeSearch] = useLoading(async (term: string) => {
+    if (!term.trim()) {
+      setFilteredContracts(contracts);
+      return contracts;
+    }
+    
+    const results = await searchContracts(term);
+    setFilteredContracts(results);
+    return results;
+  });
+
+  const [isUpdating, ___, executeUpdate] = useLoading(async (id: string, status: string) => {
+    return await updateContractStatus(id, status);
+  });
+
+  useEffect(() => {
+    fetchContracts();
+  }, []);
+
+  const handleStatusChange = async (id: string, newStatus: string) => {
     try {
-      await updateContractStatus(contractId, "completed");
+      await executeUpdate(id, newStatus);
+      
       toast({
-        title: "Contrato Arquivado",
-        description: "O contrato foi marcado como completado com sucesso.",
+        title: "Status atualizado",
+        description: `Contrato foi marcado como ${
+          newStatus === "completed" ? "concluído" : "cancelado"
+        }`,
       });
-      // Refetch data after status update
-      refetch();
-    } catch (err) {
+      
+      // Atualiza a lista de contratos após a mudança de status
+      fetchContracts();
+    } catch (error) {
       toast({
-        title: "Erro",
-        description: "Não foi possível arquivar o contrato.",
+        title: "Erro ao atualizar status",
+        description: "Não foi possível atualizar o status do contrato",
         variant: "destructive",
       });
     }
   };
 
-  // Handle pagination
-  const totalPages = activeContracts ? Math.ceil(activeContracts.length / itemsPerPage) : 0;
-  const paginatedContracts = activeContracts ? 
-    activeContracts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) 
-    : [];
-
-  // Error handling
-  useEffect(() => {
-    if (error) {
+  const handleSearch = async (term: string) => {
+    try {
+      await executeSearch(term);
+      setCurrentPage(1);
+    } catch (error) {
       toast({
-        title: "Erro",
-        description: "Falha ao carregar contratos ativos. Por favor, tente novamente.",
+        title: "Erro na busca",
+        description: "Não foi possível completar a busca",
         variant: "destructive",
       });
     }
-  }, [error, toast]);
+  };
+
+  // Paginação
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredContracts.slice(indexOfFirstItem, indexOfLastItem);
+  
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const renderContractStatus = (status?: string) => {
+    switch (status) {
+      case "active":
+        return <Badge className="bg-green-500">Ativo</Badge>;
+      case "completed":
+        return <Badge className="bg-blue-500">Concluído</Badge>;
+      case "canceled":
+        return <Badge className="bg-red-500">Cancelado</Badge>;
+      default:
+        return <Badge className="bg-yellow-500">Pendente</Badge>;
+    }
+  };
+
+  if (isLoading) {
+    return <LoadingState message="Carregando contratos..." />;
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto py-12 text-center">
+        <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+        <h2 className="text-2xl font-bold mb-2">Erro ao carregar contratos</h2>
+        <p className="text-muted-foreground mb-6">{error.message}</p>
+        <Button onClick={() => fetchContracts()}>Tentar novamente</Button>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto py-6">
-      <div className="mb-6 flex items-center justify-between">
+      <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold">Contratos Ativos</h1>
           <p className="text-muted-foreground">
-            Gerencie os contratos ativos de locação
+            Gerenciamento de contratos ativos de locação
           </p>
         </div>
-        <NavigationMenu>
-          <NavigationMenuList>
-            <NavigationMenuItem>
-              <Link to="/archived">
-                <Button variant="outline" className="gap-2">
-                  <Archive className="h-4 w-4" />
-                  Ver Contratos Arquivados
-                </Button>
-              </Link>
-            </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+        <Link to="/">
+          <Button variant="outline" className="gap-2">
+            <ArrowLeft className="h-4 w-4" /> Voltar
+          </Button>
+        </Link>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Contratos Ativos</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoading ? (
-            <div className="flex justify-center p-6">
-              <p>Carregando contratos...</p>
-            </div>
-          ) : paginatedContracts.length > 0 ? (
-            <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nº do Contrato</TableHead>
-                    <TableHead>Cliente</TableHead>
-                    <TableHead>Veículo</TableHead>
-                    <TableHead>Data Início</TableHead>
-                    <TableHead>Data Fim</TableHead>
-                    <TableHead>PDF</TableHead>
-                    <TableHead>Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {paginatedContracts.map((contract: Contract) => (
-                    <TableRow key={contract.id}>
-                      <TableCell className="font-medium">{contract.contract_number}</TableCell>
-                      <TableCell>
-                        {contract.clients?.first_name} {contract.clients?.surname}
-                      </TableCell>
-                      <TableCell>
-                        {contract.vehicles?.make} {contract.vehicles?.model}
-                      </TableCell>
-                      <TableCell>
-                        {format(new Date(contract.start_date), "dd/MM/yyyy")}
-                      </TableCell>
-                      <TableCell>
-                        {format(new Date(contract.end_date), "dd/MM/yyyy")}
-                      </TableCell>
-                      <TableCell>
-                        {contract.pdf_url ? (
-                          <a href={contract.pdf_url} target="_blank" rel="noopener noreferrer">
-                            <Button variant="ghost" size="sm">
-                              <File className="h-4 w-4" />
-                            </Button>
-                          </a>
-                        ) : (
-                          <span className="text-gray-400">Não disponível</span>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleArchiveContract(contract.id)}
-                        >
-                          Arquivar
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <Pagination className="mt-4">
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious 
-                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                        className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-                      />
-                    </PaginationItem>
-                    
-                    {Array.from({ length: Math.min(5, totalPages) }).map((_, i) => {
-                      // Show pages around current page
-                      const pageToShow = currentPage <= 3 
-                        ? i + 1 
-                        : currentPage >= totalPages - 2 
-                          ? totalPages - 4 + i 
-                          : currentPage - 2 + i;
-                          
-                      if (pageToShow <= totalPages) {
-                        return (
-                          <PaginationItem key={pageToShow}>
-                            <PaginationLink 
-                              isActive={pageToShow === currentPage}
-                              onClick={() => setCurrentPage(pageToShow)}
-                            >
-                              {pageToShow}
-                            </PaginationLink>
-                          </PaginationItem>
-                        );
-                      }
-                      return null;
+      <div className="flex justify-between items-center flex-wrap gap-4">
+        <ContractSearch onSearch={handleSearch} />
+        
+        {isSearching && (
+          <div className="flex items-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <span className="text-sm text-muted-foreground">Buscando...</span>
+          </div>
+        )}
+      </div>
+
+      {filteredContracts.length === 0 ? (
+        <div className="text-center py-12 border rounded-lg bg-muted/20">
+          <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-20" />
+          <h3 className="font-medium text-lg">Nenhum contrato encontrado</h3>
+          <p className="text-muted-foreground">
+            Não há contratos ativos no momento ou sua busca não encontrou resultados.
+          </p>
+        </div>
+      ) : (
+        <>
+          <Table>
+            <TableCaption>Lista de contratos ativos.</TableCaption>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nº Contrato</TableHead>
+                <TableHead>Cliente</TableHead>
+                <TableHead>Veículo</TableHead>
+                <TableHead>Período</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {currentItems.map((contract) => (
+                <TableRow key={contract.id}>
+                  <TableCell className="font-medium">{contract.contract_number}</TableCell>
+                  <TableCell>
+                    {contract.clients
+                      ? `${contract.clients.first_name} ${contract.clients.surname}`
+                      : "N/A"}
+                  </TableCell>
+                  <TableCell>
+                    {contract.vehicles
+                      ? `${contract.vehicles.make} ${contract.vehicles.model}`
+                      : "N/A"}
+                  </TableCell>
+                  <TableCell>
+                    {format(new Date(contract.start_date), "dd/MM/yyyy", {
+                      locale: ptBR,
+                    })}{" "}
+                    a{" "}
+                    {format(new Date(contract.end_date), "dd/MM/yyyy", {
+                      locale: ptBR,
                     })}
-                    
-                    <PaginationItem>
-                      <PaginationNext 
-                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                        className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              )}
-            </>
-          ) : (
-            <div className="flex justify-center p-6">
-              <p>Nenhum contrato ativo encontrado.</p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                  </TableCell>
+                  <TableCell>{renderContractStatus(contract.status)}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleStatusChange(contract.id, "completed")}
+                        disabled={isUpdating}
+                      >
+                        Concluir
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-red-500 hover:text-red-700"
+                        onClick={() => handleStatusChange(contract.id, "canceled")}
+                        disabled={isUpdating}
+                      >
+                        Cancelar
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+          <ContractsPagination
+            totalItems={filteredContracts.length}
+            itemsPerPage={itemsPerPage}
+            currentPage={currentPage}
+            onPageChange={handlePageChange}
+          />
+        </>
+      )}
     </div>
   );
-};
-
-export default ContractsPage;
+}
