@@ -5,7 +5,7 @@ import { ContractPreview } from "@/components/ContractPreview";
 import { PrintButton } from "@/components/PrintButton";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { CompanySelector, type Company } from "@/components/CompanySelector";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";

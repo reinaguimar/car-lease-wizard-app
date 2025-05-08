@@ -18,8 +18,14 @@ export const createContract = async (contract: {
   deposit: number;
   sign_date: string;
   pdf_url?: string;
+  status?: string;
 }): Promise<Contract | null> => {
   try {
+    // Garantir que o status seja definido se não for fornecido
+    if (!contract.status) {
+      contract.status = 'active';
+    }
+    
     const { data, error } = await supabase
       .from('contracts')
       .insert([contract])

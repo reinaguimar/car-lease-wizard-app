@@ -4,10 +4,10 @@ import { Save } from "lucide-react";
 import { toast } from "sonner";
 import { FormData } from "./RentalForm";
 import { type Company } from "./CompanySelector";
-import { createPDFWindow, populatePDFContent } from "./pdf/PDFWindowCreator";
 import { useState } from "react";
 import { generateContractNumber } from "@/utils/contractUtils";
-import { createContract } from "@/services/supabase";
+import { createContract } from "@/services/supabase/contractService";
+import html2pdf from 'html2pdf.js';
 
 interface PrintButtonProps {
   data: Partial<FormData>;
@@ -48,14 +48,13 @@ export function PrintButton({ data, company }: PrintButtonProps) {
       // Gerar número de contrato
       const contractNumber = generateContractNumber();
       
-      // Salvar contrato no banco de dados
+      // Preparar dados do contrato para salvar
+      const tempClientId = `temp-client-${Date.now()}`;
+      const tempVehicleId = `temp-vehicle-${Date.now()}`;
+      const companyId = `company-${company}`;
+      
       try {
-        // Criando objetos temporários para o cliente e veículo
-        const tempClientId = `temp-client-${Date.now()}`;
-        const tempVehicleId = `temp-vehicle-${Date.now()}`;
-        const companyId = `company-${company}`;
-        
-        // Preparar dados do contrato para salvar
+        // Salvar contrato no banco de dados
         await createContract({
           contract_number: contractNumber,
           client_id: tempClientId,
@@ -70,7 +69,8 @@ export function PrintButton({ data, company }: PrintButtonProps) {
           rental_rate: parseFloat(data.rentalRate || '0'),
           deposit: parseFloat(data.deposit || '0'),
           sign_date: data.signDate ? data.signDate.toISOString().split('T')[0] : '',
-          pdf_url: '' // Será atualizado depois que o PDF for gerado
+          pdf_url: '', // Será atualizada depois que o PDF for gerado
+          status: 'active'
         });
         
         toast.success("Contrato salvo com sucesso!", {
@@ -83,20 +83,61 @@ export function PrintButton({ data, company }: PrintButtonProps) {
         // Continue mesmo se o salvamento falhar, para permitir que o PDF seja gerado
       }
       
-      // Criar a janela do PDF
-      const pdfWindow = createPDFWindow({ data, company });
+      // Gerar PDF usando html2pdf.js
+      const contractElement = document.querySelector('.contract-container');
       
-      if (pdfWindow) {
-        populatePDFContent(pdfWindow, company);
-        
-        // Instruções para salvar o PDF
-        setTimeout(() => {
-          toast.info("Utilize a opção 'Salvar como PDF' na janela de impressão para gerar o documento PDF");
-        }, 1500);
+      if (!contractElement) {
+        toast.error("Elemento de contrato não encontrado");
+        return;
       }
+      
+      // Clone o elemento para não afetar o contrato original na tela
+      const clonedContract = contractElement.cloneNode(true) as HTMLElement;
+      
+      // Aplicar classe de tema conforme a empresa selecionada
+      const themeClass = company === "yoou" ? "yoou-theme" : "moove-theme";
+      clonedContract.classList.add(themeClass);
+      
+      // Configurações do PDF
+      const pdfOptions = {
+        margin: [10, 10, 20, 10], // topo, direita, inferior, esquerda em mm
+        filename: `Contrato-${contractNumber}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      
+      // Criar um container temporário para o PDF
+      const tempContainer = document.createElement('div');
+      tempContainer.style.position = 'absolute';
+      tempContainer.style.left = '-9999px';
+      tempContainer.appendChild(clonedContract);
+      document.body.appendChild(tempContainer);
+      
+      // Gerar o PDF
+      html2pdf()
+        .from(clonedContract)
+        .set(pdfOptions)
+        .save()
+        .then(() => {
+          // Remover o container temporário
+          document.body.removeChild(tempContainer);
+          toast.success("PDF gerado com sucesso!", {
+            description: "O download do arquivo começará automaticamente",
+            duration: 3000
+          });
+        })
+        .catch((error) => {
+          console.error("Erro ao gerar PDF:", error);
+          document.body.removeChild(tempContainer);
+          toast.error("Erro ao gerar o PDF", {
+            description: "Tente novamente ou use a função de impressão do navegador"
+          });
+        });
+        
     } catch (error) {
-      console.error("Erro ao gerar PDF:", error);
-      toast.error("Erro ao gerar PDF", {
+      console.error("Erro ao processar contrato:", error);
+      toast.error("Erro ao processar contrato", {
         description: error instanceof Error ? error.message : "Erro desconhecido",
       });
     } finally {
@@ -112,7 +153,7 @@ export function PrintButton({ data, company }: PrintButtonProps) {
       disabled={isSaving || !isComplete}
     >
       <Save className="mr-2 h-4 w-4" />
-      {isSaving ? "Processando..." : isComplete ? "Salvar em PDF" : "Preencha todos os campos"}
+      {isSaving ? "Processando..." : isComplete ? "Salvar Contrato" : "Preencha todos os campos"}
     </Button>
   );
 }
