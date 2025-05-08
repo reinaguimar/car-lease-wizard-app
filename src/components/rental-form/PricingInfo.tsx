@@ -100,6 +100,7 @@ export function PricingInfo({ form, handleFormChange }: PricingInfoProps) {
                   }}
                   initialFocus
                   className={cn("p-3 pointer-events-auto")}
+                  // Removing any date restrictions to allow past dates
                 />
               </PopoverContent>
             </Popover>
