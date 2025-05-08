@@ -36,7 +36,7 @@ export function ContractPreview({ data }: ContractPreviewProps) {
               1.2 THE RENTER:<br />
               First Name(s) / <span className="translation">Nome:</span> {data.firstName || "_________________"}<br />
               Surname / <span className="translation">Sobrenome:</span> {data.surname || "_________________"}<br />
-              Identity / Social Security or Other (Specify) number / <span className="translation">Identidade / CPF ou outro:</span> {data.idNumber || "_________________"}<br />
+              ID/Passport (US) / CPF/RG (Brazil) / <span className="translation">Documento de Identidade:</span> {data.idNumber || "_________________"}<br />
               Physical Address / <span className="translation">Endereço Residencial:</span> {data.address || "_________________"}<br />
             </div>
             <div className="contract-clause">
@@ -52,7 +52,7 @@ export function ContractPreview({ data }: ContractPreviewProps) {
               2.1 Type of Vehicle / <span className="translation">Tipo do Veículo:</span> {data.vehicleType || "_________________"}<br />
               2.2 Make / <span className="translation">Marca:</span> {data.make || "_________________"}<br />
               2.3 Model / <span className="translation">Modelo:</span> {data.model || "_________________"}<br />
-              2.4 Combustível / Fuel: {data.fuel || "_________________"}
+              2.4 Fuel / <span className="translation">Combustível:</span> {data.fuel || "_________________"}
             </div>
           </div>
 
@@ -83,13 +83,13 @@ export function ContractPreview({ data }: ContractPreviewProps) {
             </div>
             <div className="contract-clause">
               5.1 Starting Date / <span className="translation">Data de Início:</span> {formatDate(data.startDate)}<br />
-              Time / <span className="translation">Hora:</span> {data.startTime || "_________________"} / <span className="translation">Hora</span> {data.startTime || "_________________"}h<br />
-              5.1.1 Delivery location: {data.deliveryLocation || "_________________"} / <span className="translation">Local de entrega:</span> {data.deliveryLocation || "_________________"}
+              Time (US) / <span className="translation">Hora (BR):</span> {data.startTime || "_______"} / {data.startTime ? data.startTime.replace("AM", "h").replace("PM", "h") : "_______"}h<br />
+              5.1.1 Delivery location / <span className="translation">Local de entrega:</span> {data.deliveryLocation || "_________________"}, Florida, USA
             </div>
             <div className="contract-clause">
               5.2 Ending Date / <span className="translation">Data de Término:</span> {formatDate(data.endDate)}<br />
-              Time / <span className="translation">Hora:</span> {data.endTime || "_________________"} / <span className="translation">Hora</span> {data.endTime || "_________________"}h<br />
-              5.2.1 Return location: {data.returnLocation || "_________________"} / <span className="translation">Local de retorno:</span> {data.returnLocation || "_________________"}
+              Time (US) / <span className="translation">Hora (BR):</span> {data.endTime || "_______"} / {data.endTime ? data.endTime.replace("AM", "h").replace("PM", "h") : "_______"}h<br />
+              5.2.1 Return location / <span className="translation">Local de retorno:</span> {data.returnLocation || "_________________"}, Florida, USA
             </div>
           </div>
 
@@ -169,8 +169,8 @@ export function ContractPreview({ data }: ContractPreviewProps) {
               11. RETURN OF VEHICLE / <span className="translation">DEVOLUÇÃO DO VEÍCULO:</span>
             </div>
             <div className="contract-clause">
-              <span className="text-sm">11.1 The Renter hereby agrees to return the above-described vehicle to the pick up location later than 01PM.</span> <span className="translation text-sm">O Locatário concorda em devolver o veículo descrito acima ao local de retirada até no máximo 10h.</span><br />
-              <span className="text-sm">11.2. The Renter must return the vehicles to the OWNER on the lease end date of the airport at {data.returnLocation ? data.returnLocation.toUpperCase() : "AEROPORTO DE ORLANDO"}, as agreed, in the same condition as received, except for normal wear and tear. The vehicle must be returned with a full tank; otherwise, a fee of $60.00 (sixty dollars) per vehicle will be charged. In case of excessive dirt, a fee of $100.00 per car will be applied.</span> <span className="translation text-sm">O Locatário deve devolver os veículos ao PROPRIETÁRIO na data de término da locação, no aeroporto de {data.returnLocation ? data.returnLocation.toUpperCase() : "AEROPORTO DE ORLANDO"}, conforme acordado, nas mesmas condições em que foram recebidos, exceto pelo desgaste natural. O veículo deve ser devolvido com o tanque cheio; caso contrário, será cobrada uma taxa de $60,00 (sessenta dólares). Em caso de sujeira excessiva, será aplicada uma taxa de $100,00 por carro.</span>
+              <span className="text-sm">11.1 The Renter hereby agrees to return the above-described vehicle to the pick up location later than 01PM.</span> <span className="translation text-sm">O Locatário concorda em devolver o veículo descrito acima ao local de retirada até no máximo 13h.</span><br />
+              <span className="text-sm">11.2. The Renter must return the vehicles to the OWNER on the lease end date of the airport at {data.returnLocation ? data.returnLocation.toUpperCase() : "ORLANDO AIRPORT"}, Florida, USA, as agreed, in the same condition as received, except for normal wear and tear. The vehicle must be returned with a full tank; otherwise, a fee of $60.00 (sixty dollars) per vehicle will be charged. In case of excessive dirt, a fee of $100.00 per car will be applied.</span> <span className="translation text-sm">O Locatário deve devolver os veículos ao PROPRIETÁRIO na data de término da locação, no aeroporto de {data.returnLocation ? data.returnLocation.toUpperCase() : "ORLANDO"}, Flórida, EUA, conforme acordado, nas mesmas condições em que foram recebidos, exceto pelo desgaste natural. O veículo deve ser devolvido com o tanque cheio; caso contrário, será cobrada uma taxa de $60,00 (sessenta dólares). Em caso de sujeira excessiva, será aplicada uma taxa de $100,00 por carro.</span>
             </div>
           </div>
 
@@ -184,8 +184,8 @@ export function ContractPreview({ data }: ContractPreviewProps) {
           </div>
 
           <div className="mb-6">
-            Signed at Orlando on this {formatDate(data.signDate)} day of {data.signDate ? format(data.signDate, "MMMM yyyy") : "__________ ____"}<br />
-            <span className="translation">Assinado em Orlando, no dia {formatDate(data.signDate)}</span>
+            Signed at Orlando, Florida, USA on this {formatDate(data.signDate)} day of {data.signDate ? format(data.signDate, "MMMM yyyy") : "__________ ____"}<br />
+            <span className="translation">Assinado em Orlando, Flórida, EUA, no dia {formatDate(data.signDate)}</span>
           </div>
 
           <div className="contract-signature">
