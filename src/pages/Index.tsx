@@ -5,6 +5,7 @@ import { ContractPreview } from "@/components/ContractPreview";
 import { PrintButton } from "@/components/PrintButton";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Toaster } from "@/components/ui/toaster";
 
 const Index = () => {
   const [formData, setFormData] = useState<Partial<FormData>>({});
@@ -41,6 +42,8 @@ const Index = () => {
       <div className="print-only">
         <ContractPreview data={formData} />
       </div>
+      
+      <Toaster />
     </div>
   );
 };

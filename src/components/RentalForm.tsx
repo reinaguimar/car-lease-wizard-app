@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { format } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
@@ -33,10 +32,11 @@ import {
   PopoverTrigger, 
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, RefreshCw } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useToast } from "@/hooks/use-toast";
 
 const vehicleTypes = ["SUV", "Sedan", "Hatchback", "Convertible", "Minivan", "Pickup", "Sports Car"];
 const fuelTypes = ["Gasolina", "Diesel", "Elétrico", "Híbrido", "Flex"];
@@ -103,11 +103,31 @@ export function RentalForm({ onFormChange }: RentalFormProps) {
       signDate: new Date(),
     },
   });
+  
+  const { toast } = useToast();
 
   const handleFormChange = (field: keyof FormData, value: any) => {
     form.setValue(field, value);
     if (form.formState.isValid) {
       onFormChange(form.getValues());
+    }
+  };
+  
+  const handleUpdateContract = () => {
+    if (form.formState.isValid) {
+      onFormChange(form.getValues());
+      toast({
+        title: "Contrato atualizado",
+        description: "Os dados foram aplicados ao contrato com sucesso",
+      });
+    } else {
+      // Trigger validation on all fields
+      form.trigger();
+      toast({
+        title: "Erro ao atualizar contrato",
+        description: "Por favor, verifique os campos obrigatórios",
+        variant: "destructive",
+      });
     }
   };
 
@@ -577,6 +597,17 @@ export function RentalForm({ onFormChange }: RentalFormProps) {
                 />
               </div>
             </TabsContent>
+
+            <div className="mt-6 flex justify-end">
+              <Button 
+                onClick={handleUpdateContract} 
+                type="button"
+                className="gap-2"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Atualizar Contrato
+              </Button>
+            </div>
           </Form>
         </Tabs>
       </CardContent>
