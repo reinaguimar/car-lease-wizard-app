@@ -197,9 +197,8 @@ export default function Dashboard() {
                 <Select
                   value={dateRange}
                   onValueChange={(value) => setDateRange(value as DateRange)}
-                  className="flex-1"
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="flex-1">
                     <SelectValue placeholder="Todos os períodos" />
                   </SelectTrigger>
                   <SelectContent>
@@ -231,8 +230,19 @@ export default function Dashboard() {
                         initialFocus
                         mode="range"
                         defaultMonth={customDateRange.from}
-                        selected={customDateRange}
-                        onSelect={setCustomDateRange}
+                        selected={{
+                          from: customDateRange.from,
+                          to: customDateRange.to
+                        }}
+                        onSelect={(range) => {
+                          if (range) {
+                            setCustomDateRange({
+                              from: range.from,
+                              to: range.to || range.from
+                            });
+                          }
+                        }}
+                        className="pointer-events-auto"
                       />
                     </PopoverContent>
                   </Popover>

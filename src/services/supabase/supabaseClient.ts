@@ -40,3 +40,26 @@ export const supabase = createClient(
 export const isSupabaseConfigured = () => {
   return Boolean(supabaseUrl && supabaseKey);
 };
+
+// Helper function to handle query errors consistently
+export const handleSupabaseError = (error: any, operation: string): void => {
+  const errorMessage = `Erro durante ${operation}: ${error.message || 'Desconhecido'}`;
+  console.error(errorMessage, error);
+  
+  if (typeof window !== 'undefined') {
+    toast.error(errorMessage, {
+      description: "Verifique a conexão com o Supabase e tente novamente",
+      duration: 5000
+    });
+  }
+};
+
+// Helper function to check if data exists in response
+export const validateSupabaseResponse = <T>(data: T | null, errorMessage: string): T => {
+  if (!data) {
+    const error = new Error(errorMessage);
+    handleSupabaseError(error, 'validação de dados');
+    throw error;
+  }
+  return data;
+};
