@@ -20,12 +20,14 @@ export function CompanySelector({ selectedCompany, onCompanyChange }: CompanySel
         onValueChange={(value) => onCompanyChange(value as Company)}
         className="grid grid-cols-1 md:grid-cols-2 gap-4"
       >
-        <div className={`border rounded-md p-4 ${selectedCompany === "moove" ? "border-primary bg-muted" : "border-gray-200"}`}>
+        <div className={`border rounded-md p-4 ${selectedCompany === "moove" ? "border-[#33C3F0] bg-blue-50" : "border-gray-200"}`}>
           <RadioGroupItem value="moove" id="moove" className="sr-only" />
           <Label htmlFor="moove" className="flex items-center justify-center gap-2 cursor-pointer">
-            <Car className="w-6 h-6" />
+            <div className="bg-[#33C3F0] text-white p-1 rounded-full">
+              <Car className="w-5 h-5" />
+            </div>
             <div className="text-center">
-              <h3 className="font-bold text-lg">Moove Locadora</h3>
+              <h3 className={`font-bold text-lg ${selectedCompany === "moove" ? "text-[#33C3F0]" : ""}`}>Moove Locadora</h3>
               <p className="text-muted-foreground text-sm">Contrato padrão</p>
             </div>
           </Label>

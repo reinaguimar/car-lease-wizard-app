@@ -24,7 +24,13 @@ interface ContractPreviewProps {
 }
 
 export function ContractPreview({ data, company }: ContractPreviewProps) {
-  const themeClass = company === "yoou" ? "yoou-theme" : "";
+  let themeClass = "";
+  
+  if (company === "yoou") {
+    themeClass = "yoou-theme";
+  } else if (company === "moove") {
+    themeClass = "moove-theme";
+  }
   
   return (
     <Card className={`w-full ${themeClass}`}>
