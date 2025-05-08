@@ -1,4 +1,3 @@
-
 import { createClient as supabaseCreateClient } from '@supabase/supabase-js';
 
 // Check if environment variables are available and provide fallbacks for development
@@ -254,7 +253,7 @@ export const getContracts = async (options?: {
     const { data, error } = await query;
     
     if (error) throw error;
-    return data || [];
+    return (data as unknown as Contract[]) || [];
   } catch (error) {
     console.error('Error fetching contracts:', error);
     return [];
