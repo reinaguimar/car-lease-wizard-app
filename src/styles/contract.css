@@ -7,10 +7,16 @@
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 1rem;
   background-color: white;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   border-radius: 8px;
+}
+
+@media (min-width: 640px) {
+  .contract-container {
+    padding: 2rem;
+  }
 }
 
 .contract-header {
@@ -22,32 +28,68 @@
 
 .header-content {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 1rem;
+  padding: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .header-content {
+    flex-direction: row;
+    padding: 1rem;
+  }
 }
 
 .company-logo {
-  margin-right: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .company-logo {
+    margin-right: 1.5rem;
+    margin-bottom: 0;
+  }
 }
 
 .company-logo img {
-  height: 60px;
-  max-width: 200px;
+  height: 50px;
+  max-width: 160px;
   object-fit: contain;
 }
 
+@media (min-width: 640px) {
+  .company-logo img {
+    height: 60px;
+    max-width: 200px;
+  }
+}
+
 .header-text {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: bold;
-  flex: 1;
   text-align: center;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .header-text {
+    font-size: 1.25rem;
+    flex: 1;
+  }
 }
 
 .contract-section {
-  margin-bottom: 1.5rem;
-  padding: 1rem;
+  margin-bottom: 1.2rem;
+  padding: 0.75rem;
   background-color: rgba(255, 255, 255, 0.8);
   border-radius: 6px;
+}
+
+@media (min-width: 640px) {
+  .contract-section {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+  }
 }
 
 .contract-clause {
@@ -56,16 +98,34 @@
 }
 
 .contract-signature {
-  margin-top: 3rem;
+  margin-top: 2rem;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .contract-signature {
+    margin-top: 3rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
 }
 
 .contract-signature-line {
-  width: 220px;
-  margin-top: 3rem;
+  width: 200px;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
   text-align: center;
   padding-top: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .contract-signature-line {
+    width: 220px;
+    margin-bottom: 0;
+  }
 }
 
 .translation {
@@ -79,13 +139,26 @@
 /* Two-column layout for efficiency when needed */
 .two-columns {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 1rem;
 }
 
+@media (min-width: 768px) {
+  .two-columns {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
 .column {
-  flex: 1;
-  min-width: 45%;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .column {
+    flex: 1;
+    min-width: 45%;
+  }
 }
 
 @media print {
@@ -149,22 +222,6 @@
 
 .compact-layout .contract-signature {
   margin-top: 1.5rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .contract-container {
-    padding: 1rem;
-  }
-  
-  .contract-section {
-    padding: 0.75rem;
-    margin-bottom: 1rem;
-  }
-  
-  .header-content {
-    padding: 0.75rem;
-  }
 }
 
 /* PDF-specific optimizations */

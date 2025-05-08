@@ -9,6 +9,7 @@ import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UseFormReturn } from "react-hook-form";
 import { FormData } from "../RentalForm";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface PricingInfoProps {
   form: UseFormReturn<FormData>;
@@ -16,6 +17,8 @@ interface PricingInfoProps {
 }
 
 export function PricingInfo({ form, handleFormChange }: PricingInfoProps) {
+  const isMobile = useIsMobile();
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <FormField
@@ -32,6 +35,7 @@ export function PricingInfo({ form, handleFormChange }: PricingInfoProps) {
                   field.onChange(e);
                   handleFormChange("rentalRate", e.target.value);
                 }}
+                className="w-full"
               />
             </FormControl>
             <FormMessage />
@@ -53,6 +57,7 @@ export function PricingInfo({ form, handleFormChange }: PricingInfoProps) {
                   field.onChange(e);
                   handleFormChange("deposit", e.target.value);
                 }}
+                className="w-full"
               />
             </FormControl>
             <FormMessage />
@@ -85,7 +90,7 @@ export function PricingInfo({ form, handleFormChange }: PricingInfoProps) {
                   </Button>
                 </FormControl>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className={cn("w-auto p-0", isMobile ? "w-[280px]" : "")} align="start">
                 <Calendar
                   mode="single"
                   selected={field.value}

@@ -10,10 +10,12 @@ import { CompanySelector, type Company } from "@/components/CompanySelector";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Archive, File } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Index = () => {
   const [formData, setFormData] = useState<Partial<FormData>>({});
   const [selectedCompany, setSelectedCompany] = useState<Company>("moove");
+  const isMobile = useIsMobile();
 
   const handleFormChange = (data: FormData) => {
     setFormData(data);
@@ -24,30 +26,30 @@ const Index = () => {
   };
 
   return (
-    <div className="container mx-auto py-6">
+    <div className="container mx-auto py-6 px-4 sm:px-6">
       <div className="mb-6 text-center">
-        <h1 className="text-3xl font-bold">Sistema de Locação de Veículos</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl sm:text-3xl font-bold">Sistema de Locação de Veículos</h1>
+        <p className="text-muted-foreground text-sm sm:text-base">
           Preencha os dados do contrato e visualize em tempo real
         </p>
       </div>
 
-      <div className="mb-4 flex justify-between items-center">
+      <div className={`mb-4 ${isMobile ? 'flex flex-col gap-4' : 'flex justify-between items-center'}`}>
         <CompanySelector 
           selectedCompany={selectedCompany}
           onCompanyChange={handleCompanyChange}
-          className="no-print"
+          className="no-print w-full sm:w-auto"
         />
         
-        <div className="no-print flex gap-2">
-          <Link to="/contracts">
-            <Button variant="outline" className="gap-2">
+        <div className="no-print flex flex-wrap gap-2">
+          <Link to="/contracts" className="w-full sm:w-auto">
+            <Button variant="outline" className="gap-2 w-full sm:w-auto">
               <File className="h-4 w-4" />
               Ver Contratos
             </Button>
           </Link>
-          <Link to="/archived">
-            <Button variant="outline" className="gap-2">
+          <Link to="/archived" className="w-full sm:w-auto">
+            <Button variant="outline" className="gap-2 w-full sm:w-auto">
               <Archive className="h-4 w-4" />
               Ver Arquivados
             </Button>
