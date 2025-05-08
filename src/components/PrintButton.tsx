@@ -6,7 +6,11 @@ import { FormData } from "./RentalForm";
 import { type Company } from "./CompanySelector";
 import { createPDFWindow, populatePDFContent } from "./pdf/PDFWindowCreator";
 import { useState } from "react";
-import { createClient, createVehicle, createContract } from "@/services/supabase";
+import { 
+  createClientHelper as createClient, 
+  createVehicleHelper as createVehicle, 
+  createContractHelper as createContract 
+} from "@/services/supabase";
 import { generateContractNumber } from "@/utils/contractUtils";
 import { useLoading } from "@/hooks/useLoading";
 
