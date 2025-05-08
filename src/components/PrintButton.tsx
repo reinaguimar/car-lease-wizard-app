@@ -22,12 +22,28 @@ interface PrintButtonProps {
 export function PrintButton({ data, company }: PrintButtonProps) {
   const [isSaving, setIsSaving] = useState(false);
   
+  // Função para verificar se todos os dados estão preenchidos
+  const isFormDataComplete = (data: Partial<FormData>): boolean => {
+    const requiredFields = [
+      'firstName', 'surname', 'idNumber', 'address',
+      'vehicleType', 'make', 'model', 'fuel',
+      'startDate', 'startTime', 'endDate', 'endTime',
+      'deliveryLocation', 'returnLocation',
+      'rentalRate', 'deposit', 'signDate'
+    ];
+    
+    return requiredFields.every(field => Boolean(data[field as keyof FormData]));
+  };
+  
+  // Verifica se o formulário está completo
+  const isComplete = isFormDataComplete(data);
+  
   const handleSaveAsPDF = async () => {
     try {
       setIsSaving(true);
       
       // Verificar se todos os dados necessários estão presentes
-      if (!isFormDataComplete(data)) {
+      if (!isComplete) {
         toast.error("Por favor, complete todos os campos do formulário antes de salvar");
         return;
       }
@@ -114,19 +130,6 @@ export function PrintButton({ data, company }: PrintButtonProps) {
       setIsSaving(false);
     }
   };
-
-  // Função auxiliar para verificar se os dados estão completos
-  const isFormDataComplete = (data: Partial<FormData>): boolean => {
-    const requiredFields = [
-      'firstName', 'surname', 'idNumber', 'address',
-      'vehicleType', 'make', 'model', 'fuel',
-      'startDate', 'startTime', 'endDate', 'endTime',
-      'deliveryLocation', 'returnLocation',
-      'rentalRate', 'deposit', 'signDate'
-    ];
-    
-    return requiredFields.every(field => Boolean(data[field as keyof FormData]));
-  };
   
   // Função para formatar data para ISO string (YYYY-MM-DD)
   const formatDateToISO = (date: Date): string => {
@@ -138,10 +141,10 @@ export function PrintButton({ data, company }: PrintButtonProps) {
       onClick={handleSaveAsPDF}
       className="no-print mb-6"
       variant="default"
-      disabled={isSaving}
+      disabled={isSaving || !isComplete}
     >
       <Save className="mr-2 h-4 w-4" />
-      {isSaving ? "Salvando..." : "Salvar em PDF"}
+      {isSaving ? "Salvando..." : isComplete ? "Salvar em PDF" : "Preencha todos os campos"}
     </Button>
   );
 }
