@@ -1,12 +1,14 @@
 
 import React from "react";
 import { FormData } from "../RentalForm";
+import { type Company } from "../CompanySelector";
 
 interface RenterInfoSectionProps {
   data: Partial<FormData>;
+  company?: Company;
 }
 
-export function RenterInfoSection({ data }: RenterInfoSectionProps) {
+export function RenterInfoSection({ data, company = "moove" }: RenterInfoSectionProps) {
   return (
     <>
       <div className="contract-clause font-semibold">
@@ -14,11 +16,23 @@ export function RenterInfoSection({ data }: RenterInfoSectionProps) {
       </div>
       <div className="contract-clause">
         1.1 THE OWNER / <span className="translation">O PROPRIETÁRIO:</span><br />
-        Moove Locadora de Veículos S/A,<br />
-        CNPJ 26.875.530/0001-77<br />
-        Av. Barão Homem de Melo, 3150 – Estoril<br />
-        Belo Horizonte – MG – CEP:30.494-080<br />
-        Brasil
+        {company === "yoou" ? (
+          <>
+            Yoou Rent a Car LLC<br />
+            D.C L00000000000000<br />
+            7454 Marker Ave<br />
+            Kissimmee, FL 34747<br />
+            USA
+          </>
+        ) : (
+          <>
+            Moove Locadora de Veículos S/A,<br />
+            CNPJ 26.875.530/0001-77<br />
+            Av. Barão Homem de Melo, 3150 – Estoril<br />
+            Belo Horizonte – MG – CEP:30.494-080<br />
+            Brasil
+          </>
+        )}
       </div>
       <div className="contract-clause">
         1.2 THE RENTER:<br />

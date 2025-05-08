@@ -39,7 +39,7 @@ export function ContractPreview({ data, company }: ContractPreviewProps) {
           <ContractHeader company={company} />
           
           <ContractSection>
-            <RenterInfoSection data={data} />
+            <RenterInfoSection data={data} company={company} />
           </ContractSection>
           
           <ContractSection>
