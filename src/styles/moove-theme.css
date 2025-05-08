@@ -1,4 +1,3 @@
-
 /* Moove Theme Styles */
 .moove-theme .contract-container {
   font-family: 'Montserrat', 'Arial', sans-serif;
@@ -20,9 +19,7 @@
 }
 
 .moove-theme .company-logo {
-  background-color: white;
   padding: 0.5rem;
-  border-radius: 8px 0 0 8px;
   display: flex;
   align-items: center;
   justify-content: center;
