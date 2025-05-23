@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -15,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { getRentals, searchRentals, updateRentalStatus, Rental } from "@/services/supabase";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Eye, FileText, ArrowLeft, AlertCircle, Loader } from "lucide-react";
+import { Eye, FileText, ArrowLeft, AlertCircle, Loader, Edit } from "lucide-react";
 import { ContractSearch } from "@/components/ContractSearch";
 import { ContractsPagination } from "@/components/ContractsPagination";
 import { LoadingState } from "@/components/LoadingState";
@@ -208,6 +207,11 @@ export default function ContractsPage() {
                       <Button size="sm" variant="outline">
                         <Eye className="h-4 w-4" />
                       </Button>
+                      <Link to={`/contracts/edit/${rental.id}`}>
+                        <Button size="sm" variant="outline" className="gap-1">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </Link>
                       <Button
                         size="sm"
                         variant="outline"

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Index from './pages/Index';
 import ContractsPage from './pages/ContractsPage';
+import EditContractPage from './pages/EditContractPage';
 import ArchivedContracts from './pages/ArchivedContracts';
 import AuditLogsPage from './pages/AuditLogsPage';
 import NotFound from './pages/NotFound';
@@ -46,6 +47,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/contracts/new" element={<Index />} />
           <Route path="/contracts" element={<ContractsPage />} />
+          <Route path="/contracts/edit/:id" element={<EditContractPage />} />
           <Route path="/archived" element={<ArchivedContracts />} />
           <Route path="/audit" element={<AuditLogsPage />} />
           <Route path="*" element={<NotFound />} />
