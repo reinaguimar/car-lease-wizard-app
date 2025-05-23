@@ -19,6 +19,7 @@ const EditContractPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState<Partial<FormData>>({});
+  const [initialFormData, setInitialFormData] = useState<Partial<FormData>>({});
   const [selectedCompany, setSelectedCompany] = useState<Company>("moove");
   const [activeTab, setActiveTab] = useState("form");
   const [isLoading, setIsLoading] = useState(true);
@@ -46,7 +47,7 @@ const EditContractPage = () => {
         }
 
         // Convert rental data to form data
-        const convertedFormData: Partial<FormData> = {
+        const convertedFormData: FormData = {
           firstName: rental.client_name,
           surname: rental.client_surname,
           idNumber: rental.client_id_number,
@@ -72,6 +73,7 @@ const EditContractPage = () => {
         };
 
         setFormData(convertedFormData);
+        setInitialFormData(convertedFormData);
         setSelectedCompany(rental.company_code as Company);
       } catch (error) {
         console.error("Error loading contract:", error);
@@ -155,7 +157,11 @@ const EditContractPage = () => {
           <TabsTrigger value="preview" className="text-xs sm:text-sm">Visualizar Contrato</TabsTrigger>
         </TabsList>
         <TabsContent value="form">
-          <RentalForm onFormChange={handleFormChange} onViewContract={handleViewContract} />
+          <RentalForm 
+            onFormChange={handleFormChange} 
+            onViewContract={handleViewContract}
+            initialData={initialFormData}
+          />
           <div className="mt-6 flex justify-end">
             <Button 
               onClick={handleUpdateContract}

@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -59,9 +59,10 @@ export type FormData = z.infer<typeof formSchema>;
 interface RentalFormProps {
   onFormChange: (data: FormData) => void;
   onViewContract?: () => void;
+  initialData?: Partial<FormData>;
 }
 
-export function RentalForm({ onFormChange, onViewContract }: RentalFormProps) {
+export function RentalForm({ onFormChange, onViewContract, initialData }: RentalFormProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -92,6 +93,19 @@ export function RentalForm({ onFormChange, onViewContract }: RentalFormProps) {
   
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("renter");
+
+  // Effect to populate form with initial data when editing
+  useEffect(() => {
+    if (initialData && Object.keys(initialData).length > 0) {
+      Object.entries(initialData).forEach(([key, value]) => {
+        if (value !== undefined) {
+          form.setValue(key as keyof FormData, value);
+        }
+      });
+      // Trigger form change with initial data
+      onFormChange(initialData as FormData);
+    }
+  }, [initialData, form, onFormChange]);
 
   const handleFormChange = (field: keyof FormData, value: any) => {
     form.setValue(field, value);
@@ -126,7 +140,6 @@ export function RentalForm({ onFormChange, onViewContract }: RentalFormProps) {
   // Define tab order for navigation
   const tabOrder = ["renter", "vehicle", "period", "pricing"];
   
-  // Function to navigate to next tab
   const goToNextTab = () => {
     const currentIndex = tabOrder.indexOf(activeTab);
     if (currentIndex < tabOrder.length - 1) {
@@ -134,7 +147,6 @@ export function RentalForm({ onFormChange, onViewContract }: RentalFormProps) {
     }
   };
   
-  // Function to check if current tab is valid
   const isCurrentTabValid = () => {
     const fieldsPerTab = {
       renter: ["firstName", "surname", "idNumber", "address"],
@@ -219,7 +231,6 @@ export function RentalForm({ onFormChange, onViewContract }: RentalFormProps) {
             <TabsContent value="pricing" className="mt-0">
               <PricingInfo form={form} handleFormChange={handleFormChange} />
               
-              {/* Botão de atualizar contrato apenas na última guia */}
               <div className="mt-6 flex justify-end">
                 <Button 
                   onClick={handleUpdateContract} 
