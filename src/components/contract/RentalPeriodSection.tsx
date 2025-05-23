@@ -22,12 +22,12 @@ export function RentalPeriodSection({ data }: RentalPeriodSectionProps) {
       </div>
       <div className="contract-clause">
         5.1 Starting Date / <span className="translation">Data de Início:</span> {formatDate(data.startDate)}<br />
-        Time (US) / <span className="translation">Hora (BR):</span> {data.startTime || "_______"} / {data.startTime ? data.startTime.replace("AM", "h").replace("PM", "h") : "_______"}h<br />
+        Time (US) / <span className="translation">Hora (BR):</span> {data.startTime || "_______"} / {data.startTime ? data.startTime.replace("AM", "").replace("PM", "") + "h" : "_______h"}<br />
         5.1.1 Delivery location / <span className="translation">Local de entrega:</span> {data.deliveryLocation || "_________________"}, Florida, USA
       </div>
       <div className="contract-clause">
         5.2 Ending Date / <span className="translation">Data de Término:</span> {formatDate(data.endDate)}<br />
-        Time (US) / <span className="translation">Hora (BR):</span> {data.endTime || "_______"} / {data.endTime ? data.endTime.replace("AM", "h").replace("PM", "h") : "_______"}h<br />
+        Time (US) / <span className="translation">Hora (BR):</span> {data.endTime || "_______"} / {data.endTime ? data.endTime.replace("AM", "").replace("PM", "") + "h" : "_______h"}<br />
         5.2.1 Return location / <span className="translation">Local de retorno:</span> {data.returnLocation || "_________________"}, Florida, USA
       </div>
     </>
