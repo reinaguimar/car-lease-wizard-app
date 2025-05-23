@@ -1,8 +1,10 @@
+
 /* Yoou Theme Styles */
 .yoou-theme .contract-container {
   font-family: 'Poppins', 'Helvetica Neue', sans-serif;
   color: #333;
   border-top: 6px solid #EF65CF;
+  text-align: justify;
 }
 
 .yoou-theme .contract-header {
@@ -11,6 +13,7 @@
   border-radius: 8px;
   margin-bottom: 2rem;
   box-shadow: 0 4px 10px rgba(239, 101, 207, 0.2);
+  text-align: center;
 }
 
 .yoou-theme .header-content {
@@ -33,6 +36,7 @@
 
 .yoou-theme .header-text {
   padding: 0 1.5rem;
+  text-align: center;
 }
 
 .yoou-theme .contract-section {
@@ -41,10 +45,12 @@
   margin-bottom: 1.5rem;
   background-color: #fef6fc;
   transition: all 0.3s ease;
+  text-align: justify;
 }
 
 .yoou-theme .contract-clause {
   color: #333333;
+  text-align: justify;
 }
 
 .yoou-theme .translation {

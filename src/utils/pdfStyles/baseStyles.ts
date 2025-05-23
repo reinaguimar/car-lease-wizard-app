@@ -15,12 +15,14 @@ export const getBasePDFStyles = (): string => {
       font-family: 'Arial', sans-serif;
       font-size: 10pt;
       line-height: 1.4;
+      text-align: justify;
     }
     
     .print-container {
       width: 100%;
       margin: 0 auto;
       background-color: white;
+      text-align: justify;
     }
     
     /* Base contract styles */
@@ -30,12 +32,14 @@ export const getBasePDFStyles = (): string => {
       padding: 0;
       background-color: white;
       box-sizing: border-box;
+      text-align: justify;
     }
     
     .contract-header {
       font-weight: bold;
       margin-bottom: 0.75rem;
       width: 100%;
+      text-align: center;
     }
     
     .header-content {
@@ -67,11 +71,13 @@ export const getBasePDFStyles = (): string => {
       margin-bottom: 1rem;
       padding: 0.5rem 0.75rem;
       background-color: rgba(255, 255, 255, 0.8);
+      text-align: justify;
     }
     
     .contract-clause {
       margin-bottom: 0.5rem;
       padding: 0.1rem 0;
+      text-align: justify;
     }
     
     .contract-signature {
@@ -123,6 +129,7 @@ export const getPrintStyles = (): string => {
         margin: 0;
         padding: 0;
         width: 100%;
+        text-align: justify;
       }
       
       /* Specific handling for headers on each page */
@@ -145,12 +152,14 @@ export const getPrintStyles = (): string => {
         padding: 0;
         margin: 0;
         box-shadow: none;
+        text-align: justify;
       }
       
       .contract-section {
         page-break-inside: auto;
         break-inside: auto;
         width: 100%;
+        text-align: justify;
       }
       
       /* The header is repeated by the @page rule, so hide the first one */
@@ -161,6 +170,7 @@ export const getPrintStyles = (): string => {
       .contract-clause {
         margin-bottom: 0.4rem;
         padding: 0.1rem 0;
+        text-align: justify;
       }
       
       /* Signature section should not be split */
@@ -182,16 +192,19 @@ export const getPrintStyles = (): string => {
     .pdf-optimized {
       font-size: 10pt;
       line-height: 1.4;
+      text-align: justify;
     }
     
     .pdf-optimized .contract-section {
       margin-bottom: 1rem;
       padding: 0.5rem 0.75rem;
+      text-align: justify;
     }
     
     .pdf-optimized .contract-clause {
       margin-bottom: 0.4rem;
       padding: 0.1rem 0;
+      text-align: justify;
     }
     
     .pdf-optimized .text-sm {
@@ -206,6 +219,7 @@ export const getPrintStyles = (): string => {
     .preserve-layout .contract-section {
       page-break-inside: auto;
       break-inside: auto;
+      text-align: justify;
     }
     
     .preserve-layout .contract-signature {
