@@ -19,7 +19,7 @@ CREATE TABLE public.companies (
 INSERT INTO public.companies (name, code, cnpj, address, city, state, country, logo_url, theme_color)
 VALUES 
   ('Moove Locadora de Veículos S/A', 'moove', '26.875.530/0001-77', 'Av. Barão Homem de Melo, 3150 – Estoril', 'Belo Horizonte', 'MG', 'Brasil', '/lovable-uploads/77ecfed0-4dfe-41b1-a907-c8c9241166ee.png', '#4B80C3'),
-  ('Yoou Rent a Car LLC', 'yoou', 'L00000000000000', '7454 Marker Ave', 'Kissimmee', 'FL', 'USA', '/lovable-uploads/84eac6d9-3068-4699-b09d-04269c7c8870.png', '#EF65CF');
+  ('Youu Services USA LLC', 'yoou', '39-3119936', '3300 Greenwald 2ND Floor', 'Kissimmee', 'FL 34741', 'USA', '/lovable-uploads/84eac6d9-3068-4699-b09d-04269c7c8870.png', '#EF65CF');
 
 -- Enable RLS
 ALTER TABLE public.companies ENABLE ROW LEVEL SECURITY;

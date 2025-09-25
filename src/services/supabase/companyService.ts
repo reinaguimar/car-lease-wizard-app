@@ -10,7 +10,7 @@ export const defaultCompanies = {
     theme_color: '#4B80C3'
   },
   yoou: {
-    name: 'Yoou Rent a Car LLC',
+    name: 'Youu Services USA LLC',
     code: 'yoou',
     logo_url: '/lovable-uploads/84eac6d9-3068-4699-b09d-04269c7c8870.png',
     theme_color: '#EF65CF'
@@ -33,14 +33,14 @@ const mockCompanies: Company[] = [
   },
   {
     id: 'yoou',
-    name: 'Yoou Rent a Car LLC',
+    name: 'Youu Services USA LLC',
     code: 'yoou',
     logo_url: '/lovable-uploads/84eac6d9-3068-4699-b09d-04269c7c8870.png',
     theme_color: '#EF65CF',
-    cnpj: '98.765.432/0001-10',
-    address: '123 Main St',
-    city: 'Orlando',
-    state: 'FL',
+    cnpj: '39-3119936',
+    address: '3300 Greenwald 2ND Floor',
+    city: 'Kissimmee',
+    state: 'FL 34741',
     country: 'USA'
   }
 ];

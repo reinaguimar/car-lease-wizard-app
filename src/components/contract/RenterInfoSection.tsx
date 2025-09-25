@@ -18,10 +18,10 @@ export function RenterInfoSection({ data, company = "moove" }: RenterInfoSection
         1.1 THE OWNER / <span className="translation">O PROPRIETÁRIO:</span><br />
         {company === "yoou" ? (
           <>
-            Yoou Rent a Car LLC<br />
-            D.C L00000000000000<br />
-            7454 Marker Ave<br />
-            Kissimmee, FL 34747<br />
+            Youu Services USA LLC<br />
+            EIN: 39-3119936<br />
+            3300 Greenwald 2ND Floor<br />
+            Kissimmee, FL 34741<br />
             USA
           </>
         ) : (
