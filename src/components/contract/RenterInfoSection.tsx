@@ -20,7 +20,7 @@ export function RenterInfoSection({ data, company = "moove" }: RenterInfoSection
           <>
             Youu Services USA LLC<br />
             EIN: 39-3119936<br />
-            3300 Greenwald 2ND Floor<br />
+            3300 Greenwald Way - 2ND Floor<br />
             Kissimmee, FL 34741<br />
             USA
           </>
