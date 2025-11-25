@@ -205,6 +205,14 @@ export const formDataToRental = (formData: FormData, company: Company, contractN
     
     // Contract metadata
     sign_date: formData.signDate.toISOString().split('T')[0],
-    status: 'active'
+    status: 'active',
+    
+    // Additional products/services
+    additional_products: formData.additionalProducts as any || [],
+    
+    // Additional driver
+    additional_driver_name: formData.additionalDriverName || null,
+    additional_driver_id_number: formData.additionalDriverIdNumber || null,
+    additional_driver_license: formData.additionalDriverLicense || null,
   };
 };

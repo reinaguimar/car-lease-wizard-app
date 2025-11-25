@@ -207,8 +207,13 @@ export default function ContractsPage() {
                       <Button size="sm" variant="outline">
                         <Eye className="h-4 w-4" />
                       </Button>
+                      <Link to={`/contracts/statement/${rental.id}`}>
+                        <Button size="sm" variant="outline" className="gap-1" title="Ver Demonstrativo">
+                          <FileText className="h-4 w-4" />
+                        </Button>
+                      </Link>
                       <Link to={`/contracts/edit/${rental.id}`}>
-                        <Button size="sm" variant="outline" className="gap-1">
+                        <Button size="sm" variant="outline" className="gap-1" title="Editar Contrato">
                           <Edit className="h-4 w-4" />
                         </Button>
                       </Link>

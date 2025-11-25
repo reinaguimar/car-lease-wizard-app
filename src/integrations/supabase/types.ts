@@ -16,6 +16,10 @@ export type Database = {
     Tables: {
       rentals: {
         Row: {
+          additional_driver_id_number: string | null
+          additional_driver_license: string | null
+          additional_driver_name: string | null
+          additional_products: Json | null
           client_address: string
           client_email: string | null
           client_id_number: string
@@ -53,6 +57,10 @@ export type Database = {
           vehicle_year: string | null
         }
         Insert: {
+          additional_driver_id_number?: string | null
+          additional_driver_license?: string | null
+          additional_driver_name?: string | null
+          additional_products?: Json | null
           client_address: string
           client_email?: string | null
           client_id_number: string
@@ -90,6 +98,10 @@ export type Database = {
           vehicle_year?: string | null
         }
         Update: {
+          additional_driver_id_number?: string | null
+          additional_driver_license?: string | null
+          additional_driver_name?: string | null
+          additional_products?: Json | null
           client_address?: string
           client_email?: string | null
           client_id_number?: string
