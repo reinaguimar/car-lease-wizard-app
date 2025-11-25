@@ -15,6 +15,8 @@ import { RenterInfo } from "./rental-form/RenterInfo";
 import { VehicleInfo } from "./rental-form/VehicleInfo";
 import { RentalPeriod } from "./rental-form/RentalPeriod";
 import { PricingInfo } from "./rental-form/PricingInfo";
+import { AdditionalProducts } from "./rental-form/AdditionalProducts";
+import { AdditionalDriver } from "./rental-form/AdditionalDriver";
 
 const formSchema = z.object({
   // Renter Information
@@ -52,6 +54,18 @@ const formSchema = z.object({
   signDate: z.date({
     required_error: "Data de assinatura é obrigatória",
   }),
+  
+  // Additional Products/Services
+  additionalProducts: z.array(z.object({
+    name: z.string(),
+    description: z.string().optional(),
+    quantity: z.number().optional(),
+  })).optional(),
+  
+  // Additional Driver
+  additionalDriverName: z.string().optional().or(z.literal('')),
+  additionalDriverIdNumber: z.string().optional().or(z.literal('')),
+  additionalDriverLicense: z.string().optional().or(z.literal('')),
 });
 
 export type FormData = z.infer<typeof formSchema>;
@@ -88,6 +102,10 @@ export function RentalForm({ onFormChange, onViewContract, initialData }: Rental
       startDate: new Date(),
       endDate: new Date(),
       signDate: new Date(),
+      additionalProducts: [],
+      additionalDriverName: "",
+      additionalDriverIdNumber: "",
+      additionalDriverLicense: "",
     },
   });
   
@@ -138,7 +156,7 @@ export function RentalForm({ onFormChange, onViewContract, initialData }: Rental
   };
   
   // Define tab order for navigation
-  const tabOrder = ["renter", "vehicle", "period", "pricing"];
+  const tabOrder = ["renter", "vehicle", "period", "pricing", "products", "driver"];
   
   const goToNextTab = () => {
     const currentIndex = tabOrder.indexOf(activeTab);
@@ -152,7 +170,9 @@ export function RentalForm({ onFormChange, onViewContract, initialData }: Rental
       renter: ["firstName", "surname", "idNumber", "address"],
       vehicle: ["vehicleType", "make", "model", "fuel"],
       period: ["startDate", "startTime", "deliveryLocation", "endDate", "endTime", "returnLocation"],
-      pricing: ["rentalRate", "deposit", "signDate"]
+      pricing: ["rentalRate", "deposit", "signDate"],
+      products: [],
+      driver: []
     };
     
     const currentTabFields = fieldsPerTab[activeTab as keyof typeof fieldsPerTab];
@@ -163,11 +183,13 @@ export function RentalForm({ onFormChange, onViewContract, initialData }: Rental
     <Card className="w-full mb-6">
       <CardContent className="p-4 sm:p-6">
         <Tabs value={activeTab} defaultValue="renter" onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-2 sm:grid-cols-4 mb-6 w-full overflow-x-auto">
-            <TabsTrigger value="renter" className="text-xs sm:text-sm">Dados do Locatário</TabsTrigger>
-            <TabsTrigger value="vehicle" className="text-xs sm:text-sm">Dados do Veículo</TabsTrigger>
-            <TabsTrigger value="period" className="text-xs sm:text-sm">Período de Locação</TabsTrigger>
-            <TabsTrigger value="pricing" className="text-xs sm:text-sm">Valores e Termos</TabsTrigger>
+          <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 mb-6 w-full overflow-x-auto">
+            <TabsTrigger value="renter" className="text-xs sm:text-sm">Locatário</TabsTrigger>
+            <TabsTrigger value="vehicle" className="text-xs sm:text-sm">Veículo</TabsTrigger>
+            <TabsTrigger value="period" className="text-xs sm:text-sm">Período</TabsTrigger>
+            <TabsTrigger value="pricing" className="text-xs sm:text-sm">Valores</TabsTrigger>
+            <TabsTrigger value="products" className="text-xs sm:text-sm">Produtos</TabsTrigger>
+            <TabsTrigger value="driver" className="text-xs sm:text-sm">Condutor +</TabsTrigger>
           </TabsList>
 
           <Form {...form}>
@@ -230,6 +252,41 @@ export function RentalForm({ onFormChange, onViewContract, initialData }: Rental
 
             <TabsContent value="pricing" className="mt-0">
               <PricingInfo form={form} handleFormChange={handleFormChange} />
+              
+              <div className="mt-6 flex justify-end">
+                <Button 
+                  onClick={() => {
+                    form.trigger(["rentalRate", "deposit", "signDate"]);
+                    if (isCurrentTabValid()) {
+                      goToNextTab();
+                    }
+                  }} 
+                  type="button"
+                  className="gap-2"
+                >
+                  Próximo
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="products" className="mt-0">
+              <AdditionalProducts form={form} handleFormChange={handleFormChange} />
+              
+              <div className="mt-6 flex justify-end">
+                <Button 
+                  onClick={goToNextTab} 
+                  type="button"
+                  className="gap-2"
+                >
+                  Próximo
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="driver" className="mt-0">
+              <AdditionalDriver form={form} handleFormChange={handleFormChange} />
               
               <div className="mt-6 flex justify-end">
                 <Button 

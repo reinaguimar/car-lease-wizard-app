@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import Index from './pages/Index';
 import ContractsPage from './pages/ContractsPage';
 import EditContractPage from './pages/EditContractPage';
+import ContractStatement from './pages/ContractStatement';
 import ArchivedContracts from './pages/ArchivedContracts';
 import AuditLogsPage from './pages/AuditLogsPage';
 import NotFound from './pages/NotFound';
@@ -48,6 +49,7 @@ function App() {
           <Route path="/contracts/new" element={<Index />} />
           <Route path="/contracts" element={<ContractsPage />} />
           <Route path="/contracts/edit/:id" element={<EditContractPage />} />
+          <Route path="/contracts/statement/:id" element={<ContractStatement />} />
           <Route path="/archived" element={<ArchivedContracts />} />
           <Route path="/audit" element={<AuditLogsPage />} />
           <Route path="*" element={<NotFound />} />
