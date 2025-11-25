@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FormData } from "./RentalForm";
 import { ContractHeader } from "./contract/ContractHeader";
 import { ContractSection } from "./contract/ContractSection";
+import { ContractStatementSection } from "./contract/ContractStatementSection";
 import { RenterInfoSection } from "./contract/RenterInfoSection";
 import { VehicleInfoSection } from "./contract/VehicleInfoSection";
 import { VehicleConditionSection } from "./contract/VehicleConditionSection";
@@ -37,6 +38,9 @@ export function ContractPreview({ data, company }: ContractPreviewProps) {
       <CardContent className="p-0 overflow-hidden">
         <div className="contract-container">
           <ContractHeader company={company} />
+          
+          {/* Demonstrativo do Contrato - Primeira Página */}
+          <ContractStatementSection data={data} />
           
           <ContractSection>
             <RenterInfoSection data={data} company={company} />

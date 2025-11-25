@@ -60,5 +60,25 @@ export const getYoouPDFStyles = (): string => {
     .yoou-theme .contract-signature-line {
       border-top: 1px solid #EF65CF;
     }
+
+    /* Yoou theme statement page styles */
+    .yoou-theme .contract-statement-page {
+      color: #333;
+    }
+
+    .yoou-theme .contract-statement-page .section-title {
+      color: #D33AAF;
+      font-weight: bold;
+      border-bottom: 2px solid #EF65CF;
+      padding-bottom: 0.3rem;
+    }
+
+    .yoou-theme .contract-statement-page .border-primary {
+      border-color: #EF65CF !important;
+    }
+
+    .yoou-theme .contract-statement-page .translation {
+      color: #A8499E;
+    }
   `;
 };

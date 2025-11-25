@@ -85,5 +85,21 @@ export const getMoovePDFStyles = (): string => {
       margin-bottom: 0.5rem;
       text-align: justify;
     }
+
+    /* Moove theme statement page styles */
+    .moove-theme .contract-statement-page {
+      color: #222222;
+    }
+
+    .moove-theme .contract-statement-page .section-title {
+      color: #4B80C3;
+      font-weight: bold;
+      border-bottom: 2px solid #4B80C3;
+      padding-bottom: 0.3rem;
+    }
+
+    .moove-theme .contract-statement-page .border-primary {
+      border-color: #4B80C3 !important;
+    }
   `;
 };

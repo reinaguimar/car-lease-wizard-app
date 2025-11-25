@@ -114,6 +114,46 @@ export const getBasePDFStyles = (): string => {
       font-weight: bold;
       margin-bottom: 0.5rem;
     }
+
+    /* Contract Statement Page Styles */
+    .contract-statement-page {
+      padding: 1rem 0;
+      margin-bottom: 2rem;
+    }
+
+    .contract-statement-page .section-title {
+      font-weight: bold;
+      font-size: 12pt;
+      margin-bottom: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .contract-statement-page .text-center {
+      text-align: center;
+    }
+
+    .contract-statement-page .space-y-2 > * + * {
+      margin-top: 0.5rem;
+    }
+
+    .contract-statement-page .space-y-3 > * + * {
+      margin-top: 0.75rem;
+    }
+
+    .contract-statement-page .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .contract-statement-page .grid-cols-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media print {
+      .contract-statement-page {
+        page-break-after: always;
+      }
+    }
   `;
 };
 
