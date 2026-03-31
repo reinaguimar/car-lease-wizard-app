@@ -45,6 +45,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
   const isMobile = useIsMobile();
+  const { signOut, user } = useAuth();
   
   // Filter states
   const [dateRange, setDateRange] = useState<DateRange>("all");
