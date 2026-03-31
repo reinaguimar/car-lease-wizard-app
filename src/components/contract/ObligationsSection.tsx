@@ -18,7 +18,8 @@ export function ObligationsSection() {
         7.8 The Renter agrees to use the vehicle exclusively for legal purposes and in compliance with all applicable traffic laws in the state of Florida. The Renter shall not permit unauthorized third parts to operate the vehicle. In the event of fines, a surcharge of 20% will be applied to the fine amount, which must be paid within 3 days of notification.<br />
         7.9 In the state of Florida, only a physical driver's license is accepted. The Renter is responsible for providing the Owner, at the time of signing this contract, with the documents of the individuals authorized to drive each vehicle, properly licensed, and provide a passport.<br />
         7.10 The Owner shall provide the Renter with the vehicle documents and proof of insurance at the time of vehicle delivery.<br />
-        7.11 The Owner shall be responsible for all maintenance and repairs required to ensure the vehicle remains in safe and proper working condition during the rental period. However, any repairs necessitated by negligence or misuse by the Renter shall be the sole responsibility of the Renter.
+        7.11 The Owner shall be responsible for all maintenance and repairs required to ensure the vehicle remains in safe and proper working condition during the rental period. However, any repairs necessitated by negligence or misuse by the Renter shall be the sole responsibility of the Renter.<br />
+        7.12 It is strictly prohibited to smoke inside the vehicle, including cigarettes, cigars, electronic cigarettes (vapes), or any similar substances. In the event that the vehicle is returned with a smoke odor or evidence of smoking, the Renter agrees to pay a cleaning and deodorization fee in the amount of US$ 1,000.00.
       </div>
       <div className="contract-clause translation text-xs">
         7.1 O veículo alugado não deve ser usado para transportar passageiros ou mercadorias para fins comerciais.<br />
@@ -31,7 +32,8 @@ export function ObligationsSection() {
         7.8 O LOCATÁRIO compromete-se a utilizar o veículo exclusivamente para fins legais, em conformidade com todas as leis de trânsito aplicáveis no estado da Flórida. O LOCATÁRIO não permitirá que terceiros não autorizados conduzam o veículo. Em caso de multas, será aplicada uma taxa adicional de 20% sobre o valor da multa, a ser paga em até 3 dias após sua notificação.<br />
         7.9 No estado da Flórida, é aceita apenas a CNH física. O LOCATÁRIO é responsável por enviar ao PROPRIETÁRIO, no momento da assinatura deste contrato, os documentos das pessoas autorizadas a conduzir cada veículo, ser devidamente habilitadas, e apresentar o passaporte.<br />
         7.10 O PROPRIETÁRIO, por sua vez, deverá entregar ao LOCATÁRIO os documentos dos veículos e os comprovantes de seguro no momento da entrega dos veículos.<br />
-        7.11 O PROPRIETÁRIO será responsável por todas as manutenções e reparos necessários para assegurar que o veículo permaneça em condições seguras e adequadas de uso durante o período de locação. Contudo, qualquer reparo necessário devido a negligência ou uso indevido por parte do LOCATÁRIO será de responsabilidade exclusiva deste.
+        7.11 O PROPRIETÁRIO será responsável por todas as manutenções e reparos necessários para assegurar que o veículo permaneça em condições seguras e adequadas de uso durante o período de locação. Contudo, qualquer reparo necessário devido a negligência ou uso indevido por parte do LOCATÁRIO será de responsabilidade exclusiva deste.<br />
+        7.12 É estritamente proibido fumar dentro do veículo, incluindo cigarros, charutos, cigarros eletrônicos (vapes) ou qualquer substância similar. Caso o veículo seja devolvido com odor de fumaça ou evidência de uso, o LOCATÁRIO concorda em pagar uma taxa de higienização e desodorização no valor de US$ 1.000,00.
       </div>
     </>
   );
