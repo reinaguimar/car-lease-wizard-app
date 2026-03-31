@@ -22,7 +22,8 @@ import {
   PieChart as PieChartIcon,
   Filter,
   Calendar,
-  FilePlus
+  FilePlus,
+  LogOut
 } from "lucide-react";
 import { LoadingState } from "@/components/LoadingState";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
