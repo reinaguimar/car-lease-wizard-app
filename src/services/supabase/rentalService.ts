@@ -6,6 +6,14 @@ import { Company } from '@/components/CompanySelector';
 import { toast } from 'sonner';
 
 /**
+ * Get the current authenticated user's ID
+ */
+const getCurrentUserId = async (): Promise<string | null> => {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user?.id ?? null;
+};
+
+/**
  * Create a new rental record
  */
 export const createRental = async (data: NewRental): Promise<Rental | null> => {
