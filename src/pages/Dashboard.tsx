@@ -1,6 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -21,7 +22,8 @@ import {
   PieChart as PieChartIcon,
   Filter,
   Calendar,
-  FilePlus
+  FilePlus,
+  LogOut
 } from "lucide-react";
 import { LoadingState } from "@/components/LoadingState";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -43,6 +45,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
   const isMobile = useIsMobile();
+  const { signOut, user } = useAuth();
   
   // Filter states
   const [dateRange, setDateRange] = useState<DateRange>("all");
@@ -193,6 +196,9 @@ export default function Dashboard() {
               Novo Contrato
             </Button>
           </Link>
+          <Button variant="ghost" size="icon" onClick={signOut} title="Sair">
+            <LogOut className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 

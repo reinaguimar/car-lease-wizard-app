@@ -6,15 +6,30 @@ import { Company } from '@/components/CompanySelector';
 import { toast } from 'sonner';
 
 /**
+ * Get the current authenticated user's ID
+ */
+const getCurrentUserId = async (): Promise<string | null> => {
+  const { data: { user } } = await supabase.auth.getUser();
+  return user?.id ?? null;
+};
+
+/**
  * Create a new rental record
  */
 export const createRental = async (data: NewRental): Promise<Rental | null> => {
   try {
-    console.log('Creating rental with data:', data);
+    const userId = await getCurrentUserId();
+    if (!userId) {
+      toast.error('Você precisa estar logado para criar um contrato.');
+      return null;
+    }
+    
+    const dataWithUser = { ...data, created_by: userId };
+    console.log('Creating rental with data:', dataWithUser);
     
     const { data: rental, error } = await supabase
       .from('rentals')
-      .insert(data)
+      .insert(dataWithUser)
       .select()
       .single();
       
