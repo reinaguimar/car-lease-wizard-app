@@ -22,7 +22,6 @@ import {
   PieChart as PieChartIcon,
   Filter,
   Calendar,
-  FilePlus,
   FilePlus
 } from "lucide-react";
 import { LoadingState } from "@/components/LoadingState";
