@@ -7,9 +7,7 @@ import EditContractPage from './pages/EditContractPage';
 import ContractStatement from './pages/ContractStatement';
 import ArchivedContracts from './pages/ArchivedContracts';
 import AuditLogsPage from './pages/AuditLogsPage';
-import LoginPage from './pages/LoginPage';
 import NotFound from './pages/NotFound';
-import { ProtectedRoute } from './components/ProtectedRoute';
 import './App.css';
 import './styles/base.css';
 import './styles/contract.css';
@@ -19,7 +17,6 @@ import { useEffect } from 'react';
 import { ensureCompaniesExist } from './utils/initializeData';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -31,10 +28,8 @@ const queryClient = new QueryClient({
 
 function App() {
   useEffect(() => {
-    // Inicializar dados básicos do sistema
     ensureCompaniesExist().catch(console.error);
     
-    // Add meta viewport for mobile if not present
     if (!document.querySelector('meta[name="viewport"]')) {
       const meta = document.createElement('meta');
       meta.name = 'viewport';
@@ -47,14 +42,13 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/contracts/new" element={<ProtectedRoute><Index /></ProtectedRoute>} />
-          <Route path="/contracts" element={<ProtectedRoute><ContractsPage /></ProtectedRoute>} />
-          <Route path="/contracts/edit/:id" element={<ProtectedRoute><EditContractPage /></ProtectedRoute>} />
-          <Route path="/contracts/statement/:id" element={<ProtectedRoute><ContractStatement /></ProtectedRoute>} />
-          <Route path="/archived" element={<ProtectedRoute><ArchivedContracts /></ProtectedRoute>} />
-          <Route path="/audit" element={<ProtectedRoute><AuditLogsPage /></ProtectedRoute>} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/contracts/new" element={<Index />} />
+          <Route path="/contracts" element={<ContractsPage />} />
+          <Route path="/contracts/edit/:id" element={<EditContractPage />} />
+          <Route path="/contracts/statement/:id" element={<ContractStatement />} />
+          <Route path="/archived" element={<ArchivedContracts />} />
+          <Route path="/audit" element={<AuditLogsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
