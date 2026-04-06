@@ -17,6 +17,7 @@ import { useEffect } from 'react';
 import { ensureCompaniesExist } from './utils/initializeData';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+// Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -28,8 +29,10 @@ const queryClient = new QueryClient({
 
 function App() {
   useEffect(() => {
+    // Inicializar dados básicos do sistema
     ensureCompaniesExist().catch(console.error);
     
+    // Add meta viewport for mobile if not present
     if (!document.querySelector('meta[name="viewport"]')) {
       const meta = document.createElement('meta');
       meta.name = 'viewport';
