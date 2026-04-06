@@ -23,7 +23,7 @@ import {
   Filter,
   Calendar,
   FilePlus,
-  LogOut
+  FilePlus
 } from "lucide-react";
 import { LoadingState } from "@/components/LoadingState";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
